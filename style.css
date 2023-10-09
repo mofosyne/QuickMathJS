@@ -101,8 +101,16 @@ textarea {
     display: flex;
 }
 
+/* Default styles for larger screens (e.g., tablets, desktops) */
 .mobileOperatorKeypad {
-    display: flex;
+    display: none; /* Hide by default */
+}
+
+/* Mobile-specific styles */
+@media (max-width: 768px) {
+    .mobileOperatorKeypad {
+        display: flex; /* Show on smaller screens */
+    }
 }
 
 .bottom-bar button {
