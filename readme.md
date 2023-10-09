@@ -1,5 +1,7 @@
 # QuickMathsJS-WebCalc : Quick MathJS Web Calculator
 
+[Click To Try Out](https://mofosyne.github.io/QuickMathsJS-WebCalc/)
+
 A simple web-based calculator harnessing the power of math.js, featuring the unique := notation for intuitive free-form calculations.
 
 The calculator's main feature is the use of `:=` as an inline notation to display the result of a calculation immediately after the expression, eliminating the need for a separate results area.
