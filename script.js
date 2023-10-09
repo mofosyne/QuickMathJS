@@ -1,15 +1,46 @@
 let previousContent = "";  // To store the state before "Enter" is pressed
 
-function saveToHash() {
+async function saveToHash() {
     const content = document.getElementById("input").value;
-    window.location.hash = encodeURIComponent(content);
+    const encoder = new TextEncoder();
+    const uint8Array = encoder.encode(content);
+    const compressedBlob = await new Response(uint8Array).blob().then(blob => {
+        return blob.stream().pipeThrough(new CompressionStream("gzip"));
+    }).then(stream => new Response(stream).blob());
+    
+    const compressedBase64 = await blobToBase64(compressedBlob);
+    window.location.hash = compressedBase64;
 }
 
-function loadFromHash() {
+async function loadFromHash() {
     if (window.location.hash) {
-        const hashContent = decodeURIComponent(window.location.hash.substring(1));
-        document.getElementById("input").value = hashContent;
+        const compressedBase64 = window.location.hash.substring(1);
+        const compressedBlob = await base64ToBlob(compressedBase64);
+        const decompressedText = await DecompressBlob(compressedBlob);
+        document.getElementById("input").value = decompressedText;
     }
+}
+
+async function blobToBase64(blob) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = function() {
+            resolve(reader.result.split(',')[1]);
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+    });
+}
+
+async function base64ToBlob(base64) {
+    const response = await fetch("data:application/octet-stream;base64," + base64);
+    return response.blob();
+}
+
+async function DecompressBlob(blob) {
+    const ds = new DecompressionStream("gzip");
+    const decompressedStream = blob.stream().pipeThrough(ds);
+    return new Response(decompressedStream).text();
 }
 
 // When the page loads, check for content in the hash and load it
