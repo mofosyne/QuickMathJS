@@ -18,16 +18,11 @@
                 <div class="padControls">
                     <button onclick="clearpad()">CLEAR</button>
                 </div>
-
                 <div class="mobileOperatorKeypad">
-                    <!-- Common Operator Buttons Arranged in BODMAS order from the right hand side of the screen -->
-                    <button onclick="insertText('(')">(</button>
-                    <button onclick="insertText(')')">)</button>
+                    <!-- These operators can take more than one shift button clicks in android keyboard to reach -->
                     <button onclick="insertText('^')">^</button>
-                    <button onclick="insertText('/')">*</button>
-                    <button onclick="insertText('*')">/</button>
-                    <button onclick="insertText('-')">-</button>
-                    <button onclick="insertText('+')">+</button>
+                    <button onclick="insertText('%')">*</button>
+                    <button onclick="insertText('=')">=</button>
                     <button onclick="insertText(':=')">:=</button>
                 </div>
             </div>
