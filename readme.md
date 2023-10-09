@@ -14,6 +14,8 @@ The reason I created this project was because I used [SpeQ Mathematics](https://
 
 Hence one requirement for any contribution/improvements to this project is that users must be able to always copy and paste the calcuation and it's results.
 
+Also this project must always be usable without internet, so you can download it and use it as if it's a local app.
+
 ## Examples
 
 Below are a few ways you can utilize this calculator:
