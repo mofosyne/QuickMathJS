@@ -111,3 +111,19 @@ function calculate() {
 
     textarea.value = newContent;  // Update the textarea with the new content
 }
+
+function insertText(text) {
+    const textarea = document.getElementById("input");
+    const startPos = textarea.selectionStart;
+    const endPos = textarea.selectionEnd;
+
+    textarea.value = textarea.value.substring(0, startPos) + text + textarea.value.substring(endPos);
+    textarea.selectionStart = startPos + text.length;
+    textarea.selectionEnd = startPos + text.length;
+    textarea.focus();
+}
+
+function clearpad() {
+    document.getElementById("input").value = "";
+    window.location.hash = "";
+}

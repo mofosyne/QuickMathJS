@@ -27,13 +27,16 @@ textarea {
 
 /* Quick Start Section Styling */
 .quickstart {
-    padding: 20px;
-    background-color: #f4f4f4;
+    padding: 5px;
+    background-color: #2c3e50;
+    color: #ecf0f1;
+    border-top: 1px solid #34495e;
     overflow-y: auto;
 }
 
 .quickstart h2 {
     margin-top: 0;
+    font-size: 1.2em;
 }
 
 .quickstart a {
@@ -43,4 +46,98 @@ textarea {
 
 .quickstart a:hover {
     text-decoration: underline;
+}
+
+/* Quick Start Toggle Summary Styling */
+.quickstart summary {
+    padding: 5px 10px;
+    cursor: pointer;
+    color: #ecf0f1;
+    background-color: #3498db;
+    list-style: none;
+    outline: none;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.quickstart summary::-webkit-details-marker {
+    display: none; /* This will hide the default dropdown arrow in WebKit browsers. */
+}
+
+.quickstart summary:before {
+    content: "▶";  /* Unicode right arrow */
+    padding-right: 5px;
+}
+
+.quickstart[open] summary:before {
+    content: "▼";  /* Unicode down arrow */
+}
+
+.quickstart[open] summary {
+    background-color: #2980b9; /* A darker shade for the opened state */
+}
+
+.bottom-bar {
+    display: flex;
+    flex-direction: column; /* Makes sure the children are stacked vertically */
+    align-items: stretch; /* Makes sure every child takes the full width */
+    justify-content: space-between;
+    padding: 5px;
+    background-color: #2c3e50;
+    color: #ecf0f1;
+    border-top: 1px solid #34495e;
+}
+
+.bottom-row {
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center;
+    width: 100%;
+}
+
+#title {
+    flex: 1 1 auto; /* This means: grow and shrink, but base the sizes on the item's content */
+    min-width: 150px; /* This is just an arbitrary width, adjust to your liking */
+    padding-right: 10px; /* Provide some spacing from the actions */
+}
+
+.actions {
+    display: flex;
+    gap: 5px; /* Provides space between padControls and mobileOperatorKeypad */
+}
+
+.padControls, .mobileOperatorKeypad {
+    display: flex;
+    align-items: center; 
+}
+
+.bottom-bar span {
+    flex: 1;
+}
+
+.bottom-bar button {
+    padding: 5px 10px;
+    margin-left: 5px;
+    background-color: #3498db;
+    color: hsl(192, 15%, 94%);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.bottom-bar button:hover,
+.quickstart[open] summary,
+.quickstart summary:hover {
+    background-color: #2980b9;
+}
+
+.bottom-bar button:focus {
+    outline: none;
+}
+
+.bottom-bar span, .actions {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
 }

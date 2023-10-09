@@ -10,20 +10,46 @@
     <div class="calculator">
         <textarea id="input" placeholder="Enter math expressions..." onkeydown="handleKeyDown(event)"></textarea>
     </div>
-    
-    <!-- Quick Start Section -->
-    <div class="quickstart">
-        <h2>Quick Start</h2>
-        <ol>
-            <li>Open the calculator by simply loading this webpage in your preferred web browser.</li>
-            <li>Type mathematical expressions in the provided textarea.</li>
-            <li>To assign a value to a variable, use the format: `a = 5`.</li>
-            <li>To evaluate an expression, write it, append with `:=`, and then press `Enter`. For example: `a * 2 :=`.</li>
-            <li>To save your calculations, simply copy the URL which now contains your compressed data.</li>
-            <li>To load previously saved calculations, paste the copied URL into your browser.</li>
-        </ol>
-        <p>For a comprehensive guide and more detailed instructions, <a href="./README.md" target="_blank">check out the full README</a>. Additionally, for details on supported mathematical syntax and operations, <a href="https://mathjs.org/docs/" target="_blank">refer to the math.js documentation</a>.</p>
+
+    <div class="bottom-bar">
+        <div class="bottom-row">
+            <span id="title" >Quick MathsJS Web Calc</span>
+            <div class="actions"> <!-- This is a new container for padControls and mobileOperatorKeypad -->
+                <div class="padControls">
+                    <button onclick="clearpad()">CLEAR</button>
+                </div>
+
+                <div class="mobileOperatorKeypad">
+                    <!-- Common Operator Buttons Arranged in BODMAS order from the right hand side of the screen -->
+                    <button onclick="insertText('(')">(</button>
+                    <button onclick="insertText(')')">)</button>
+                    <button onclick="insertText('^')">^</button>
+                    <button onclick="insertText('/')">*</button>
+                    <button onclick="insertText('*')">/</button>
+                    <button onclick="insertText('-')">-</button>
+                    <button onclick="insertText('+')">+</button>
+                    <button onclick="insertText(':=')">:=</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Start Section -->
+        <details class="quickstart">
+            <summary>Show Quick Start</summary>
+            <div id="quickstartDetails">
+                <h2>Quick Start</h2>
+                <ol>
+                <li>Open the calculator by simply loading this webpage in your preferred web browser.</li>
+                <li>Type mathematical expressions in the provided textarea.</li>
+                <li>To assign a value to a variable, use the format: `a = 5`.</li>
+                <li>To evaluate an expression, write it, append with `:=`, and then press `Enter`. For example: `a * 2 :=`.</li>
+                <li>To save your calculations, simply copy the URL which now contains your compressed data.</li>
+                <li>To load previously saved calculations, paste the copied URL into your browser.</li>
+            </ol>
+            <p>For a comprehensive guide and more detailed instructions, <a href="./README.md" target="_blank">check out the full README</a>. Additionally, for details on supported mathematical syntax and operations, <a href="https://mathjs.org/docs/" target="_blank">refer to the math.js documentation</a>.</p>
+        </details>
     </div>
+    
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/10.0.1/math.min.js"></script>
     <script src="script.js"></script>
