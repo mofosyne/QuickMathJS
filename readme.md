@@ -82,6 +82,9 @@ By pressing `Enter` at the beginning of a line, you can add a new line. If you p
 
 Feel free to play around and explore more functionalities!
 
+[For the full guide click here](userguide.md)
+
+
 ## Features
 
 - Evaluates mathematical expressions with := and displays results inline.
