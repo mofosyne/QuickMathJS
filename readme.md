@@ -8,6 +8,12 @@ The calculator's main feature is the use of `:=` as an inline notation to displa
 
 Created with the assistance of ChatGPT and human supervision.
 
+## Motivation
+
+The reason I created this project was because I used [SpeQ Mathematics](https://speqmath.com/) and I really like how everything is just a text file in this calculator.
+
+Hence one requirement for any contribution/improvements to this project is that users must be able to always copy and paste the calcuation and it's results.
+
 ## Examples
 
 Below are a few ways you can utilize this calculator:
