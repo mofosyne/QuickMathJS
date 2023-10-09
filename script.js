@@ -124,6 +124,13 @@ function insertText(text) {
 }
 
 function clearpad() {
+    if (document.getElementById("input").value == "")
+        return;
+
+    const isConfirmed = window.confirm("Are you sure you want to clear?");
+    if (!isConfirmed)
+        return;
+
     document.getElementById("input").value = "";
     window.location.hash = "";
 }
