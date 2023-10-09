@@ -45,9 +45,16 @@
             <p>For a comprehensive guide and more detailed instructions, <a href="https://github.com/mofosyne/QuickMathsJS-WebCalc" target="_blank">check out the full README</a>. Additionally, for details on supported mathematical syntax and operations, <a href="https://mathjs.org/docs/expressions/syntax.html" target="_blank">refer to the math.js documentation</a>.</p>
         </details>
     </div>
-    
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/10.0.1/math.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.11.1/math.min.js"></script>
+    <!-- Local math.js fallback if above link fails to load-->
+    <script>
+        if (typeof math === 'undefined') {
+          var script = document.createElement('script');
+          script.src = 'math.min.js';
+          document.body.appendChild(script);
+        }
+    </script>
     <script src="script.js"></script>
 </body>
 </html>
