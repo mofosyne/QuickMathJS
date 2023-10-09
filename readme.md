@@ -112,4 +112,4 @@ Feel free to play around and explore more functionalities!
 Feedback and contributions are welcome! Please open an issue or submit a pull request if you have suggestions or improvements.
 License
 
-MIT License. See the LICENSE file for more details.
+This project is licensed under the GNU General Public License v3.0 - see the [LICENSE](LICENSE) file for details.
