@@ -2,11 +2,17 @@ body, html {
     margin: 0;
     padding: 0;
     height: 100%;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    display: flex;         /* Enables flexbox */
+    flex-direction: column;/* Stacks child elements vertically */
     overflow: hidden;
 }
 
 .calculator {
-    height: 100%;
+    flex: 1;               /* This ensures .calculator takes up all available space */
 }
 
 textarea {
@@ -17,4 +23,24 @@ textarea {
     box-sizing: border-box;
     font-family: monospace;
     resize: none;
+}
+
+/* Quick Start Section Styling */
+.quickstart {
+    padding: 20px;
+    background-color: #f4f4f4;
+    overflow-y: auto;
+}
+
+.quickstart h2 {
+    margin-top: 0;
+}
+
+.quickstart a {
+    color: #3498db;  /* A blue shade for links */
+    text-decoration: none;
+}
+
+.quickstart a:hover {
+    text-decoration: underline;
 }
