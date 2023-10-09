@@ -1,6 +1,7 @@
 # QuickMathsJS-WebCalc : Quick MathJS Web Calculator
 
-[Click To Try Out](https://mofosyne.github.io/QuickMathsJS-WebCalc/)
+[Click Here To Try Out](https://mofosyne.github.io/QuickMathsJS-WebCalc/)
+[Click Here to head to download for offline use](https://github.com/mofosyne/QuickMathsJS-WebCalc/releases/latest)
 
 A simple web-based calculator harnessing the power of math.js, featuring the unique := notation for intuitive free-form calculations.
 
