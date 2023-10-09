@@ -2,6 +2,8 @@
 
 A simple CLI application that reads mathematical expressions from a file, evaluates them using MathJS, and then overwrites the same file with the results.
 
+This is based off QuickMathJS WebCalc, but simplified for cli purpose.
+
 ## Requirements
 
 - Node.js
