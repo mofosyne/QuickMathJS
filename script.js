@@ -1,5 +1,22 @@
 let previousContent = "";  // To store the state before "Enter" is pressed
 
+function saveToHash() {
+    const content = document.getElementById("input").value;
+    window.location.hash = encodeURIComponent(content);
+}
+
+function loadFromHash() {
+    if (window.location.hash) {
+        const hashContent = decodeURIComponent(window.location.hash.substring(1));
+        document.getElementById("input").value = hashContent;
+    }
+}
+
+// When the page loads, check for content in the hash and load it
+window.onload = function() {
+    loadFromHash();
+};
+
 function handleKeyDown(event) {
     // Check if the pressed key was "Enter"
     if (event.key === 'Enter') {
@@ -29,6 +46,9 @@ function handleKeyDown(event) {
         const charsInPreviousLines = linesAfterCalc.slice(0, currentLine + 1).join('\n').length;
         
         textarea.setSelectionRange(charsInPreviousLines + 1, charsInPreviousLines + 1);
+
+        // After calculating, save content to URL hash
+        saveToHash();
     }
 }
 
