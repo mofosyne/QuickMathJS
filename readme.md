@@ -15,6 +15,7 @@ The reason I created this project was because I used [SpeQ Mathematics](https://
 Hence one requirement for any contribution/improvements to this project is that users must be able to always copy and paste the calcuation and it's results.
 
 Also this project must always be usable without internet, so you can download it and use it as if it's a local app.
+[Click Here to head to the latest release](https://github.com/mofosyne/QuickMathsJS-WebCalc/releases/latest) and then download the source code and double click on `index.html` to start the app.
 
 ## Examples
 
@@ -121,6 +122,7 @@ Feel free to play around and explore more functionalities!
 ## Contributing
 
 Feedback and contributions are welcome! Please open an issue or submit a pull request if you have suggestions or improvements.
-License
+
+## License
 
 This project is licensed under the GNU General Public License v3.0 - see the [LICENSE](LICENSE) file for details.

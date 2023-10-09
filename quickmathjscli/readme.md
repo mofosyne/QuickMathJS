@@ -54,6 +54,7 @@ a + b := 12
 ## Contributing
 
 Feedback and contributions are welcome! Please open an issue or submit a pull request if you have suggestions or improvements.
-License
+
+## License
 
 This project is licensed under the GNU General Public License v3.0 - see the [LICENSE](LICENSE) file for details.
