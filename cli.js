@@ -54,6 +54,10 @@ function runTests() {
         console.error(`Failed ${failures} test(s). Exiting.`);
         process.exit(1);
     }
+    else
+    {
+      console.error(`All test passed. Exiting.`);
+    }
 }
 
 // Check if the --test flag is passed

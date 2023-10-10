@@ -37,6 +37,22 @@ a = 5
 a + 3 = 8
 ```
 
+
+### Test Case 3.1: Arithmetic with Variables
+given:
+```
+a = 5
+b = a + 1
+b = 
+```
+
+expect:
+```
+a = 5
+b = a + 1
+b = 6
+```
+
 ### Test Case 4: Multiple Variable Assignments
 given:
 ```
@@ -78,7 +94,7 @@ given:
 
 expect:
 ```
-1 / 0 = Error: Division by zero
+1 / 0 = Error: Infinity. Possible Division by zero
 ```
 
 ### Test Case 8: Undefined Variable
@@ -111,7 +127,7 @@ given:
 
 expect:
 ```
-1 / 0 = Error: Division by zero
+1 / 0 = Error: Infinity. Possible Division by zero
 ```
 
 ### Test Case 11: Invalid Multi Variable Assignment

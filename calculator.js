@@ -33,28 +33,28 @@
                         // Case: Pure Mathematical Expression (e.g., "5 + 3 =")
                         if (!rightSide) {
                             const evaluated = math.evaluate(leftSide, scope);
-                            // Error handling for division by zero, as JavaScript will return Infinity
+                            // Error handling for Infinity. Possible Division by zero, as JavaScript will return Infinity
                             if (evaluated === Infinity) {
-                                throw new Error("Division by zero");
+                                throw new Error("Infinity. Possible Division by zero");
                             }
                             newContent += `${leftSide} = ${evaluated}\n`;
                         } 
                         // Case: Variable Assignment (e.g., "a = 4")
-                        else if (/^[a-zA-Z_]\w*$/.test(leftSide)) {  
+                        else if (/^[a-zA-Z_]\w*$/.test(leftSide)) { 
                             const evaluated = math.evaluate(rightSide, scope);
-                            // Error handling for division by zero, as JavaScript will return Infinity
+                            // Error handling for Infinity. Possible Division by zero, as JavaScript will return Infinity
                             if (evaluated === Infinity) {
-                                throw new Error("Division by zero");
+                                throw new Error("Infinity. Possible Division by zero");
                             }
                             scope[leftSide] = evaluated;  // Assign value to the variable in `scope`
-                            newContent += `${leftSide} = ${evaluated}\n`;
+                            newContent += `${leftSide} = ${rightSide}\n`;
                         } 
                         // Case: Mathematical Expression with provided result (e.g., "5 + 3 = 8")
                         else {
                             const evaluated = math.evaluate(leftSide, scope);
-                            // Error handling for division by zero, as JavaScript will return Infinity
+                            // Error handling for Infinity. Possible Division by zero, as JavaScript will return Infinity
                             if (evaluated === Infinity) {
-                                throw new Error("Division by zero");
+                                throw new Error("Infinity. Possible Division by zero");
                             }
                             newContent += `${leftSide} = ${evaluated}\n`;
                         }
@@ -71,9 +71,9 @@
                         if (allAreVariables) {
                             const evaluated = math.evaluate(expression, scope);
 
-                            // Error handling for division by zero, as JavaScript will return Infinity
+                            // Error handling for Infinity. Possible Division by zero, as JavaScript will return Infinity
                             if (evaluated === Infinity) {
-                                throw new Error("Division by zero");
+                                throw new Error("Infinity. Possible Division by zero");
                             }
                             
                             // Assign the evaluated value to all the variables
