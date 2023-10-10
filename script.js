@@ -169,6 +169,6 @@ function clearpad() {
  * and then updates the URL hash with the latest content.
  */
 function triggerRecalc() {
-    calculate();
+    webcalc.calculate();
     saveToHash();
 }
