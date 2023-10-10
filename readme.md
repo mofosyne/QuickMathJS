@@ -1,5 +1,7 @@
 # QuickMathsJS-WebCalc : Quick MathJS Web Calculator
 
+[![Node.js Test Runner](https://github.com/mofosyne/QuickMathsJS-WebCalc/actions/workflows/node.js.yml/badge.svg)](https://github.com/mofosyne/QuickMathsJS-WebCalc/actions/workflows/node.js.yml)
+
 * [Click Here To Try Out](https://mofosyne.github.io/QuickMathsJS-WebCalc/)
 * [Click Here to head to download for offline use](https://github.com/mofosyne/QuickMathsJS-WebCalc/releases/latest)
 
