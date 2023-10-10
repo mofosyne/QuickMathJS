@@ -1,5 +1,8 @@
 {
   "dependencies": {
     "mathjs": "^11.11.1"
+  },
+  "scripts": {
+    "test": "node testRunnerNode.js"
   }
 }
