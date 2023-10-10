@@ -140,3 +140,21 @@ expect:
 ```
 x = 1 + y = 3 =
 ```
+
+### Test Case 12: Cascading failure
+given:
+```
+a = 5
+b = a + 1/0
+c = b + 1
+c + 1 = 8
+```
+
+expect:
+```
+a = 5
+b = a + 1/0 Error: Infinity. Possible Division by zero
+c = b + 1 Error: Unexpected type of argument in function addScalar (expected: Unit, actual: number, index: 1)
+c + 1 = 8 Error: Undefined symbol c
+```
+

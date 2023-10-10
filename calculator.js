@@ -13,8 +13,17 @@
     // Your library code here
     const calculator = {
         calculate(incomingContent) {
-            // Retrieve the content of the input textarea
-            const lines = incomingContent.split('\n');  // Use cached content for calculations
+            // Preprocess to remove any existing "Error:"
+            const cleanedLines = incomingContent.split('\n').map(line => {
+                const errorIndex = line.indexOf("Error:");
+                if (errorIndex !== -1) {
+                    return line.substring(0, errorIndex).trim();
+                }
+                return line;
+            });
+            const cleanedContent = cleanedLines.join('\n');
+            const lines = cleanedContent.split('\n');
+
             let newContent = "";
             
             // `scope` will be used to keep track of variable values as they're declared
