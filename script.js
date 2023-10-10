@@ -59,8 +59,8 @@ function handleKeyDown(event) {
         // Get the content of the text area up to the cursor position
         const contentBeforeCursor = textarea.value.substring(0, cursorPosition);
 
-        // Check if cursor is at the start of a line or at the start of the textarea content
-        if (cursorPosition === 0 || contentBeforeCursor.endsWith('\n')) {
+        // Check if cursor is at the start of a line, at the start of the textarea content, or at the end of the content
+        if (cursorPosition === 0 || contentBeforeCursor.endsWith('\n') || cursorPosition === textarea.value.length) {
             // Insert a newline
             textarea.value = textarea.value.substring(0, cursorPosition) + '\n' + textarea.value.substring(cursorPosition);
             textarea.setSelectionRange(cursorPosition + 1, cursorPosition + 1); // Move cursor after the new line
@@ -69,14 +69,15 @@ function handleKeyDown(event) {
 
         previousContent = textarea.value;  // Cache the current state before calculations
         
-        const currentLine = (contentBeforeCursor.match(/\n/g) || []).length;
         calculate();
-        
-        // Get position of the start of the next line after calculations
-        const linesAfterCalc = textarea.value.split('\n');
-        const charsInPreviousLines = linesAfterCalc.slice(0, currentLine + 1).join('\n').length;
-        
-        textarea.setSelectionRange(charsInPreviousLines + 1, charsInPreviousLines + 1);
+
+        // Move the cursor to the beginning of the next line
+        const nextNewLinePos = textarea.value.indexOf('\n', cursorPosition);
+        if (nextNewLinePos === -1) {  // If there's no next line, move to the end
+            textarea.setSelectionRange(textarea.value.length, textarea.value.length);
+        } else {
+            textarea.setSelectionRange(nextNewLinePos + 1, nextNewLinePos + 1);
+        }
 
         // After calculating, save content to URL hash
         saveToHash();
@@ -119,35 +120,60 @@ function calculate() {
                     newContent += `${leftSide} = ${evaluated}\n`;
                 }
             } 
-            // Handling lines with two '='
-            else if (parts.length === 3) {
-                const [variable, expression, expectedValue] = parts;
-                const evaluated = math.evaluate(expression, scope);
-                scope[variable] = evaluated;  // Assign value to the variable in `scope`
+            // Handling lines with multiple '='
+            else if (parts.length > 2) {
+                const variables = parts.slice(0, -2);  // All parts before the last 2 are considered as potential variables
+                const expression = parts[parts.length - 2];
+                const expectedValue = parts[parts.length - 1];
+                
+                // Check if all the parts before the last 2 are valid variable names
+                const allAreVariables = variables.every(part => /^[a-zA-Z_]\w*$/.test(part));
 
-                // Error handling for division by zero, as JavaScript will return Infinity
-                if (evaluated === Infinity) {
-                    throw new Error("Division by zero");
-                }
+                if (allAreVariables) {
+                    const evaluated = math.evaluate(expression, scope);
 
-                // Check if there's an expected value provided
-                if (expectedValue) {
-                    // If the expected value matches the evaluated value, use it
-                    if (parseFloat(expectedValue) === evaluated) {
-                        newContent += `${variable} = ${expression} = ${expectedValue}\n`;
-                    } else {  // Otherwise, replace with the correct evaluated value
-                        newContent += `${variable} = ${expression} = ${evaluated}\n`;
+                    // Error handling for division by zero, as JavaScript will return Infinity
+                    if (evaluated === Infinity) {
+                        throw new Error("Division by zero");
                     }
+                    
+                    // Assign the evaluated value to all the variables
+                    for (let variable of variables) {
+                        scope[variable] = evaluated;
+                    }
+                    
+                    // Construct the output line
+                    let outputLine = variables.join(' = ') + ' = ' + expression;
+
+                    if (expectedValue) {
+                        // If the expected value matches the evaluated value, use it
+                        if (parseFloat(expectedValue) === evaluated) {
+                            outputLine += ' = ' + expectedValue;
+                        } else {  // Otherwise, replace with the correct evaluated value
+                            outputLine += ' = ' + evaluated;
+                        }
+                    } else {
+                        outputLine += ' = ' + evaluated;
+                    }
+
+                    newContent += outputLine + '\n';
                 } else {
-                    newContent += `${variable} = ${expression} = ${evaluated}\n`;
+                    newContent += line + '\n';  // If not a valid multi-variable assignment, keep the line unchanged
                 }
-            } 
+            }
             // Any other line format remains unchanged
             else {
                 newContent += `${line}\n`;
             }
-        } catch (e) {  // Catch any evaluation errors and append to the line
-            newContent += `${line} Error: ${e.message}\n`;
+        } catch (e) {  
+            // If line already has an "Error:" substring, replace it with the new error
+            if (line.includes("Error:")) {
+                const errorStartIndex = line.indexOf("Error:");
+                newContent += line.substring(0, errorStartIndex) + `Error: ${e.message}\n`;
+            } else {
+                // Otherwise, append the new error
+                newContent += `${line} Error: ${e.message}\n`;
+            }
         }
     }
 
