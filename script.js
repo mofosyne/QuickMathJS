@@ -84,32 +84,75 @@ function handleKeyDown(event) {
 }
 
 function calculate() {
+    // Retrieve the content of the input textarea
     const textarea = document.getElementById("input");
-    const lines = previousContent.split('\n');  // Use cached content for calculations
+    const lines = textarea.value.split('\n');
     let newContent = "";
 
+    // `scope` will be used to keep track of variable values as they're declared
     const scope = {};
 
+    // Iterate through each line in the textarea
     for (const line of lines) {
+        // Split each line by '=' to determine its structure
+        const parts = line.split('=').map(str => str.trim());
+
         try {
-            if (line.includes(":=")) {
-                const expression = line.split(":=")[0].trim();
+            // Handling lines with only one '='
+            if (parts.length === 2) {
+                const [leftSide, rightSide] = parts;
+
+                // Case: Pure Mathematical Expression (e.g., "5 + 3 =")
+                if (!rightSide) {
+                    const evaluated = math.evaluate(leftSide, scope);
+                    newContent += `${leftSide} = ${evaluated}\n`;
+                } 
+                // Case: Variable Assignment (e.g., "a = 4")
+                else if (/^[a-zA-Z_]\w*$/.test(leftSide)) {  
+                    const evaluated = math.evaluate(rightSide, scope);
+                    scope[leftSide] = evaluated;  // Assign value to the variable in `scope`
+                    newContent += `${leftSide} = ${evaluated}\n`;
+                } 
+                // Case: Mathematical Expression with provided result (e.g., "5 + 3 = 8")
+                else {
+                    const evaluated = math.evaluate(leftSide, scope);
+                    newContent += `${leftSide} = ${evaluated}\n`;
+                }
+            } 
+            // Handling lines with two '='
+            else if (parts.length === 3) {
+                const [variable, expression, expectedValue] = parts;
                 const evaluated = math.evaluate(expression, scope);
-                newContent += `${expression} := ${evaluated}\n`;
-            } else {
-                math.evaluate(line, scope);  // Evaluate to update the scope but no need for result
+                scope[variable] = evaluated;  // Assign value to the variable in `scope`
+
+                // Error handling for division by zero, as JavaScript will return Infinity
+                if (evaluated === Infinity) {
+                    throw new Error("Division by zero");
+                }
+
+                // Check if there's an expected value provided
+                if (expectedValue) {
+                    // If the expected value matches the evaluated value, use it
+                    if (parseFloat(expectedValue) === evaluated) {
+                        newContent += `${variable} = ${expression} = ${expectedValue}\n`;
+                    } else {  // Otherwise, replace with the correct evaluated value
+                        newContent += `${variable} = ${expression} = ${evaluated}\n`;
+                    }
+                } else {
+                    newContent += `${variable} = ${expression} = ${evaluated}\n`;
+                }
+            } 
+            // Any other line format remains unchanged
+            else {
                 newContent += `${line}\n`;
             }
-        } catch (e) {
-            if (line.includes(":=")) {
-                newContent += `${line} Error: ${e.message}\n`;
-            } else {
-                newContent += `${line}\n`;
-            }
+        } catch (e) {  // Catch any evaluation errors and append to the line
+            newContent += `${line} Error: ${e.message}\n`;
         }
     }
 
-    textarea.value = newContent;  // Update the textarea with the new content
+    // Update the textarea content with the processed content
+    textarea.value = newContent.trim();  // Trim to avoid any trailing newlines
 }
 
 function insertText(text) {
