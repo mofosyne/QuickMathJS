@@ -203,3 +203,8 @@ function clearpad() {
     document.getElementById("input").value = "";
     window.location.hash = "";
 }
+
+function triggerRecalc() {
+    calculate();
+    saveToHash();  // Save content to URL hash
+}
