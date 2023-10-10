@@ -1,6 +1,3 @@
-
-
-
 /******************************************************************************
  * URL Hash Compression and Storage Utilities
 ******************************************************************************
@@ -75,10 +72,9 @@ async function DecompressBlob(blob) {
 }
 
 // When the page loads, check for content in the hash and load it
-window.onload = function() {
+window.addEventListener("load", function() {
     loadFromHash();
-};
-
+});
 
 /******************************************************************************
  * Textarea Content Processing and Utilities
@@ -110,7 +106,7 @@ function handleKeyDown(event) {
         previousContent = textarea.value;  // Cache the current state before calculations
         
         // Update the textarea content with the processed content
-        textarea.value = calculate(previousContent);  // Trim to avoid any trailing newlines
+        textarea.value = webcalc.calculate(previousContent);  // Trim to avoid any trailing newlines
 
         // Move the cursor to the beginning of the next line
         const nextNewLinePos = textarea.value.indexOf('\n', cursorPosition);
@@ -123,101 +119,6 @@ function handleKeyDown(event) {
         // After calculating, save content to URL hash
         saveToHash();
     }
-}
-
-function calculate(incomingContent) {
-    // Retrieve the content of the input textarea
-    const lines = incomingContent.split('\n');  // Use cached content for calculations
-    let newContent = "";
-    
-    // `scope` will be used to keep track of variable values as they're declared
-    const scope = {};
-    
-    // Iterate through each line in the textarea
-    for (const line of lines) {
-        // Split each line by '=' to determine its structure
-        const parts = line.split('=').map(str => str.trim());
-
-        try {
-            // Handling lines with only one '='
-            if (parts.length === 2) {
-                const [leftSide, rightSide] = parts;
-
-                // Case: Pure Mathematical Expression (e.g., "5 + 3 =")
-                if (!rightSide) {
-                    const evaluated = math.evaluate(leftSide, scope);
-                    newContent += `${leftSide} = ${evaluated}\n`;
-                } 
-                // Case: Variable Assignment (e.g., "a = 4")
-                else if (/^[a-zA-Z_]\w*$/.test(leftSide)) {  
-                    const evaluated = math.evaluate(rightSide, scope);
-                    scope[leftSide] = evaluated;  // Assign value to the variable in `scope`
-                    newContent += `${leftSide} = ${evaluated}\n`;
-                } 
-                // Case: Mathematical Expression with provided result (e.g., "5 + 3 = 8")
-                else {
-                    const evaluated = math.evaluate(leftSide, scope);
-                    newContent += `${leftSide} = ${evaluated}\n`;
-                }
-            } 
-            // Handling lines with multiple '='
-            else if (parts.length > 2) {
-                const variables = parts.slice(0, -2);  // All parts before the last 2 are considered as potential variables
-                const expression = parts[parts.length - 2];
-                const expectedValue = parts[parts.length - 1];
-                
-                // Check if all the parts before the last 2 are valid variable names
-                const allAreVariables = variables.every(part => /^[a-zA-Z_]\w*$/.test(part));
-
-                if (allAreVariables) {
-                    const evaluated = math.evaluate(expression, scope);
-
-                    // Error handling for division by zero, as JavaScript will return Infinity
-                    if (evaluated === Infinity) {
-                        throw new Error("Division by zero");
-                    }
-                    
-                    // Assign the evaluated value to all the variables
-                    for (let variable of variables) {
-                        scope[variable] = evaluated;
-                    }
-                    
-                    // Construct the output line
-                    let outputLine = variables.join(' = ') + ' = ' + expression;
-
-                    if (expectedValue) {
-                        // If the expected value matches the evaluated value, use it
-                        if (parseFloat(expectedValue) === evaluated) {
-                            outputLine += ' = ' + expectedValue;
-                        } else {  // Otherwise, replace with the correct evaluated value
-                            outputLine += ' = ' + evaluated;
-                        }
-                    } else {
-                        outputLine += ' = ' + evaluated;
-                    }
-
-                    newContent += outputLine + '\n';
-                } else {
-                    newContent += line + '\n';  // If not a valid multi-variable assignment, keep the line unchanged
-                }
-            }
-            // Any other line format remains unchanged
-            else {
-                newContent += `${line}\n`;
-            }
-        } catch (e) {  
-            // If line already has an "Error:" substring, replace it with the new error
-            if (line.includes("Error:")) {
-                const errorStartIndex = line.indexOf("Error:");
-                newContent += line.substring(0, errorStartIndex) + `Error: ${e.message}\n`;
-            } else {
-                // Otherwise, append the new error
-                newContent += `${line} Error: ${e.message}\n`;
-            }
-        }
-    }
-
-    return newContent.trim();
 }
 
 /**
