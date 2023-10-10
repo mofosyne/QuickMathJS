@@ -162,6 +162,11 @@ npm test
 
     math.js: A comprehensive mathematics library for JavaScript and Node.js.
 
+## Dev Note:
+
+* Why is the backend CI/CD Node.js based and not deno based?
+    - I've tried Deno, but it uses 'export' keyword which messes with browser syntax parsing (if module is not enabled). I could try enabling modules, but my aim is for the code to be useable without CORS being triggered... so you could use it offline without having to start a local server for it.
+
 ## Contributing
 
 Feedback and contributions are welcome! Please open an issue or submit a pull request if you have suggestions or improvements.
