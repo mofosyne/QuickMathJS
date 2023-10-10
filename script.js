@@ -169,6 +169,8 @@ function clearpad() {
  * and then updates the URL hash with the latest content.
  */
 function triggerRecalc() {
-    webcalc.calculate();
+    const textarea = document.getElementById("input");
+    previousContent = textarea.value;  // Cache the current state before calculations
+    textarea.value = webcalc.calculate(previousContent);
     saveToHash();
 }
