@@ -3,6 +3,6 @@
     "mathjs": "^11.11.1"
   },
   "scripts": {
-    "test": "node testRunnerNode.js"
+    "test": "node cli.js --test"
   }
 }

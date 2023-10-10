@@ -3,9 +3,9 @@
 * [Click Here To Try Out](https://mofosyne.github.io/QuickMathsJS-WebCalc/)
 * [Click Here to head to download for offline use](https://github.com/mofosyne/QuickMathsJS-WebCalc/releases/latest)
 
-A simple web-based calculator harnessing the power of math.js, featuring the unique := notation for intuitive free-form calculations.
+A simple web-based calculator harnessing the power of math.js for intuitive free-form calculations. Now with a command-line interface (CLI) for testing purposes.
 
-The calculator's main feature is the use of `:=` as an inline notation to display the result of a calculation immediately after the expression, eliminating the need for a separate results area.
+The calculator's main feature is the use of huruestic to guess if `=` is an inline notation to display the result of a calculation immediately after the expression, eliminating the need for a separate results area.
 
 Created with the assistance of ChatGPT and human supervision.
 
@@ -25,14 +25,15 @@ Below are a few ways you can utilize this calculator:
 ```plaintext
 a = 5
 b = 7
-a + b := 
+a + b = 
 ```
-After pressing `Enter` at the end of the `a + b :=` line, you will see:
+
+After pressing `Enter` at the end of the `a + b =` line, you will see:
 
 ```plaintext
 a = 5
 b = 7
-a + b := 12
+a + b = 12
 ```
 
 Variables are maintained in memory:
@@ -41,7 +42,7 @@ Variables are maintained in memory:
 a = 5
 b = 7
 c = a + b
-c * 2 :=
+c * 2 =
 ```
 This will evaluate to:
 
@@ -49,7 +50,7 @@ This will evaluate to:
 a = 5
 b = 7
 c = a + b
-c * 2 := 24
+c * 2 = 24
 ```
 
 You can also use more complex expressions:
@@ -57,7 +58,7 @@ You can also use more complex expressions:
 ```plaintext
 a = 5
 b = 7
-sqrt(a^2 + b^2) :=
+sqrt(a^2 + b^2) =
 ```
 
 After evaluation:
@@ -65,31 +66,31 @@ After evaluation:
 ```plaintext
 a = 5
 b = 7
-sqrt(a^2 + b^2) := 8.602325267042627
+sqrt(a^2 + b^2) = 8.602325267042627
 ```
 
 Errors in your math expression will be indicated inline:
 
 ```plaintext
-1/0 :=
+1/0 =
 ```
 
 Displays:
 
 ```plaintext
-1/0 := Error: Division by zero
+1/0 = Error: Division by zero
 ```
 
-By pressing `Enter` at the beginning of a line, you can add a new line. If you press `Enter` immediately after a `:=`, the calculator will evaluate the expression and display or update the result inline.
+By pressing `Enter` at the beginning of a line, you can add a new line. If you press `Enter` immediately after a `=`, the calculator will evaluate the expression and display or update the result inline.
 
 Feel free to play around and explore more functionalities!
 
-[For the full guide click here](userguide.md)
+[For the full guide click here](userexamples.md)
 
 
 ## Features
 
-- Evaluates mathematical expressions with := and displays results inline.
+- Evaluates mathematical expressions with = and displays results inline.
 - Assigns variable values with = and reuses them in subsequent lines.
 - Auto-calculation upon pressing Enter.
 - Error messages displayed inline for incorrect expressions.
@@ -97,24 +98,65 @@ Feel free to play around and explore more functionalities!
 
 ## Setup & Usage
 
-- Setup: Ensure you have the required files:
-    - index.html
-    - style.css
-    - script.js
-    - This README file.
-
 - Opening the Calculator:
     - Simply open the index.html file in your preferred web browser.
 
 - Usage:
     - Type mathematical expressions in the provided textarea.
     - To assign a value to a variable, use the format: a = 5.
-    - To evaluate an expression, write it and append with := and then press Enter.
-    - For example: a * 2 :=
-    - The result of the calculation will be displayed immediately after the :=.
+    - To evaluate an expression, write it and append with = and then press Enter.
+    - For example: a * 2 =
+    - The result of the calculation will be displayed immediately after the =.
     - If there's an error in your expression, an error message will be displayed inline.
     - Press Enter at the beginning of a line to start a new line.
-    - Press Enter at the end of a line with := to re-evaluate the expression and update the result.
+    - Press Enter at the end of a line with = to re-evaluate the expression and update the result.
+
+
+## Quick Start for CLI
+
+The CLI offers the same heuristic-based evaluation as the web interface, so you can naturally type in mathematical expressions without the need for special syntax.
+If you prefer to use the calculator functionalities from the command line, `cli.js` is available for you! Here's a quick guide to get you started:
+
+### 1. Setup:
+
+Ensure you have Node.js installed on your machine. If not, you can download and install it from the official [Node.js website](https://nodejs.org/).
+
+### 2. Installation:
+
+Navigate to the `QuickMathsJS-WebCalc` directory:
+
+```bash
+cd path/to/QuickMathsJS-WebCalc
+```
+
+Then, install the necessary packages:
+
+```bash
+npm install
+```
+
+### 3. Using the Calculator:
+
+To process a file and evaluate expressions within it, use:
+
+```bash
+node cli.js path/to/your/file.txt
+```
+
+### 4. Running Tests (For Developers):
+
+To run predefined test cases defined in `userexample.md`:
+
+```bash
+node cli.js --test
+```
+
+or use 
+
+```
+npm ci
+npm test
+```
 
 ## Dependencies
 
