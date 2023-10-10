@@ -141,7 +141,27 @@ expect:
 x = 1 + y = 3 =
 ```
 
-### Test Case 12: Cascading failure
+### Test Case 12: Cascading Calculations
+given:
+```
+a = 5
+b = a + 1 = 9
+c = b + 1
+d = c + 1 = 
+d =  8
+```
+
+expect:
+```
+a = 5
+b = a + 1 = 6
+c = b + 1
+d = c + 1 = 8
+d = 8
+```
+
+
+### Test Case 13: Cascading failure
 given:
 ```
 a = 5
