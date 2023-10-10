@@ -17,13 +17,13 @@
             <div class="actions"> <!-- This is a new container for padControls and mobileOperatorKeypad -->
                 <div class="padControls">
                     <button onclick="clearpad()">CLEAR</button>
+                    <button onclick="triggerRecalc()">RECALC</button>
                 </div>
                 <div class="mobileOperatorKeypad">
                     <!-- These operators can take more than one shift button clicks in android keyboard to reach -->
                     <button onclick="insertText('^')">^</button>
                     <button onclick="insertText('%')">%</button>
                     <button onclick="insertText('=')">=</button>
-                    <button onclick="insertText(':=')">:=</button>
                 </div>
             </div>
         </div>
@@ -41,7 +41,7 @@
                 <li>To save your calculations, simply copy the URL which now contains your compressed data.</li>
                 <li>To load previously saved calculations, paste the copied URL into your browser.</li>
             </ol>
-            <p><a href="#H4sIAAAAAAAAA3VVbW/bOAz+7l/Bw3CYc0tdv79s2AcvSdcMadpLnB2GogMcW0mE2pYnyU3y74+S05dbe0HiWCL5kBTJR+/g744W91e53IlvS/iHrEd5VcBKEA5fO1oSw3gH2Y4KEAWnrTwT8lgR2CoRlKRmjZA8l0TAju1BMugEgYecU9YJqBGV4IMWeQWsJahI0QDypoQNyWXH0Y42b4ZggfL8JV1OR5Auptnl1STD1+ubySLNptfzpRKnZUkVpBHAB/Dg42eI1fayW2NQhZZEcAa+knhKctVVkrYVBqSFIfzVmznabkwfqFD7MZyDq/Z9tX3D9oQbHvzsgWJHI7GyqzBHc4EZ0qbE88o3Ep+PIAPDseHPE7wOdvw9nY8mY7hKs8sJPqajdAYXq/noKZ+M0y1rWE0kpwVcdI3OQaBkziT5CDJvzJae+wNAzCGsOwnyuTawZ817CVv6QIAcMP/qCA6UHVF12VQMc262Zy2jjYS8bTk70LqvCB72O+g/utb4LViNxVXVqfPmCIJt5D7nBCq65lheIixDUB2NO+hTLJjApV6cOcZzqLi2reS3j8p22jwQju3yf1nnyoFtBSeIwPWCJI6iAJ9uEidGrjw+yh3L9iMnQanjJGGQRNrFjG0xWLmrEVh13eTQsoY0kmJDPjuq2NZ0bFvj+FZoB05kOzG6ie3ENcihNfscI8uLEzsIbfTu2WGge+1Xp46FMya1h0bu9MIQv7g0k0Hferi7wE3TjYbgDZ7a8QKLxDgGYwR/6CRcW22PsB2ydJ7pnrihYHqW4ztB4oaBF8SYmjcwXGzdliqj0HJjD8P17MiJkiAOldWkqwh/L6Dp6jU2pelakRO7sfr5QWL7QY9AFEBg+V4YhOqXOJiy7sS8A/MV8gDL2p3ryXgVkrL6yqqSNKDnHEzHChHO8/AcIx+P7OSz3dEewPVCO4ySCIWncq3m02wJ5g/WQZE3gIyxYbx+SR17LCYiHIXmlK6hsqeTgqlmUuNA6oFmDuyeQiu8MEeeqDVT1HqQoVYzer/FoPC/Phc/dWrYCjDX4SjrHlk8meMsFdo8QLWi1lyQZovpaLKEdD5GslqkP3TlkNE4PcCIk55t6n79GW5xdt1P4A3Bv3uh+MRmJ8UPWtH5pEbduVMub29d7J+7Idz6QwjuXhqPCZJPTZu8kUZJpNlj9NPo9tySN6Jlghjy8e2l0q3ypaFdFZaGXqbfp/OvOqvZdTpW70hZo9XsBQNXyOwbOLKOY8mqoqseOR6HQuQPpFQUglWB1WJmQcb0Zq+/Z/x+CILWLRJVwdrjf/SQr8rXuENocyGJ1uzhUR9dYFW07pqzPd5dlp6BxeJ6AZcY/gxD14yjI0VGuyeQQ02FVG8Y4Bt+3rwX9xTzFeqqw/YknDMONREi3yID0O1OQkMOUrWIig8Zdl319x/ycYuXneoiDM05t9WRT5sNxQ47qsiuV9nNKoNl9mM20Qc7JgWycwULogyRsvoe8tz+MnP1zXSJNF++rbgjBxO1eu48OL7W/4L9wY+/qyombvEqycVJwbDXDg6BmoN+HDQpnSbsMTBM8qS9Rpp+crV2lJ2tjf4FZbuT6l0IAAA=" target="_blank">Click To Load Example</a></p>
+            <p><a href="#H4sIAAAAAAAAA3VVbW/bNhD+rl9xQzFMXl1F7y8b+kG1ncSD42S23CEIUkCWGJuIJKokFdv/fkfKztwmMyJGIu+ee8i7e/gB/u5o8XyTy634awn/kPUorwpYCcLhqqMlMYwPkG2pAFFw2spPQh4qAhu1BCWpWSMkzyURsGU7kAw6QeAl55R1AmpEJTjQIq+AtQQNKTpA3pTwRHLZcfSjzbsULFCRv6TL6QjSxTS7vplk+Hp7N1mk2fR2vlTLaVlSBWkE8BE8+Ayxml12a+RU6IUIPoGPC55auOkqSdsK6ei1EH7XTo72GtMXKtR0DBfg4rSvZu/YjnDDg28aJXY0DCu7CrdnLnBztCnxqPInieMJYmA4NvzaY2ua46/pfDQZw02aXU9wmI7SGVyu5qPXnWScbljDaiI5LeCyazR9gStzJskfIPPGbOmFP0DMDkM+0YaUuNr/dILwr2A1ZkQdaZ03BxDsSe5yTqCia445IcIyBNVA7kCTK5jAL/X+yTHOY9hW8tNPsZw2L4Rjgv+Pba7QbSvoEQLXC5I4igIc3SROjFyFOy47lu1HToKLjpOEQRLpADO2QZ5yWyOsqpLJvmUNaSTFAvovTMU2pmPbCsa3QjtwItuJMUhsJ65B9q2pdxdZXpzYQWhjaM8OA10a3zt1HpwxqfEbudUfhvjOpZkMdKXg5ALnTDcagjc4Fc8lVhTjSMQIflH8XVvNjjB/WTrPdBLvKJie5fhOkLhh4AUx7sobGC7WWUvRJ7Tc2EOmnh05URLEoXKadBXhvwlounqNNWS6VuTEbqweP0hsP+gBCPoHlu+FQaiexMHN6sLJOzDfAA8wmd2FquI3fJTTFatK0oDuRzAdK0Q0z8MDjHw8rGPEdku1v+uFdhglEa4ds7SaT7MlmPesgyJvABv7ifH6vMN3mEMEOAjd+l1DZd/1BVMVJEHpwkA3OJZMoQ3O3LGda93Qteo5qFU7PW+QEv6vL8Q3tS/MP8w1GeXb44pXZxSiQjkHaFXUumnTbDEdTZaQzscoKIv0XqcMVYfTPYw46TWh7r8/w8ODMwT3cQgP3hD8x8cz41fVORp/BGXr/AlqfNS+LlaO8vWHEPzgOyYoFDVt8kYaJZFmD6Eb0O11IG9EywQx5OntzEaT0sDuK6ll+nU6v9Lbmt2mY/WO6jJazc5kskL5fYID6zgmrCq66iTE2AsifyGlkgzMCawWMwsypid7+x3jz0MQtG6rAx5ze/jBrmJ5+RZ3CG0uJNGWPTzaYwjMirZdc7bDC8bS5b9Y3C7gGunPkLoWGc0UFeyZQA41FVK9IcF34rx7ee0o7leo+wiLk3DOONREiHyDjU83WwkN2UtVIopfy9m66i8pQOnAG0lVEVJzLmw88WmDSkvlQRG7XWV3qwyW2f1sos91TApaY30viPJDmepryHP1jePqC+Sa7PPyfbst2ZtopcVy7/ja/AuWBj/8bKmUt+1QssTRwLDXDnaAagLdClqKjr11YoUbPBqvUZVPgdaO8lLPv5C8Q6/7BwAA" target="_blank">Click To Load Example</a></p>
             <p>For a comprehensive guide and more detailed instructions, <a href="https://github.com/mofosyne/QuickMathsJS-WebCalc" target="_blank">check out the full README</a>. Additionally, for details on supported mathematical syntax and operations, <a href="https://mathjs.org/docs/expressions/syntax.html" target="_blank">refer to the math.js documentation</a>.</p>
         </details>
     </div>
