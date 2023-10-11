@@ -53,8 +53,9 @@ function runTests() {
             console.log(`Test ${index + 1} (${test.name}): PASS`);
         } else {
             console.log(`Test ${index + 1} (${test.name}): FAIL`);
-            console.log('Expected:', test.expect);
-            console.log('Got:', result);
+            console.log('Given:\n', test.given);
+            console.log('Expected:\n', test.expect);
+            console.log('Got:\n', result);
             failures++;
         }
     });
@@ -125,8 +126,8 @@ function runTests() {
         console.log(`Math delimiter test: PASS`);
     } else {
         console.log(`Math delimiter test: FAIL`);
-        console.log('Expected:', expectedContent);
-        console.log('Got:', mathDelimiterResult);
+        console.log('Expected:\n', expectedContent);
+        console.log('Got:\n', mathDelimiterResult);
         failures++;
     }
 

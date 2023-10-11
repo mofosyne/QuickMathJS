@@ -42,15 +42,13 @@ a + 3 = 8
 given:
 ```
 a = 5
-b = a + 1
-b = 
+b = a + 1 =
 ```
 
 expect:
 ```
 a = 5
-b = a + 1
-b = 6
+b = a + 1 = 6
 ```
 
 ### Test Case 4: Multiple Variable Assignments
@@ -133,12 +131,14 @@ expect:
 ### Test Case 11: Invalid Multi Variable Assignment
 given:
 ```
+y = 2
 x = 1 + y = 3 =
 ```
 
 expect:
 ```
-x = 1 + y = 3 =
+y = 2
+x = 1 + y = 3
 ```
 
 ### Test Case 12: Cascading Calculations
@@ -147,8 +147,7 @@ given:
 a = 5
 b = a + 1 = 9
 c = b + 1
-d = c + 1 = 
-d =  8
+d = c + 1 = 6
 ```
 
 expect:
@@ -157,7 +156,6 @@ a = 5
 b = a + 1 = 6
 c = b + 1
 d = c + 1 = 8
-d = 8
 ```
 
 
@@ -174,7 +172,17 @@ expect:
 ```
 a = 5
 b = a + 1/0 Error: Infinity. Possible Division by zero
-c = b + 1 Error: Unexpected type of argument in function addScalar (expected: Unit, actual: number, index: 1)
-c + 1 = 8 Error: Undefined symbol c
+c = b + 1 Error: Infinity. Possible Division by zero
+c + 1 = 8 Error: Infinity. Possible Division by zero
 ```
 
+### Test Case 14: Multi Variable Assignment with Expression but no results
+given:
+```
+a = b = 2 + 3
+```
+
+expect:
+```
+a = b = 2 + 3
+```
