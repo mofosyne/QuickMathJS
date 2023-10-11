@@ -113,15 +113,16 @@ Feel free to play around and explore more functionalities!
     - Press Enter at the beginning of a line to start a new line.
     - Press Enter at the end of a line with = to re-evaluate the expression and update the result.
 
+---
 
 ## Quick Start for CLI
 
-The CLI offers the same heuristic-based evaluation as the web interface, so you can naturally type in mathematical expressions without the need for special syntax.
-If you prefer to use the calculator functionalities from the command line, `cli.js` is available for you! Here's a quick guide to get you started:
+The CLI offers the same heuristic-based evaluation as the web interface, allowing you to naturally type in mathematical expressions without the need for special syntax.
+For those who prefer the command line, `cli.js` is ready for action. Here's a quick guide:
 
 ### 1. Setup:
 
-Ensure you have Node.js installed on your machine. If not, you can download and install it from the official [Node.js website](https://nodejs.org/).
+Ensure Node.js is installed on your machine. If not, grab it from the official [Node.js website](https://nodejs.org/).
 
 ### 2. Installation:
 
@@ -131,34 +132,47 @@ Navigate to the `QuickMathsJS-WebCalc` directory:
 cd path/to/QuickMathsJS-WebCalc
 ```
 
-Then, install the necessary packages:
+Install the necessary packages:
 
 ```bash
 npm install
 ```
 
+To get usage reminder help:
+
+```bash
+node cli.js --help
+```
+
 ### 3. Using the Calculator:
 
-To process a file and evaluate expressions within it, use:
+To evaluate expressions within a file:
 
 ```bash
 node cli.js path/to/your/file.txt
 ```
 
+If you only want to evaluate sections delimited by the ````math` marker, use the `--sections` flag:
+
+```bash
+node cli.js --sections path/to/your/file.txt
+```
+
 ### 4. Running Tests (For Developers):
 
-To run predefined test cases defined in `userexample.md`:
+Run predefined test cases from `userexamples.md`:
 
 ```bash
 node cli.js --test
 ```
 
-or use 
+Alternatively:
 
-```
+```bash
 npm ci
 npm test
 ```
+
 
 ## Dependencies
 
