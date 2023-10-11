@@ -24,21 +24,68 @@ expect:
 a = 5
 ```
 
-### Test Case 3: Arithmetic with Variables
+### Test Case 3: Arithmetic, Multiplication and other basic operations with Variables
 given:
 ```
-a = 5
+a = 6
 a + 3 =
+a - 3 = 
+a * 3 =
+a / 3 = 
+a ^ 3 = 
+a % 3 =
 ```
 
 expect:
 ```
-a = 5
-a + 3 = 8
+a = 6
+a + 3 = 9
+a - 3 = 3
+a * 3 = 18
+a / 3 = 2
+a ^ 3 = 216
+a % 3 = 0
 ```
 
+### Test Case 3.0: More Advance Operators
+given:
+```
+sqrt(9) = 
+nthRoot(27, 3) = 
+5! = 
+```
 
-### Test Case 3.1: Arithmetic with Variables
+expect:
+```
+sqrt(9) = 3
+nthRoot(27, 3) = 3
+5! = 120
+```
+
+### Test Case 3.1: Trigonometric Functions and output plus assignment
+given:
+```
+sin(pi/2) =
+cos(pi) = 
+tan(pi/4) =
+asin(0.5) =
+acos(0.5) =
+log(100) = 
+exp(2) = 
+```
+
+expect:
+```
+sin(pi/2) = 1
+cos(pi) = -1
+tan(pi/4) = 0.9999999999999999
+asin(0.5) = 0.5235987755982989
+acos(0.5) = 1.0471975511965979
+log(100) = 4.605170185988092
+exp(2) = 7.38905609893065
+```
+
+### Test Case 3.2: Arithmetic with Variables and output plus assignment
 given:
 ```
 a = 5
@@ -186,3 +233,72 @@ expect:
 ```
 a = b = 2 + 3
 ```
+
+### Test Case 14: Multi Variable Assignment with Expression but no results
+given:
+```
+matrix = [[1, 2], [3, 4]]
+matrix + [1, 1; 1, 1] = 
+det(matrix) = 
+transpose(matrix) = 
+```
+
+expect:
+```
+matrix = [[1, 2], [3, 4]]
+matrix + [1, 1; 1, 1] = [[2, 3], [4, 5]]
+det(matrix) = -2
+transpose(matrix) = [[1, 3], [2, 4]]
+```
+
+### Test Case 15: Units
+given:
+```
+5 m + 3 m = 2 m
+10 kg * 10 m/s^2 =
+```
+
+expect:
+```
+5 m + 3 m = 8 m
+10 kg * 10 m/s^2 = 100 N
+```
+
+### Test Case 16: Assorted Direct Results
+given:
+```
+1/0 = Infity
+324 = 32
+hex(324) = 0x14
+0b1100100 =
+bin(324) = 0b0100
+```
+
+expect:
+```
+1/0 = Infity Error: Infinity. Possible Division by zero
+324 = 324
+hex(324) = 0x144
+0b1100100 = 100
+bin(324) = 0b101000100
+```
+
+### Test Case 16: Constants
+given:
+```
+2 * pi = 
+2 * e =
+tau/2 = 
+2 * phi =
+```
+
+expect:
+```
+2 * pi = 6.283185307179586
+2 * e = 5.43656365691809
+tau/2 = 3.141592653589793
+2 * phi = 3.23606797749979
+```
+
+
+

@@ -22,16 +22,35 @@
              * @returns {boolean} - True if the string is a valid variable name, otherwise false.
              */
             function isVariable(str) {
-                return /^[a-zA-Z_]\w*$/.test(str);
-            }
+                try {
+                    const node = math.parse(str);
+                    return node.isSymbolNode;
+                } catch (e) {
+                    return false;
+                }
+            }            
 
             /**
-             * Determines if the provided string represents a valid number (integer or floating point).
+             * Determines if the provided string represents a valid result (integer or floating point, etc...).
              * @param {string} str - The string to be checked.
-             * @returns {boolean} - True if the string is a valid number, otherwise false.
+             * @returns {boolean} - True if the string is a valid result, otherwise false.
              */
-            function isNumber(str) {
-                return /^-?\d+(\.\d+)?$/.test(str);
+            function isOutputResult(str) {
+                // Check for binary format
+                if (/^\s*0b[01]+\s*$/.test(str)) {
+                    return true;
+                }
+                // Check for hexadecimal format
+                if (/^\s*0x[\da-fA-F]+\s*$/.test(str)) {
+                    return true;
+                }
+                // If no special numeral systems matched, then evaluate and compare
+                try {
+                    const evaluation = math.evaluate(str);
+                    return String(str) === String(evaluation);
+                } catch (e) {
+                    return false;
+                }
             }
 
             /**
@@ -40,8 +59,12 @@
              * @returns {boolean} - True if the string is a basic arithmetic expression, otherwise false.
              */
             function isExpression(str) {
-                // Check for presence of arithmetic operators to distinguish between simple variables and expressions
-                return /[\+\-\*\/\(\)]/.test(str);
+                try {
+                    const node = math.parse(str);
+                    return node.isOperatorNode || node.isFunctionNode || node.isParenthesisNode;
+                } catch (e) {
+                    return false;
+                }
             }
 
             /**
@@ -75,10 +98,14 @@
             // Iterate through each line in the textarea
             for (const line of lines) {
                 try {
-                    if (line.trim() === '') {
+                    const trimmedLine = line.trim();
+
+                    // Skip lines that are comments or empty
+                    if (trimmedLine === '' || trimmedLine.startsWith('#')) {
                         newContent += `${line}\n`;
                         continue;
                     }
+
                     // Split each line by '=' to determine its structure
                     const parts = line.split('=');
 
@@ -87,9 +114,10 @@
                     leftPart = lastTwoParts[0];
                     rightPart = lastTwoParts[1];
 
-                    // If the second last segment is a number and the last segment is empty (i.e., line ends with '='),
+                    // If the second last segment is a result and the last segment is empty (i.e., line ends with '='),
                     // then remove the trailing '='
-                    if (isNumber(leftPart) && isEmpty(rightPart)) {
+                    if ((parts.length > 2) && isOutputResult(leftPart) && isEmpty(rightPart)) {
+                        //console.log("trimming line")
                         parts.pop();
                         const lastTwoParts = parts.slice(-2).map(str => str.trim());
                         leftPart = lastTwoParts[0];
@@ -106,8 +134,8 @@
                         evaluated = rightPart;
                         this.totalCalculations++;
                         //console.log("Initial Scope:", scope);
-                        if (isExpression(leftPart) && (isNumber(rightPart) || isEmpty(rightPart))) {
-                            // Case: Pure Mathematical Expression (e.g., "5 + 3 =")
+                        if (isExpression(leftPart) && (isOutputResult(rightPart) || isEmpty(rightPart) || (!isExpression(rightPart) && !isVariable(leftPart)))) {
+                            // Case: Pure Mathematical Expression (e.g., "5 + 3 = 8" or "5 + 3 =" or "5 + 3 = <corrupted output>")
                             //console.log("Pure Mathematical Expression:", line);
                             evaluated = math.evaluate(allButLast, scope);
                             this.totalResultsProvided++;
@@ -116,7 +144,17 @@
                                 throw new Error("Infinity. Possible Division by zero");
                             }
                             newContent += `${allButLast} = ${evaluated}\n`;
-                        } else if (isVariable(leftPart) && (isExpression(rightPart) || isNumber(rightPart))) {
+                        } else if (isOutputResult(leftPart) && (isOutputResult(rightPart) || isEmpty(rightPart))) {
+                            // Case: Direct constants (e.g., "0b1100100 =")
+                            //console.log("Case: Direct constants:", line);
+                            evaluated = math.evaluate(allButLast, scope);
+                            this.totalResultsProvided++;
+                            // Error handling for Infinity. Possible Division by zero, as JavaScript will return Infinity
+                            if (evaluated === Infinity) {
+                                throw new Error("Infinity. Possible Division by zero");
+                            }
+                            newContent += `${allButLast} = ${evaluated}\n`;
+                        } else if (isVariable(leftPart) && (isExpression(rightPart) || isOutputResult(rightPart))) {
                             // Case: Variable Assignment (e.g., "a = 1 + 1" or "a = 4")
                             //console.log("Variable Assignment:", line);
                             evaluated = math.evaluate(line, scope); 
@@ -125,6 +163,11 @@
                                 throw new Error("Infinity. Possible Division by zero");
                             }
                             newContent += `${allButLast} = ${rightPart}\n`;
+                        }
+                        else
+                        {
+                            console.log("Uppe:", line, isOutputResult(leftPart), isOutputResult(rightPart), isExpression(leftPart), isExpression(rightPart), isVariable(leftPart), isVariable(rightPart));
+                            throw new Error("This case is not yet handled, let us know at https://github.com/mofosyne/QuickMathsJS-WebCalc/issues");
                         }
                         //console.log("Updated Scope:", scope);
                         
