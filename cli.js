@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 const fs = require('fs');
 const mathjs = require('mathjs');
 const webcalc = require('./calculator.js');

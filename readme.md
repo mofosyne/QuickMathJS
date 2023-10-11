@@ -158,6 +158,19 @@ If you only want to evaluate sections delimited by the ````math` marker, use the
 node cli.js --sections path/to/your/file.txt
 ```
 
+e.g. This document is recalculated when `node cli.js kibble.md` is used
+
+    # Kibble Calc
+    This calcs how much kibble we need to buy
+
+    ```math
+    CatCount = 4
+    KibblePerCat = 4
+    TotalKibble = CatCount * KibblePerCat = 16
+    ```
+
+    Good luck!
+
 ### 4. Running Tests (For Developers):
 
 Run predefined test cases from `userexamples.md`:
