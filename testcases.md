@@ -224,3 +224,14 @@ a = 1
 b = 5
 c = a + b = 6
 ```
+
+### Test Case 16: Testing Conditional Nodes Support
+**Given:**
+```
+15 > 100 ? 1 : -1 =
+```
+
+**Expect:**
+```
+15 > 100 ? 1 : -1 = -1
+```

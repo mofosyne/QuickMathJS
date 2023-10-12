@@ -23,14 +23,29 @@
              * @returns {boolean} - True if the string is a valid variable name, otherwise false.
              */
             function isVariable(str) {
-                const regex = /^[a-zA-Z_]\w*$/; // Matches strings that start with a letter or underscore and are followed by alphanumeric characters or underscores
-                return regex.test(str);
+                try {
+                    const node = math.parse(str);
+                    return node.isSymbolNode;
+                } catch (e) {
+                    return false;
+                }
             }
 
             /**
              * Determines if a given string represents a valid numerical result. 
              * This includes checking for standard numeric representations as well 
              * as binary and hexadecimal formats.
+             * 
+             * Developer Notes:
+             * 1. This function does not utilize math.parse() and node.isConstantNode to determine if a 
+             *    string represents a constant. This decision was based on issues encountered with math.js' 
+             *    handling of certain expressions.
+             * 2. Instead, a combination of regular expressions and direct evaluation (math.evaluate()) 
+             *    has been found to be more reliable for this specific use case. 
+             * 3. The method tries to evaluate the string and sees if the result matches the input.
+             *    If they match, it's a valid result; otherwise, it's not. This method is more
+             *    versatile than checking against specific node types.
+             *
              * @param {string} str - The string to be checked.
              * @returns {boolean} - True if the string is a valid result, otherwise false.
              */
@@ -65,7 +80,20 @@
             function isExpression(str) {
                 try {
                     const node = math.parse(str);
-                    return node.isOperatorNode || node.isFunctionNode || node.isParenthesisNode;
+                    return false
+                            || node.isConditionalNode
+                            || node.isAccessorNode
+                            || node.isArrayNode
+                            || node.isAssignmentNode
+                            || node.isBlockNode
+                            || node.isFunctionAssignmentNode
+                            || node.isFunctionNode
+                            || node.isIndexNode
+                            || node.isObjectNode
+                            || node.isOperatorNode
+                            || node.isParenthesisNode
+                            || node.isRangeNode
+                            || false;
                 } catch (e) {
                     return false;
                 }
