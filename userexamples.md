@@ -301,7 +301,7 @@ tau/2 = 3.141592653589793
 ```
 
 
-### Test Case 15: multi var assignment
+### Test Case 17: multiple assignments
 given:
 ```
 a = 5
