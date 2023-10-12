@@ -246,3 +246,22 @@ c = a + b = 6
 ```
 100 == 100 = true
 ```
+
+### Test Case 17: Preserve Newlines above and below a doc
+**Given:**
+```
+
+
+1 + 1 = 
+
+
+```
+
+**Expect:**
+```
+
+
+1 + 1 = 2
+
+
+```
