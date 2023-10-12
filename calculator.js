@@ -17,7 +17,8 @@
         calculate(incomingContent) {
 
             /**
-             * Determines if the provided string is a valid variable name.
+             * Determines if a given string can be parsed as a symbolic name (i.e., a variable) 
+             * without throwing an error using the `math.js` library.
              * @param {string} str - The string to be checked.
              * @returns {boolean} - True if the string is a valid variable name, otherwise false.
              */
@@ -31,7 +32,9 @@
             }            
 
             /**
-             * Determines if the provided string represents a valid result (integer or floating point, etc...).
+             * Determines if a given string represents a valid numerical result. 
+             * This includes checking for standard numeric representations as well 
+             * as binary and hexadecimal formats.
              * @param {string} str - The string to be checked.
              * @returns {boolean} - True if the string is a valid result, otherwise false.
              */
@@ -54,7 +57,9 @@
             }
 
             /**
-             * Determines if the provided string represents a basic arithmetic expression.
+             * Determines if a given string can be parsed as a basic arithmetic expression, 
+             * which includes operator nodes, function nodes, or parenthesis nodes, 
+             * using the `math.js` library.
              * @param {string} str - The string to be checked.
              * @returns {boolean} - True if the string is a basic arithmetic expression, otherwise false.
              */
@@ -70,10 +75,10 @@
             /**
              * Determines if the provided string represents an empty slot
              * @param {string} str - The string to be checked.
-             * @returns {boolean} - True if the string is a basic arithmetic expression, otherwise false.
+             * @returns {boolean} - True if the string is empty or contains only whitespace, otherwise false.
              */
             function isEmpty(str) {
-                return str === "";
+                return str.trim() === '';
             }
 
             // Preprocess to remove any existing "Error:"
