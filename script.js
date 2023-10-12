@@ -11,7 +11,7 @@
  */
 async function saveToHash() {
     const uncompressedText = document.getElementById("input").value;
-    const compressedBlob = await CompressBlob(uncompressedText);
+    const compressedBlob = await compressBlob(uncompressedText);
     const compressedBase64 = await blobToBase64(compressedBlob);
     window.location.hash = compressedBase64;
 }
@@ -24,7 +24,7 @@ async function loadFromHash() {
     if (window.location.hash) {
         const compressedBase64 = window.location.hash.substring(1);
         const compressedBlob = await base64ToBlob(compressedBase64);
-        const decompressedText = await DecompressBlob(compressedBlob);
+        const decompressedText = await decompressBlob(compressedBlob);
         document.getElementById("input").value = decompressedText;
     }
 }
@@ -60,7 +60,7 @@ async function base64ToBlob(base64) {
  * @param {string} text - The text to be compressed.
  * @returns {Promise<Blob>} - The compressed blob.
  */
-async function CompressBlob(text) {
+async function compressBlob(text) {
     const uint8Array = new TextEncoder().encode(text);
     const blob = new Blob([uint8Array], { type: "application/octet-stream" });
     const compressedStream = blob.stream().pipeThrough(new CompressionStream("gzip"));
@@ -72,7 +72,7 @@ async function CompressBlob(text) {
  * @param {Blob} blob - The compressed blob.
  * @returns {Promise<string>} - The decompressed content as a string.
 */
-async function DecompressBlob(blob) {
+async function decompressBlob(blob) {
     const ds = new DecompressionStream("gzip");
     const decompressedStream = blob.stream().pipeThrough(ds);
     return new Response(decompressedStream).text();
