@@ -3,29 +3,29 @@
 ## Test Cases for the Calculate function
 
 ### Test Case 1: Basic Arithmetic
-given:
+**Given:**
 ```
 1 + 1 =
 ```
 
-expect:
+**Expect:**
 ```
 1 + 1 = 2
 ```
 
 ### Test Case 2: Variable Assignment
-given:
+**Given:**
 ```
 a = 5
 ```
 
-expect:
+**Expect:**
 ```
 a = 5
 ```
 
 ### Test Case 3: Arithmetic, Multiplication and other basic operations with Variables
-given:
+**Given:**
 ```
 a = 6
 a + 3 =
@@ -36,7 +36,7 @@ a ^ 3 =
 a % 3 =
 ```
 
-expect:
+**Expect:**
 ```
 a = 6
 a + 3 = 9
@@ -48,14 +48,14 @@ a % 3 = 0
 ```
 
 ### Test Case 3.0: More Advance Operators
-given:
+**Given:**
 ```
 sqrt(9) = 
 nthRoot(27, 3) = 
 5! = 
 ```
 
-expect:
+**Expect:**
 ```
 sqrt(9) = 3
 nthRoot(27, 3) = 3
@@ -63,7 +63,7 @@ nthRoot(27, 3) = 3
 ```
 
 ### Test Case 3.1: Trigonometric Functions and output plus assignment
-given:
+**Given:**
 ```
 sin(pi/2) =
 cos(pi) = 
@@ -74,7 +74,7 @@ log(100) =
 exp(2) = 
 ```
 
-expect:
+**Expect:**
 ```
 sin(pi/2) = 1
 cos(pi) = -1
@@ -86,110 +86,110 @@ exp(2) = 7.38905609893065
 ```
 
 ### Test Case 3.2: Arithmetic with Variables and output plus assignment
-given:
+**Given:**
 ```
 a = 5
 b = a + 1 =
 ```
 
-expect:
+**Expect:**
 ```
 a = 5
 b = a + 1 = 6
 ```
 
 ### Test Case 4: Multiple Variable Assignments
-given:
+**Given:**
 ```
 x = y = z = 5 + 2 =
 ```
 
-expect:
+**Expect:**
 ```
 x = y = z = 5 + 2 = 7
 ```
 
 ### Test Case 5: Expression with Provided Result (Correct)
-given:
+**Given:**
 ```
 4 * 3 = 12
 ```
 
-expect:
+**Expect:**
 ```
 4 * 3 = 12
 ```
 
 ### Test Case 6: Expression with Provided Result (Incorrect)
-given:
+**Given:**
 ```
 4 * 3 = 11
 ```
 
-expect:
+**Expect:**
 ```
 4 * 3 = 12
 ```
 
 ### Test Case 7: Division by Zero
-given:
+**Given:**
 ```
 1 / 0 =
 ```
 
-expect:
+**Expect:**
 ```
 1 / 0 = Error: Infinity. Possible Division by zero
 ```
 
 ### Test Case 8: Undefined Variable
-given:
+**Given:**
 ```
 a + b =
 ```
 
-expect:
+**Expect:**
 ```
 a + b = Error: Undefined symbol a
 ```
 
 ### Test Case 9: Multi Variable Assignment with Expression
-given:
+**Given:**
 ```
 a = b = 2 + 3 =
 ```
 
-expect:
+**Expect:**
 ```
 a = b = 2 + 3 = 5
 ```
 
 ### Test Case 10: Error Replacement
-given:
+**Given:**
 ```
 1 / 0 = Error: Something went wrong
 ```
 
-expect:
+**Expect:**
 ```
 1 / 0 = Error: Infinity. Possible Division by zero
 ```
 
 ### Test Case 11: Invalid Multi Variable Assignment
-given:
+**Given:**
 ```
 y = 2
 x = 1 + y = 3 =
 ```
 
-expect:
+**Expect:**
 ```
 y = 2
 x = 1 + y = 3
 ```
 
 ### Test Case 12: Cascading Calculations
-given:
+**Given:**
 ```
 a = 5
 b = a + 1 = 9
@@ -197,7 +197,7 @@ c = b + 1
 d = c + 1 = 6
 ```
 
-expect:
+**Expect:**
 ```
 a = 5
 b = a + 1 = 6
@@ -207,7 +207,7 @@ d = c + 1 = 8
 
 
 ### Test Case 13: Cascading failure
-given:
+**Given:**
 ```
 a = 5
 b = a + 1/0
@@ -215,7 +215,7 @@ c = b + 1
 c + 1 = 8
 ```
 
-expect:
+**Expect:**
 ```
 a = 5
 b = a + 1/0 Error: Infinity. Possible Division by zero
@@ -224,18 +224,18 @@ c + 1 = 8 Error: Infinity. Possible Division by zero
 ```
 
 ### Test Case 14: Multi Variable Assignment with Expression but no results
-given:
+**Given:**
 ```
 a = b = 2 + 3
 ```
 
-expect:
+**Expect:**
 ```
 a = b = 2 + 3
 ```
 
 ### Test Case 14: Multi Variable Assignment with Expression but no results
-given:
+**Given:**
 ```
 matrix = [[1, 2], [3, 4]]
 matrix + [1, 1; 1, 1] = 
@@ -243,7 +243,7 @@ det(matrix) =
 transpose(matrix) = 
 ```
 
-expect:
+**Expect:**
 ```
 matrix = [[1, 2], [3, 4]]
 matrix + [1, 1; 1, 1] = [[2, 3], [4, 5]]
@@ -252,20 +252,20 @@ transpose(matrix) = [[1, 3], [2, 4]]
 ```
 
 ### Test Case 15: Units
-given:
+**Given:**
 ```
 5 m + 3 m = 2 m
 10 kg * 10 m/s^2 =
 ```
 
-expect:
+**Expect:**
 ```
 5 m + 3 m = 8 m
 10 kg * 10 m/s^2 = 100 N
 ```
 
 ### Test Case 16: Assorted Direct Results
-given:
+**Given:**
 ```
 1/0 = Infity
 324 = 32
@@ -274,7 +274,7 @@ hex(324) = 0x14
 bin(324) = 0b0100
 ```
 
-expect:
+**Expect:**
 ```
 1/0 = Infity Error: Infinity. Possible Division by zero
 324 = 324
@@ -284,7 +284,7 @@ bin(324) = 0b101000100
 ```
 
 ### Test Case 16: Constants
-given:
+**Given:**
 ```
 2 * pi = 
 2 * e =
@@ -292,7 +292,7 @@ tau/2 =
 2 * phi =
 ```
 
-expect:
+**Expect:**
 ```
 2 * pi = 6.283185307179586
 2 * e = 5.43656365691809
@@ -302,7 +302,7 @@ tau/2 = 3.141592653589793
 
 
 ### Test Case 17: multiple assignments
-given:
+**Given:**
 ```
 a = 5
 b = 7
@@ -310,7 +310,7 @@ c = a + b
 c * 2 = 24
 ```
 
-expect:
+**Expect:**
 ```
 a = 5
 b = 7

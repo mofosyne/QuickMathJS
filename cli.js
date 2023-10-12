@@ -29,38 +29,48 @@ function processFile(filePath, useSections, callback) {
   });
 }
 
-function runTests() {
-    const content = fs.readFileSync('userexamples.md', 'utf-8');
-    
-    const regex = /### (.+?)\ngiven:\n```\n([\s\S]+?)\n```\n\nexpect:\n```\n([\s\S]+?)\n```/g;
+/******************************************************************************
+ * TESTING
+ */
 
-    const tests = [];
-    let match;
-    while ((match = regex.exec(content)) !== null) {
-        tests.push({
-            name: match[1].trim(),
-            given: match[2].trim(),
-            expect: match[3].trim()
-        });
-    }
+function runTestCaseFile(testCaseFilePath) {
+  const content = fs.readFileSync(testCaseFilePath, 'utf-8');
+  const regex = /### (.+?)\n\*\*Given:\*\*\n```\n([\s\S]+?)\n```\n\n\*\*Expect:\*\*\n```\n([\s\S]+?)\n```/g;
+  const tests = [];
 
-    let failures = 0;
+  console.log(`TEST CASE FILE: ${testCaseFilePath}`);
 
-    // Test the calculate function with each test case
-    tests.forEach((test, index) => {
-        const result = calculateFileContent(test.given);
-        if (result === test.expect) {
-            console.log(`Test ${index + 1} (${test.name}): PASS`);
-        } else {
-            console.log(`Test ${index + 1} (${test.name}): FAIL`);
-            console.log('Given:\n', test.given);
-            console.log('Expected:\n', test.expect);
-            console.log('Got:\n', result);
-            failures++;
-        }
-    });
 
+  let match;
+  while ((match = regex.exec(content)) !== null) {
+      tests.push({
+          name: match[1].trim(),
+          given: match[2].trim(),
+          expect: match[3].trim()
+      });
+  }
+
+  let failures = 0;
+
+  // Test the calculate function with each test case
+  tests.forEach((test, index) => {
+      const result = calculateFileContent(test.given);
+      if (result === test.expect) {
+          console.log(`Test ${index + 1} (${test.name}): PASS`);
+      } else {
+          console.log(`Test ${index + 1} (${test.name}): FAIL`);
+          console.log('Given:\n', test.given);
+          console.log('Expected:\n', test.expect);
+          console.log('Got:\n', result);
+          failures++;
+      }
+  });
+  return failures;
+}
+
+function runDelimTests() {
     // Test for the math delimiter feature
+    let failures = 0;
     const mockContent = 
     'This is a sample content.\n' +
     '\n' +
@@ -130,6 +140,14 @@ function runTests() {
         console.log('Got:\n', mathDelimiterResult);
         failures++;
     }
+  return failures;
+}
+
+function runTests() {
+    let failures = 0;
+    //failures += runTestCaseFile('testcases.md');
+    failures += runTestCaseFile('userexamples.md');
+    failures += runDelimTests();
 
     // If there are any failed tests, exit with a non-zero code.
     if (failures > 0) {
