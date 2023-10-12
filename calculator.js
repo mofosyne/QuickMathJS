@@ -139,7 +139,7 @@
                     }
 
                     // Split each line by '=' to determine its structure
-                    const parts = line.split('=');
+                    const parts = line.split(/(?<!\=)\=(?!\=)/);
 
                     // This is the last two part of the line used for huriestics matching of expression type
                     const lastTwoParts = parts.slice(-2).map(str => str.trim());

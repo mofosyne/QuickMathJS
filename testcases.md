@@ -235,3 +235,14 @@ c = a + b = 6
 ```
 15 > 100 ? 1 : -1 = -1
 ```
+
+### Test Case 17: Testing equality checks
+**Given:**
+```
+100 == 100 =
+```
+
+**Expect:**
+```
+100 == 100 = true
+```
