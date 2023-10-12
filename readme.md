@@ -20,7 +20,7 @@ Hence one requirement for any contribution/improvements to this project is that 
 Also this project must always be usable without internet, so you can download it and use it as if it's a local app.
 [Click Here to head to the latest release](https://github.com/mofosyne/QuickMathsJS-WebCalc/releases/latest) and then download the source code and double click on `index.html` to start the app.
 
-## Examples
+## Examples And Usage
 
 Below are a few ways you can utilize this calculator:
 
@@ -88,6 +88,45 @@ By pressing `Enter` at the beginning of a line, you can add a new line. If you p
 Feel free to play around and explore more functionalities!
 
 [For the full guide click here](userexamples.md)
+
+
+### Using Placeholders:
+
+QuickMathsJS-WebCalc supports the optional use of `?` as a placeholder. This can be used in assignments when the value is unspecified or directly after an `=` to request a computation result.
+
+For instance:
+
+- Using `?` in assignment:
+  
+  ```plaintext
+  a = ?
+  b = 5
+  c = a + b =
+  ```
+
+  Result:
+  
+  ```plaintext
+  a = ?
+  b = 5
+  c = a + b = Error: Undefined symbol a
+  ```
+
+- Using `?` to request computation:
+
+  ```plaintext
+  a = 1
+  b = 5
+  c = a + b = ?
+  ```
+
+  Result:
+  
+  ```plaintext
+  a = 1
+  b = 5
+  c = a + b = 6
+  ```
 
 
 ## Features
