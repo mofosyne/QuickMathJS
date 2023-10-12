@@ -301,4 +301,21 @@ tau/2 = 3.141592653589793
 ```
 
 
+### Test Case 15: multi var assignment
+given:
+```
+a = 5
+b = 7
+c = a + b
+c * 2 = 24
+```
+
+expect:
+```
+a = 5
+b = 7
+c = a + b
+c * 2 = 24
+```
+
 

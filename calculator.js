@@ -23,13 +23,9 @@
              * @returns {boolean} - True if the string is a valid variable name, otherwise false.
              */
             function isVariable(str) {
-                try {
-                    const node = math.parse(str);
-                    return node.isSymbolNode;
-                } catch (e) {
-                    return false;
-                }
-            }            
+                const regex = /^[a-zA-Z_]\w*$/; // Matches strings that start with a letter or underscore and are followed by alphanumeric characters or underscores
+                return regex.test(str);
+            }
 
             /**
              * Determines if a given string represents a valid numerical result. 
@@ -39,6 +35,9 @@
              * @returns {boolean} - True if the string is a valid result, otherwise false.
              */
             function isOutputResult(str) {
+                if (str in scope || isVariable(str)) {
+                    return false; // Don't classify known variables or strings that match variable format as results
+                }
                 // Check for binary format
                 if (/^\s*0b[01]+\s*$/.test(str)) {
                     return true;
@@ -171,7 +170,7 @@
                         }
                         else
                         {
-                            console.log("Uppe:", line, isOutputResult(leftPart), isOutputResult(rightPart), isExpression(leftPart), isExpression(rightPart), isVariable(leftPart), isVariable(rightPart));
+                            //console.log("Uppe:", line, isOutputResult(leftPart), isOutputResult(rightPart), isExpression(leftPart), isExpression(rightPart), isVariable(leftPart), isVariable(rightPart));
                             throw new Error("This case is not yet handled, let us know at https://github.com/mofosyne/QuickMathsJS-WebCalc/issues");
                         }
                         //console.log("Updated Scope:", scope);
