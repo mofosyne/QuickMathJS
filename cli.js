@@ -161,6 +161,10 @@ function runTests() {
 }
 
 
+/******************************************************************************
+ * CLI
+ */
+
 // Check for command line flags
 const useSectionsFlag = '--sections';
 const testFlag = '--test';
