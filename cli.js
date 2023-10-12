@@ -145,7 +145,7 @@ function runDelimTests() {
 
 function runTests() {
     let failures = 0;
-    //failures += runTestCaseFile('testcases.md');
+    failures += runTestCaseFile('testcases.md');
     failures += runTestCaseFile('userexamples.md');
     failures += runDelimTests();
 

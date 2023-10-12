@@ -72,12 +72,12 @@
             }
 
             /**
-             * Determines if the provided string represents an empty slot
+             * Determines if the provided string represents an empty slot or a placeholder
              * @param {string} str - The string to be checked.
-             * @returns {boolean} - True if the string is empty or contains only whitespace, otherwise false.
+             * @returns {boolean} - True if the string is empty, contains only whitespace, or is a '?', otherwise false.
              */
             function isEmpty(str) {
-                return str.trim() === '';
+                return str.trim() === '' || str.trim() === '?';
             }
 
             // Preprocess to remove any existing "Error:"
@@ -167,9 +167,25 @@
                                 throw new Error("Infinity. Possible Division by zero");
                             }
                             newContent += `${allButLast} = ${rightPart}\n`;
-                        }
-                        else
-                        {
+                        } else if (isVariable(leftPart) && isVariable(rightPart)) {
+                            // Case: Cascading Variable Assignment (e.g., "b = a")
+                            evaluated = math.evaluate(line, scope); 
+                            // Error handling for Infinity. Possible Division by zero, as JavaScript will return Infinity
+                            if (evaluated === Infinity) {
+                                throw new Error("Infinity. Possible Division by zero");
+                            }
+                            newContent += `${allButLast} = ${rightPart}\n`;
+                        } else if (isVariable(leftPart) && isEmpty(rightPart)) {
+                            // Case: Variable with no assignment (e.g., "a =")
+                            // Note: Best to leave it alone and don't evaluate it... maybe the user wants to fill it in later?
+                            if (rightPart === "?") {
+                                newContent += `${leftPart} = ?\n`;
+                            }
+                            else
+                            {
+                                newContent += `${leftPart} =\n`;
+                            }
+                        } else {
                             //console.log("Uppe:", line, isOutputResult(leftPart), isOutputResult(rightPart), isExpression(leftPart), isExpression(rightPart), isVariable(leftPart), isVariable(rightPart));
                             throw new Error("This case is not yet handled, let us know at https://github.com/mofosyne/QuickMathsJS-WebCalc/issues");
                         }
