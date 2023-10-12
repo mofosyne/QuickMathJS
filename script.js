@@ -1,3 +1,6 @@
+let undoStack = [];
+let redoStack = [];
+
 /******************************************************************************
  * URL Hash Compression and Storage Utilities
 ******************************************************************************
@@ -92,6 +95,19 @@ window.addEventListener("load", function() {
 
 let previousContent = "";  // To store the state before "Enter" is pressed
 function handleKeyDown(event) {
+    // Check if undo (Ctrl+Z) or redo (Cmd+Y) is pressed
+    if (event.ctrlKey && event.key === 'z') {
+        event.preventDefault();
+        undo();
+        return;
+    }
+    
+    if (event.ctrlKey && event.key === 'y') {
+        event.preventDefault();
+        redo();
+        return;
+    }
+
     // Check if the pressed key was "Enter"
     if (event.key === 'Enter') {
         event.preventDefault();  // Prevent a new line from being added
@@ -129,6 +145,35 @@ function handleKeyDown(event) {
         
         // After calculating, save content to URL hash
         saveToHash();
+
+        // Push the new state after Enter is pressed and content is processed
+        pushToUndo(textarea.value);
+        return;
+    }
+
+    // Push the new state after Enter is pressed and content is processed
+    pushToUndo(document.getElementById("input").value);
+}
+
+function pushToUndo(content) {
+    undoStack.push(content);
+    redoStack = [];  // Clear redo stack when new content is added to undo
+    console.log(content);
+}
+
+function undo() {
+    if (undoStack.length > 1) {  // Keep at least one state in undoStack to revert to
+        const currentContent = undoStack.pop();
+        redoStack.push(currentContent);
+        document.getElementById("input").value = undoStack[undoStack.length - 1];
+    }
+}
+
+function redo() {
+    if (redoStack.length > 0) {
+        const contentToRedo = redoStack.pop();
+        undoStack.push(contentToRedo);
+        document.getElementById("input").value = contentToRedo;
     }
 }
 
@@ -173,6 +218,9 @@ function clearpad() {
     // Clear the textarea content and reset the URL hash
     document.getElementById("input").value = "";
     window.location.hash = "";
+
+    // Push the cleared state
+    pushToUndo("");
 }
 
 /**
@@ -189,4 +237,7 @@ function triggerRecalc() {
     }
 
     saveToHash();
+
+    // Push the recalculated state
+    pushToUndo(textarea.value);
 }
