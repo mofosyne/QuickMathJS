@@ -8,15 +8,10 @@
 
 /**
  * Compresses the content of the textarea and saves it as a Base64 string in the URL's hash.
-*/
+ */
 async function saveToHash() {
-    const content = document.getElementById("input").value;
-    const encoder = new TextEncoder();
-    const uint8Array = encoder.encode(content);
-    const compressedBlob = await new Response(uint8Array).blob().then(blob => {
-        return blob.stream().pipeThrough(new CompressionStream("gzip"));
-    }).then(stream => new Response(stream).blob());
-    
+    const uncompressedText = document.getElementById("input").value;
+    const compressedBlob = await CompressBlob(uncompressedText);
     const compressedBase64 = await blobToBase64(compressedBlob);
     window.location.hash = compressedBase64;
 }
@@ -58,6 +53,18 @@ async function blobToBase64(blob) {
 async function base64ToBlob(base64) {
     const response = await fetch("data:application/octet-stream;base64," + base64);
     return response.blob();
+}
+
+/**
+ * Compresses the provided text and returns a Blob containing the compressed data.
+ * @param {string} text - The text to be compressed.
+ * @returns {Promise<Blob>} - The compressed blob.
+ */
+async function CompressBlob(text) {
+    const uint8Array = new TextEncoder().encode(text);
+    const blob = new Blob([uint8Array], { type: "application/octet-stream" });
+    const compressedStream = blob.stream().pipeThrough(new CompressionStream("gzip"));
+    return new Response(compressedStream).blob();
 }
 
 /**
