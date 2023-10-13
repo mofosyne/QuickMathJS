@@ -4,7 +4,7 @@
   "description": "A simple web-based calculator harnessing the power of math.js for intuitive free-form calculations. Now with a command-line interface (CLI) for testing purposes.",
   "main": "calculator.js",
   "bin": {
-    "quickmathjs": "./cli.js"
+    "quickmathsjs": "./cli.js"
   },
   "scripts": {
     "test": "node cli.js --test",
