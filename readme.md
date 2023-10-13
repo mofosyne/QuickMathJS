@@ -137,6 +137,20 @@ For instance:
 - Error messages displayed inline for incorrect expressions.
 - Smart cursor handling for a more intuitive user experience.
 
+## Installation and Usage (NPM)
+
+You can install QuickMathsJS via npm:
+
+```bash
+npm install quickmathsjs
+```
+
+After installing via npm, you can use the QuickMathsJS CLI as follows:
+
+```bash
+npx quickmathsjs --help
+```
+
 ## Setup & Usage
 
 - Opening the Calculator:
@@ -250,4 +264,4 @@ Feedback and contributions are welcome! Please open an issue or submit a pull re
 
 ## License
 
-This project is licensed under the GNU General Public License v3.0 - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the GNU General Public License v3.0 - see the [LICENSE](https://github.com/mofosyne/QuickMathsJS-WebCalc/blob/main/LICENSE) file for details.
