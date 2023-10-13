@@ -176,7 +176,7 @@ d + 5 = 17
 ### Test Case 14: Expressions with No Operations
 **Given:**
 ```
-a =
+a = 
 ```
 
 **Expect:**
@@ -300,10 +300,9 @@ totalEarnings = shops * earningPerShop
     = 15000
 ```
 
-### Test Case 20: Constants Support (There is some form of a bug thus '1+1=?' is required)
+### Test Case 20: Constants Support
 **Given:**
 ```
-1 + 1 = ?
     speedOfLight = ?
     gravitationConstant = ?
     planckConstant = ?
@@ -359,7 +358,6 @@ totalEarnings = shops * earningPerShop
 
 **Expect:**
 ```
-1 + 1 = 2
     speedOfLight = 2.99792458e+8 m / s
     gravitationConstant = 6.6743e-11 m^3 / (kg s^2)
     planckConstant = 6.62607015e-34 J s

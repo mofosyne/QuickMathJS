@@ -10,7 +10,7 @@ function calculateFileContent(content, useSections = false) {
     const mathSectionRegex = /```math\n([\s\S]+?)\n```/g;
 
     return content.replace(mathSectionRegex, (match, mathContent) => {
-      const result = webcalc.calculate(mathContent.trim());
+      const result = webcalc.calculate(mathContent);
       return '```math\n' + result + '\n```';
     });
   } else {
@@ -44,9 +44,9 @@ function runTestCaseFile(testCaseFilePath) {
   let match;
   while ((match = regex.exec(content)) !== null) {
       tests.push({
-          name: match[1].trim(),
-          given: match[2].trim(),
-          expect: match[3].trim()
+          name: match[1],
+          given: match[2],
+          expect: match[3]
       });
   }
 

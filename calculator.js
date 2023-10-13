@@ -130,6 +130,7 @@
                 try {
                     const indentationLevel = determineIndentation(line);
                     const trimmedLine = line.trim();
+                    //console.log("indentationLevel: "+indentationLevel+ ` : "${line}"`  )
 
                     // Skip lines that are comments or empty
                     if (trimmedLine === '' || trimmedLine.startsWith('#')) {
@@ -220,7 +221,7 @@
                                     // This is a result
                                     //console.log("Case: Variable with no result:", line);
                                     // If indentation is 4 or more, treat the line as a result line instead of an assignment
-                                    this.totalResultsProvided++;
+                                    this.toctalResultsProvided++;
                                     lastEvaluatedAnswer = math.evaluate(allButLast, scope);
                                     // Error handling for Infinity. Possible Division by zero, as JavaScript will return Infinity
                                     if (lastEvaluatedAnswer === Infinity) {
@@ -231,13 +232,8 @@
                                     // Note: Best to leave it alone and don't evaluate it... maybe the user wants to fill it in later?
                                     //console.log("Case: Variable with no assignment:", line);
                                     this.totalResultsProvided++;
-                                    if (rightPart === "?") {
-                                        newContent += `${leftPart} = ?`;
-                                    }
-                                    else
-                                    {
-                                        newContent += `${leftPart} =`;
-                                    }
+                                    // Just replicate the line as it is if the right part is empty or '?'
+                                    newContent += `${line}`;
                                 }
                             } else if (isEmpty(leftPart) && (isOutputResult(rightPart) || isEmpty(rightPart))) {
                                 //console.log("Case: Implied Results:", line);
