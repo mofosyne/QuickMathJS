@@ -244,7 +244,19 @@
                                 throw new Error("This case is not yet handled, let us know at https://github.com/mofosyne/QuickMathsJS-WebCalc/issues");
                             }
                             //console.log("Updated Scope:", scope);
-                        } else {
+                        } else if (parts.length == 1) {
+                            // Solo expression outputs nothing but is calculated anyway if valid expression or result
+                            if ((isExpression(line) || isOutputResult(line)))
+                            {
+                                lastEvaluatedAnswer = math.evaluate(line, scope);
+                                this.totalCalculations++;
+                                // Error handling for Infinity. Possible Division by zero, as JavaScript will return Infinity
+                                if (lastEvaluatedAnswer === Infinity) {
+                                    throw new Error("Infinity. Possible Division by zero");
+                                }
+                            }
+                            newContent += `${line}`;
+                        }else {
                             // Any other line format remains unchanged
                             newContent += `${line}`;
                         }

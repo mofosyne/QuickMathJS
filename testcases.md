@@ -410,3 +410,22 @@ totalEarnings = shops * earningPerShop
     planckCharge = 1.87554603778e-18 C
     planckTemperature = 1.416785e+32 K
 ```
+
+### Test Case 21: Answer in newline:
+**Given:**
+```
+a = 2
+1 + a
+    = ?
+1 + 1
+    = ?
+```
+
+**Expect:**
+```
+a = 2
+1 + a
+    = 3
+1 + 1
+    = 2
+```
