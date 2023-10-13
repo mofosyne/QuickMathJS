@@ -6,6 +6,7 @@ const open = require('opn');
 const express = require('express');
 const zlib = require('zlib');
 const path = require('path');
+const { version } = require('./package.json');
 
 global.math = mathjs;
 
@@ -175,6 +176,7 @@ const useSectionsFlag = '--sections';
 const testFlag = '--test';
 const helpFlag = '--help';
 const webFlag = '--web';
+const versionFlag = '--version';
 
 function displayHelp() {
     console.log(`
@@ -194,8 +196,14 @@ function displayHelp() {
   `);
 }
 
+function displayVersion() {
+  console.log(`QuickMathsJS version: ${version}`);
+}
+
 if (process.argv.includes(helpFlag)) {
     displayHelp();
+} else if (process.argv.includes(versionFlag)) {
+    displayVersion();
 } else if (process.argv.includes(testFlag)) {
     runTests();
 } else if (process.argv.includes(webFlag)) {

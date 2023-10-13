@@ -1,6 +1,6 @@
 {
   "name": "quickmathsjs",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "description": "A simple web-based calculator harnessing the power of math.js for intuitive free-form calculations. Now with a command-line interface (CLI) for testing purposes.",
   "main": "calculator.js",
   "bin": {
@@ -8,6 +8,7 @@
   },
   "scripts": {
     "test": "node quickmathsjs.js --test",
+    "version": "node quickmathsjs.js --version",
     "help": "node quickmathsjs.js --help",
     "web": "node quickmathsjs.js --web"
   },  
