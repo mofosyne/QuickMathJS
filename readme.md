@@ -3,7 +3,7 @@
 [![Node.js Test Runner](https://github.com/mofosyne/QuickMathsJS-WebCalc/actions/workflows/node.js.yml/badge.svg)](https://github.com/mofosyne/QuickMathsJS-WebCalc/actions/workflows/node.js.yml)
 [![npm version](https://badge.fury.io/js/quickmathsjs.svg)](https://badge.fury.io/js/quickmathsjs)
 
-An intuitive web-based calculator using [math.js](https://mathjs.org/). Features inline results and supports free-form calculations. Additionally comes with a CLI for testing.
+An intuitive web-based calculator using [math.js](https://mathjs.org/). Features inline results and supports free-form calculations.
 
 **Quick Links:**
 - [**Demo Online**](https://mofosyne.github.io/QuickMathsJS-WebCalc/)
@@ -117,6 +117,8 @@ For detailed examples, [check the full guide here](userexamples.md).
 
 * Why is the backend CI/CD Node.js based and not deno based?
     - I've tried Deno, but it uses 'export' keyword which messes with browser syntax parsing (if module is not enabled). I could try enabling modules, but my aim is for the code to be useable without CORS being triggered... so you could use it offline without having to start a local server for it.
+
+* For developers working on quickmathsjs, there is a built-in testing feature that can be triggered using the --test flag. This is primarily for development and CI/CD purposes.
 
 ### Tips for Developers:
 - While developing or making changes, use the `npx quickmathsjs --test` flag to run the predefined test cases and ensure the core functionalities remain intact. This helps in catching any regression bugs early on.
