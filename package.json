@@ -4,12 +4,12 @@
   "description": "A simple web-based calculator harnessing the power of math.js for intuitive free-form calculations. Now with a command-line interface (CLI) for testing purposes.",
   "main": "calculator.js",
   "bin": {
-    "quickmathsjs": "./cli.js"
+    "quickmathsjs": "./quickmathsjs.js"
   },
   "scripts": {
-    "test": "node cli.js --test",
-    "help": "node cli.js --help",
-    "web": "node cli.js --web"
+    "test": "node quickmathsjs.js --test",
+    "help": "node quickmathsjs.js --help",
+    "web": "node quickmathsjs.js --web"
   },  
   "repository": {
     "type": "git",
@@ -35,7 +35,7 @@
   },
   "files": [
     "calculator.js",
-    "cli.js",
+    "quickmathsjs.js",
     "LICENSE",
     "readme.md",
     "testcases.md",
