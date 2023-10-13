@@ -179,22 +179,27 @@ const webFlag = '--web';
 const versionFlag = '--version';
 
 function displayHelp() {
-    console.log(`
-  Usage: quickmathsjs [OPTIONS] [FILE]
-  
-  Options:
-    --help        Show this help message and exit.
-    --sections    Evaluate only sections surrounded by the \`\`\`math delimiter.
-    --web         Launch the web interface.
-    --test        Run predefined test cases.
-  
-  Examples:
-    quickmathsjs path/to/your/file.txt            Evaluate entire file.
-    quickmathsjs --sections path/to/your/file.txt Evaluate only math sections in file.
-    quickmathsjs --web path/to/your/file.txt      Launch the web interface and load entire file.
-    quickmathsjs --test                           Run predefined test cases.
-  `);
+  console.log(`
+Usage: quickmathsjs [OPTIONS] [FILE]
+
+Options:
+  --help        Show this help message and exit.
+  --version     Display the current version of QuickMathsJS.
+  --sections    Evaluate only sections surrounded by the \`\`\`math delimiter.
+  --web         Launch the web interface.
+  --test        Run predefined test cases.
+
+Examples:
+  quickmathsjs --help                           Show this help message and exit.
+  quickmathsjs --version                        Display the current version.
+  quickmathsjs path/to/your/file.txt            Evaluate entire file.
+  quickmathsjs --sections path/to/your/file.txt Evaluate only math sections in file.
+  quickmathsjs --web path/to/your/file.txt      Launch the web interface and load entire file.
+  quickmathsjs --test                           Run predefined test cases.
+`);
 }
+
+
 
 function displayVersion() {
   console.log(`QuickMathsJS version: ${version}`);
