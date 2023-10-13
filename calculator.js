@@ -1,16 +1,13 @@
-
 // Universal module definition (UMD) for webcalc
 (function (global, factory) {
     if (typeof exports === 'object' && typeof module !== 'undefined') {
         // Node/CommonJS
-        // Assign the factory function's result to module.exports
         module.exports = factory();
     } else {
         // Browser Globals
         global.webcalc = factory();
     }
 }(typeof self !== 'undefined' ? self : this, function () {
-    // Your library code here
     const calculator = {
         totalCalculations: 0,  // Number of lines where calculations are performed
         totalResultsProvided: 0,  // Number of lines with results provided
@@ -51,7 +48,8 @@
              */
             function isOutputResult(str) {
                 if (str in scope || isVariable(str)) {
-                    return false; // Don't classify known variables or strings that match variable format as results
+                    // Don't classify known variables or strings that match variable format as results
+                    return false;
                 }
                 // Check for binary format
                 if (/^\s*0b[01]+\s*$/.test(str)) {
@@ -80,20 +78,18 @@
             function isExpression(str) {
                 try {
                     const node = math.parse(str);
-                    return false
-                            || node.isConditionalNode
-                            || node.isAccessorNode
-                            || node.isArrayNode
-                            || node.isAssignmentNode
-                            || node.isBlockNode
-                            || node.isFunctionAssignmentNode
-                            || node.isFunctionNode
-                            || node.isIndexNode
-                            || node.isObjectNode
-                            || node.isOperatorNode
-                            || node.isParenthesisNode
-                            || node.isRangeNode
-                            || false;
+                    return node.isConditionalNode ||
+                           node.isAccessorNode ||
+                           node.isArrayNode ||
+                           node.isAssignmentNode ||
+                           node.isBlockNode ||
+                           node.isFunctionAssignmentNode ||
+                           node.isFunctionNode ||
+                           node.isIndexNode ||
+                           node.isObjectNode ||
+                           node.isOperatorNode ||
+                           node.isParenthesisNode ||
+                           node.isRangeNode;
                 } catch (e) {
                     return false;
                 }
@@ -111,14 +107,9 @@
             // Preprocess to remove any existing "Error:"
             const cleanedLines = incomingContent.split('\n').map(line => {
                 const errorIndex = line.indexOf("Error:");
-                if (errorIndex !== -1) {
-                    return line.substring(0, errorIndex).trim();
-                }
-                return line;
+                return errorIndex !== -1 ? line.substring(0, errorIndex).trim() : line;
             });
-            const cleanedContent = cleanedLines.join('\n');
-            const lines = cleanedContent.split('\n');
-
+            const lines = cleanedLines.join('\n').split('\n');
             let newContent = "";
 
             this.totalCalculations = 0;
