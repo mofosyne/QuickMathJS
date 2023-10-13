@@ -158,7 +158,6 @@ function handleKeyDown(event) {
 function pushToUndo(content) {
     undoStack.push(content);
     redoStack = [];  // Clear redo stack when new content is added to undo
-    console.log(content);
 }
 
 function undo() {

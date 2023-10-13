@@ -104,6 +104,11 @@
                 return str.trim() === '' || str.trim() === '?';
             }
 
+            function determineIndentation(line) {
+                const match = line.match(/^(\s*)/);  // Matches leading whitespace
+                return match ? match[0].length : 0;
+            }
+
             // Preprocess to remove any existing "Error:"
             const cleanedLines = incomingContent.split('\n').map(line => {
                 const errorIndex = line.indexOf("Error:");
@@ -117,11 +122,13 @@
 
             // `scope` will be used to keep track of variable values as they're declared
             let scope = {};
+            let lastEvaluatedAnswer = null;
 
             // Iterate through each line in the textarea
             let index = 0;
             for (const line of lines) {
                 try {
+                    const indentationLevel = determineIndentation(line);
                     const trimmedLine = line.trim();
 
                     // Skip lines that are comments or empty
@@ -154,62 +161,93 @@
     
                         // Handling lines with minimum of one '='
                         if (parts.length >= 2) {
-                            evaluated = rightPart;
                             this.totalCalculations++;
                             //console.log("Initial Scope:", scope);
                             if (isExpression(leftPart) && (isOutputResult(rightPart) || isEmpty(rightPart) || (!isExpression(rightPart) && !isVariable(leftPart)))) {
                                 // Case: Pure Mathematical Expression (e.g., "5 + 3 = 8" or "5 + 3 =" or "5 + 3 = <corrupted output>")
                                 //console.log("Pure Mathematical Expression:", line);
-                                evaluated = math.evaluate(allButLast, scope);
+                                lastEvaluatedAnswer = math.evaluate(allButLast, scope);
                                 this.totalResultsProvided++;
                                 // Error handling for Infinity. Possible Division by zero, as JavaScript will return Infinity
-                                if (evaluated === Infinity) {
+                                if (lastEvaluatedAnswer === Infinity) {
                                     throw new Error("Infinity. Possible Division by zero");
                                 }
-                                newContent += `${allButLast} = ${evaluated}`;
+                                newContent += `${allButLast} = ${lastEvaluatedAnswer}`;
                             } else if (isOutputResult(leftPart) && (isOutputResult(rightPart) || isEmpty(rightPart))) {
                                 // Case: Direct constants (e.g., "0b1100100 =")
                                 //console.log("Case: Direct constants:", line);
-                                evaluated = math.evaluate(allButLast, scope);
+                                lastEvaluatedAnswer = math.evaluate(allButLast, scope);
                                 this.totalResultsProvided++;
                                 // Error handling for Infinity. Possible Division by zero, as JavaScript will return Infinity
-                                if (evaluated === Infinity) {
+                                if (lastEvaluatedAnswer === Infinity) {
                                     throw new Error("Infinity. Possible Division by zero");
                                 }
-                                newContent += `${allButLast} = ${evaluated}`;
+                                newContent += `${allButLast} = ${lastEvaluatedAnswer}`;
                             } else if (isVariable(leftPart) && (isExpression(rightPart) || isOutputResult(rightPart))) {
-                                // Case: Variable Assignment (e.g., "a = 1 + 1" or "a = 4")
-                                //console.log("Variable Assignment:", line);
-                                evaluated = math.evaluate(line, scope); 
-                                // Error handling for Infinity. Possible Division by zero, as JavaScript will return Infinity
-                                if (evaluated === Infinity) {
-                                    throw new Error("Infinity. Possible Division by zero");
+                                // Case: Variable Assignment (e.g., "a = 1 + 1" or "a = 4") Or Result (e.g., "    a = 4") 
+                                if (indentationLevel >= 4) {
+                                    // If indentation is 4 or more, treat the line as a result line instead of an assignment
+                                    //console.log("Case: Overwrite Result:", line);
+                                    this.totalResultsProvided++;
+                                    lastEvaluatedAnswer = math.evaluate(allButLast, scope);
+                                    // Error handling for Infinity. Possible Division by zero, as JavaScript will return Infinity
+                                    if (lastEvaluatedAnswer === Infinity) {
+                                        throw new Error("Infinity. Possible Division by zero");
+                                    }
+                                    newContent += ' '.repeat(indentationLevel) + `${allButLast} = ${lastEvaluatedAnswer}`;
+                                } else {
+                                    // Regular assignment
+                                    //console.log("Variable Assignment:", line);
+                                    lastEvaluatedAnswer = math.evaluate(line, scope);
+                                    // Error handling for Infinity. Possible Division by zero, as JavaScript will return Infinity
+                                    if (lastEvaluatedAnswer === Infinity) {
+                                        throw new Error("Infinity. Possible Division by zero");
+                                    }
+                                    newContent += `${allButLast} = ${rightPart}`;
                                 }
-                                newContent += `${allButLast} = ${rightPart}`;
                             } else if (isVariable(leftPart) && isVariable(rightPart)) {
                                 // Case: Cascading Variable Assignment (e.g., "b = a")
-                                evaluated = math.evaluate(line, scope); 
+                                //console.log("Case: Cascading Variable Assignment:", line);
+                                lastEvaluatedAnswer = math.evaluate(line, scope); 
                                 // Error handling for Infinity. Possible Division by zero, as JavaScript will return Infinity
-                                if (evaluated === Infinity) {
+                                if (lastEvaluatedAnswer === Infinity) {
                                     throw new Error("Infinity. Possible Division by zero");
                                 }
                                 newContent += `${allButLast} = ${rightPart}`;
                             } else if (isVariable(leftPart) && isEmpty(rightPart)) {
-                                // Case: Variable with no assignment (e.g., "a =")
-                                // Note: Best to leave it alone and don't evaluate it... maybe the user wants to fill it in later?
-                                if (rightPart === "?") {
-                                    newContent += `${leftPart} = ?`;
+                                // Case: Variable with no assignment/result (e.g., "a =")
+                                if (indentationLevel >= 4) {
+                                    // This is a result
+                                    //console.log("Case: Variable with no result:", line);
+                                    // If indentation is 4 or more, treat the line as a result line instead of an assignment
+                                    this.totalResultsProvided++;
+                                    lastEvaluatedAnswer = math.evaluate(allButLast, scope);
+                                    // Error handling for Infinity. Possible Division by zero, as JavaScript will return Infinity
+                                    if (lastEvaluatedAnswer === Infinity) {
+                                        throw new Error("Infinity. Possible Division by zero");
+                                    }
+                                    newContent += ' '.repeat(indentationLevel) + `${allButLast} = ${lastEvaluatedAnswer}`;
+                                } else {
+                                    // Note: Best to leave it alone and don't evaluate it... maybe the user wants to fill it in later?
+                                    //console.log("Case: Variable with no assignment:", line);
+                                    this.totalResultsProvided++;
+                                    if (rightPart === "?") {
+                                        newContent += `${leftPart} = ?`;
+                                    }
+                                    else
+                                    {
+                                        newContent += `${leftPart} =`;
+                                    }
                                 }
-                                else
-                                {
-                                    newContent += `${leftPart} =`;
-                                }
+                            } else if (isEmpty(leftPart) && (isOutputResult(rightPart) || isEmpty(rightPart))) {
+                                //console.log("Case: Implied Results:", line);
+                                this.totalResultsProvided++;
+                                newContent += ' '.repeat(indentationLevel) + `= ${lastEvaluatedAnswer}`;
                             } else {
-                                //console.log("Uppe:", line, isOutputResult(leftPart), isOutputResult(rightPart), isExpression(leftPart), isExpression(rightPart), isVariable(leftPart), isVariable(rightPart));
+                                //console.log("Unhandled Heuristic Debug:", line, isOutputResult(leftPart), isOutputResult(rightPart), isExpression(leftPart), isExpression(rightPart), isVariable(leftPart), isVariable(rightPart));
                                 throw new Error("This case is not yet handled, let us know at https://github.com/mofosyne/QuickMathsJS-WebCalc/issues");
                             }
                             //console.log("Updated Scope:", scope);
-                            
                         } else {
                             // Any other line format remains unchanged
                             newContent += `${line}`;

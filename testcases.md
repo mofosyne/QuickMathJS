@@ -265,3 +265,37 @@ c = a + b = 6
 
 
 ```
+
+### Test Case 18: Explicit Naming for Computed Results with Indentation
+**Given:**
+```
+shops = 10
+earningPerShop = 1500
+totalEarnings = shops * earningPerShop
+    totalEarnings = ?
+```
+
+**Expect:**
+```
+shops = 10
+earningPerShop = 1500
+totalEarnings = shops * earningPerShop
+    totalEarnings = 15000
+```
+
+### Test Case 19: Using Indentation for Implied Results:
+**Given:**
+```
+shops = 10
+earningPerShop = 1500
+totalEarnings = shops * earningPerShop
+    = ?
+```
+
+**Expect:**
+```
+shops = 10
+earningPerShop = 1500
+totalEarnings = shops * earningPerShop
+    = 15000
+```
