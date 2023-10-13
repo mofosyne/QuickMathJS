@@ -123,7 +123,6 @@ function handleKeyDown(event) {
             // Insert a newline
             textarea.value = textarea.value.substring(0, cursorPosition) + '\n' + textarea.value.substring(cursorPosition);
             textarea.setSelectionRange(cursorPosition + 1, cursorPosition + 1); // Move cursor after the new line
-            return;
         }
 
         previousContent = textarea.value;  // Cache the current state before calculations
