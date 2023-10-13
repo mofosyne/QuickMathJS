@@ -1,6 +1,7 @@
 
 # QuickMathsJS-WebCalc
 [![Node.js Test Runner](https://github.com/mofosyne/QuickMathsJS-WebCalc/actions/workflows/node.js.yml/badge.svg)](https://github.com/mofosyne/QuickMathsJS-WebCalc/actions/workflows/node.js.yml)
+[![npm version](https://badge.fury.io/js/quickmathsjs.svg)](https://badge.fury.io/js/quickmathsjs)
 
 An intuitive web-based calculator using [math.js](https://mathjs.org/). Features inline results and supports free-form calculations. Additionally comes with a CLI for testing.
 
@@ -37,6 +38,8 @@ To use the CLI, first install it via npm:
 ```bash
 npm install -g quickmathsjs
 ```
+
+For more details and documentation, [check it out on npm](https://www.npmjs.com/package/quickmathsjs).
 
 After installation, you can immediately use QuickMathsJS from the terminal:
 
