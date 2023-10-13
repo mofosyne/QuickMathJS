@@ -123,7 +123,6 @@ function handleKeyDown(event) {
             // Insert a newline
             textarea.value = textarea.value.substring(0, cursorPosition) + '\n' + textarea.value.substring(cursorPosition);
             textarea.setSelectionRange(cursorPosition + 1, cursorPosition + 1); // Move cursor after the new line
-            return;
         }
 
         previousContent = textarea.value;  // Cache the current state before calculations
@@ -158,7 +157,6 @@ function handleKeyDown(event) {
 function pushToUndo(content) {
     undoStack.push(content);
     redoStack = [];  // Clear redo stack when new content is added to undo
-    console.log(content);
 }
 
 function undo() {
