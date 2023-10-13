@@ -191,6 +191,14 @@ To evaluate expressions within a file:
 node cli.js path/to/your/file.txt
 ```
 
+To start the calculator in web mode:
+
+```bash
+node cli.js --web path/to/your/file.txt
+```
+
+**Note**: Ensure the `--web` flag is placed before specifying the file path.
+
 If you only want to evaluate sections delimited by the ````math` marker, use the `--sections` flag:
 
 ```bash
@@ -209,6 +217,7 @@ e.g. This document is recalculated when `node cli.js kibble.md --sections` is us
     ```
 
     Good luck!
+
 
 ### 4. Running Tests (For Developers):
 

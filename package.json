@@ -1,8 +1,50 @@
 {
-  "dependencies": {
-    "mathjs": "^11.11.1"
+  "name": "QuickMathsJS-WebCalc",
+  "version": "2.0.0",
+  "description": "A simple web-based calculator harnessing the power of math.js for intuitive free-form calculations. Now with a command-line interface (CLI) for testing purposes.",
+  "main": "calculator.js",
+  "bin": {
+    "quickmathjs": "./cli.js"
   },
   "scripts": {
-    "test": "node cli.js --test"
-  }
+    "test": "node cli.js --test",
+    "help": "node cli.js --help",
+    "web": "node cli.js --web"
+  },  
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mofosyne/QuickMathsJS-WebCalc.git"
+  },
+  "keywords": [
+    "calculator",
+    "math.js",
+    "CLI",
+    "web",
+    "QuickMaths"
+  ],
+  "author": "Brian Khuu <mofosyne@gmail.com>",
+  "license": "GPL-3.0-only",
+  "bugs": {
+    "url": "https://github.com/mofosyne/QuickMathsJS-WebCalc/issues"
+  },
+  "homepage": "https://github.com/mofosyne/QuickMathsJS-WebCalc",
+  "dependencies": {
+    "express": "^4.18.2",
+    "mathjs": "^11.11.2",
+    "opn": "^6.0.0"
+  },
+  "files": [
+    "calculator.js",
+    "cli.js",
+    "LICENSE",
+    "readme.md",
+    "testcases.md",
+    "userexamples.md",
+    "index.html",
+    "script.js",
+    "style.css",
+    "math.min.js"
+  ]
+  
+  
 }

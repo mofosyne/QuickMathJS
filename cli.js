@@ -2,6 +2,9 @@
 const fs = require('fs');
 const mathjs = require('mathjs');
 const webcalc = require('./calculator.js');
+const open = require('opn');
+const express = require('express');
+const zlib = require('zlib');
 
 global.math = mathjs;
 
@@ -169,7 +172,7 @@ function runTests() {
 const useSectionsFlag = '--sections';
 const testFlag = '--test';
 const helpFlag = '--help';
-const helpShortFlag = '-h';
+const webFlag = '--web';
 
 function displayHelp() {
     console.log(`
@@ -191,6 +194,33 @@ if (process.argv.includes(helpFlag)) {
     displayHelp();
 } else if (process.argv.includes(testFlag)) {
     runTests();
+} else if (process.argv.includes(webFlag)) {
+  const app = express();
+  const port = 3000;
+
+  // Serve static files from the root directory
+  app.use(express.static(__dirname));
+
+  const launchURL = async () => {
+    let url = `http://localhost:${port}`;
+    if (process.argv.length > 3) {
+        const filePath = process.argv[3];
+        try {
+            const fileContent = await fs.promises.readFile(filePath, 'utf8');
+            const compressed = zlib.gzipSync(fileContent).toString('base64');
+            url += `#${compressed}`;
+        } catch (err) {
+            console.error("Error reading the file:", err);
+            process.exit(1);
+        }
+    }
+    open(url);
+  };
+
+  app.listen(port, () => {
+    console.log(`QuickMathsJS-WebCalc is running at http://localhost:${port}`);
+    launchURL();
+  });
 } else {
     if (process.argv.length < 3) {
         console.error("Please provide a path to the input file or use --help for more options.");
