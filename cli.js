@@ -5,6 +5,7 @@ const webcalc = require('./calculator.js');
 const open = require('opn');
 const express = require('express');
 const zlib = require('zlib');
+const path = require('path');
 
 global.math = mathjs;
 
@@ -37,7 +38,8 @@ function processFile(filePath, useSections, callback) {
  */
 
 function runTestCaseFile(testCaseFilePath) {
-  const content = fs.readFileSync(testCaseFilePath, 'utf-8');
+  const fullPath = path.join(__dirname, testCaseFilePath);
+  const content = fs.readFileSync(fullPath, 'utf-8');
   const regex = /### (.+?)\n\*\*Given:\*\*\n```\n([\s\S]+?)\n```\n\n\*\*Expect:\*\*\n```\n([\s\S]+?)\n```/g;
   const tests = [];
 
@@ -181,13 +183,14 @@ function displayHelp() {
   Options:
     --help        Show this help message and exit.
     --sections    Evaluate only sections surrounded by the \`\`\`math delimiter.
-    --test        Run predefined test cases from userexamples.md.
     --web         Launch the web interface.
+    --test        Run predefined test cases.
   
   Examples:
-    quickmathsjs path/to/your/file.txt           Evaluate entire file.
+    quickmathsjs path/to/your/file.txt            Evaluate entire file.
     quickmathsjs --sections path/to/your/file.txt Evaluate only math sections in file.
-    quickmathsjs --test                          Run predefined test cases.
+    quickmathsjs --web path/to/your/file.txt      Launch the web interface and load entire file.
+    quickmathsjs --test                           Run predefined test cases.
   `);
 }
 
