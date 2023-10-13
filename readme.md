@@ -139,10 +139,10 @@ For instance:
 
 ## Installation and Usage (NPM)
 
-You can install QuickMathsJS via npm:
+You can install QuickMathsJS via npm (`-g` to install this globally so you can use it anywhere):
 
 ```bash
-npm install quickmathsjs
+npm install -g quickmathsjs
 ```
 
 After installing via npm, you can use the QuickMathsJS CLI as follows:
@@ -150,6 +150,8 @@ After installing via npm, you can use the QuickMathsJS CLI as follows:
 ```bash
 npx quickmathsjs --help
 ```
+
+This also lets you launch the web calc gui anywhere as well
 
 ## Setup & Usage
 

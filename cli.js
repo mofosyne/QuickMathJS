@@ -176,18 +176,19 @@ const webFlag = '--web';
 
 function displayHelp() {
     console.log(`
-Usage: node cli.js [OPTIONS] [FILE]
-
-Options:
-  --help        Show this help message and exit.
-  --sections    Evaluate only sections surrounded by the \`\`\`math delimiter.
-  --test        Run predefined test cases from userexamples.md.
-
-Examples:
-  node cli.js path/to/your/file.txt           Evaluate entire file.
-  node cli.js --sections path/to/your/file.txt Evaluate only math sections in file.
-  node cli.js --test                          Run predefined test cases.
-    `);
+  Usage: quickmathsjs [OPTIONS] [FILE]
+  
+  Options:
+    --help        Show this help message and exit.
+    --sections    Evaluate only sections surrounded by the \`\`\`math delimiter.
+    --test        Run predefined test cases from userexamples.md.
+    --web         Launch the web interface.
+  
+  Examples:
+    quickmathsjs path/to/your/file.txt           Evaluate entire file.
+    quickmathsjs --sections path/to/your/file.txt Evaluate only math sections in file.
+    quickmathsjs --test                          Run predefined test cases.
+  `);
 }
 
 if (process.argv.includes(helpFlag)) {
