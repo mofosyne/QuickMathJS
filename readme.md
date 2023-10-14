@@ -3,7 +3,7 @@
 [![Node.js Test Runner](https://github.com/mofosyne/QuickMathsJS-WebCalc/actions/workflows/node.js.yml/badge.svg)](https://github.com/mofosyne/QuickMathsJS-WebCalc/actions/workflows/node.js.yml)
 [![npm version](https://badge.fury.io/js/quickmathsjs.svg)](https://badge.fury.io/js/quickmathsjs)
 
-An intuitive web-based calculator using [math.js](https://mathjs.org/). Features inline results and supports free-form calculations.
+An intuitive web-based plaintext calculator using [math.js](https://mathjs.org/). Features inline results and supports free-form calculations.
 
 **Quick Links:**
 - [**Demo Online**](https://mofosyne.github.io/QuickMathsJS-WebCalc/)
