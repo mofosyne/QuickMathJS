@@ -1,12 +1,11 @@
-
-# QuickMathsJS-WebCalc
+# QuickMathsJS-WebCalc (https://www.quickmathsjs.org/)
 [![Node.js Test Runner](https://github.com/mofosyne/QuickMathsJS-WebCalc/actions/workflows/node.js.yml/badge.svg)](https://github.com/mofosyne/QuickMathsJS-WebCalc/actions/workflows/node.js.yml)
 [![npm version](https://badge.fury.io/js/quickmathsjs.svg)](https://badge.fury.io/js/quickmathsjs)
 
 An intuitive web-based plaintext calculator using [math.js](https://mathjs.org/). Features inline results and supports free-form calculations.
 
 **Quick Links:**
-- [**Demo Online**](https://mofosyne.github.io/QuickMathsJS-WebCalc/)
+- [**https://www.quickmathsjs.org/ Try Online Interface**](https://www.quickmathsjs.org/)
 - [**Download for Offline Use**](https://github.com/mofosyne/QuickMathsJS-WebCalc/releases/latest)
 
 ## Motivation
@@ -25,7 +24,7 @@ Inspired by [SpeQ Mathematics](https://speqmath.com/), this project aims to offe
 ## Getting Started
 
 ### Web Version
-1. **Try it Online:** [Click here](https://mofosyne.github.io/QuickMathsJS-WebCalc/)
+1. **Try it Online:** [Click here](https://www.quickmathsjs.org/)
 2. **Offline Version:** [Download the latest release](https://github.com/mofosyne/QuickMathsJS-WebCalc/releases/latest), extract, and open `index.html`.
 
 ## CLI Version: QuickMathsJS CLI
