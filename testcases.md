@@ -181,7 +181,7 @@ a =
 
 **Expect:**
 ```
-a = 
+a =  Error: Undefined symbol a
 ```
 
 ### Test Case 15: Testing Division with Float Results
@@ -198,34 +198,32 @@ a =
 ### Test Case 16: Testing Placeholder Functionality In Assignment
 **Given:**
 ```
-a = ?
-b = 5
-c = a + b =
-```
-
-**Expect:**
-```
-a = ?
-b = 5
-c = a + b = Error: Undefined symbol a
-```
-
-### Test Case 16: Testing Placeholder Functionality In Results
-**Given:**
-```
-a = 1
+a = 2
 b = 5
 c = a + b = ?
 ```
 
 **Expect:**
 ```
-a = 1
+a = 2
 b = 5
-c = a + b = 6
+c = a + b = 7
 ```
 
-### Test Case 16: Testing Conditional Nodes Support
+### Test Case 17: Testing Placeholder Functionality In Results
+**Given:**
+```
+a = 1
+a = ?
+```
+
+**Expect:**
+```
+a = 1
+a = 1
+```
+
+### Test Case 18: Testing Conditional Nodes Support
 **Given:**
 ```
 15 > 100 ? 1 : -1 =
@@ -236,7 +234,7 @@ c = a + b = 6
 15 > 100 ? 1 : -1 = -1
 ```
 
-### Test Case 17: Testing equality checks
+### Test Case 19: Testing equality checks
 **Given:**
 ```
 100 == 100 =
@@ -247,7 +245,7 @@ c = a + b = 6
 100 == 100 = true
 ```
 
-### Test Case 17: Preserve Newlines above and below a doc
+### Test Case 20: Preserve Newlines above and below a doc
 **Given:**
 ```
 
@@ -266,7 +264,7 @@ c = a + b = 6
 
 ```
 
-### Test Case 18: Explicit Naming for Computed Results with Indentation
+### Test Case 21: Explicit Naming for Computed Results with Indentation
 **Given:**
 ```
 shops = 10
@@ -283,7 +281,7 @@ totalEarnings = shops * earningPerShop
     totalEarnings = 15000
 ```
 
-### Test Case 19: Using Indentation for Implied Results:
+### Test Case 22: Using Indentation for Implied Results:
 **Given:**
 ```
 shops = 10
@@ -300,7 +298,7 @@ totalEarnings = shops * earningPerShop
     = 15000
 ```
 
-### Test Case 20: Constants Support
+### Test Case 23: Constants Support
 **Given:**
 ```
     speedOfLight = ?
@@ -411,7 +409,7 @@ totalEarnings = shops * earningPerShop
     planckTemperature = 1.416785e+32 K
 ```
 
-### Test Case 21: Answer in newline:
+### Test Case 24: Answer in newline:
 **Given:**
 ```
 a = 2

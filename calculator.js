@@ -259,30 +259,20 @@
                                 newContent += `${allButLast} = ${rightPart}`;
                             } else if (isVariable(leftPart) && isEmpty(rightPart)) {
                                 // Case: Variable with no assignment/result (e.g., "a =")
-                                if (indentationLevel >= 2) {
-                                    // This is a result
-                                    //console.log("Case: Variable with no result:", line);
-                                    // If indentation is 4 or more, treat the line as a result line instead of an assignment
-                                    this.toctalResultsProvided++;
-                                    lastEvaluatedAnswer = math.evaluate(allButLast, scope);
-                                    // Error handling for Infinity. Possible Division by zero, as JavaScript will return Infinity
-                                    if (lastEvaluatedAnswer === Infinity) {
-                                        throw new Error("Infinity. Possible Division by zero");
-                                    }
-                                    newContent += ' '.repeat(indentationLevel) + `${allButLast} = ${lastEvaluatedAnswer}`;
-                                } else {
-                                    // Note: Best to leave it alone and don't evaluate it... maybe the user wants to fill it in later?
-                                    //console.log("Case: Variable with no assignment:", line);
-                                    this.totalResultsProvided++;
-                                    // Just replicate the line as it is if the right part is empty or '?'
-                                    newContent += `${line}`;
+                                //console.log("Case: Variable with no result:", line);
+                                // If indentation is 4 or more, treat the line as a result line instead of an assignment
+                                this.toctalResultsProvided++;
+                                lastEvaluatedAnswer = math.evaluate(allButLast, scope);
+                                // Error handling for Infinity. Possible Division by zero, as JavaScript will return Infinity
+                                if (lastEvaluatedAnswer === Infinity) {
+                                    throw new Error("Infinity. Possible Division by zero");
                                 }
+                                newContent += ' '.repeat(indentationLevel) + `${allButLast} = ${lastEvaluatedAnswer}`;
                             } else if (isEmpty(leftPart) && (isOutputResult(rightPart) || isEmpty(rightPart))) {
                                 //console.log("Case: Implied Results:", line, `(indent: ${indentationLevel})`);
                                 this.totalResultsProvided++;
                                 if (lastUnevaluatedLine != null)
                                 {
-                                    console.log("lastUnevaluatedLine:", lastUnevaluatedLine);
                                     this.totalCalculations++;
                                     lastEvaluatedAnswer = math.evaluate(lastUnevaluatedLine, scope);
                                     // Error handling for Infinity. Possible Division by zero, as JavaScript will return Infinity
