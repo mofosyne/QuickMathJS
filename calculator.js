@@ -29,6 +29,10 @@
         totalCalculations: 0,  // Number of lines where calculations are performed
         totalResultsProvided: 0,  // Number of lines with results provided
         calculate(incomingContent) {
+            if (typeof global.math === 'undefined' && typeof require !== 'undefined')
+            {
+                throw new Error("QuickMathsJS-WebCalc: 'mathjs' is required. Please ensure 'mathjs' is imported before using this module.");
+            }
 
             /**
              * Determines if a given string can be parsed as a symbolic name (i.e., a variable) 

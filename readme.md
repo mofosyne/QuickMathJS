@@ -30,6 +30,8 @@ Inspired by [SpeQ Mathematics](https://speqmath.com/), this project aims to offe
 
 ## CLI Version: QuickMathsJS CLI
 
+Note: The CLI tool is a command-line interface to use QuickMathsJS. However, if you're interested in integrating the calculation functionalities into your own Node.js applications, you can use `quickmathsjs` as an npm module. See the section below on "Using as a Node.js Module" for more details.
+
 The CLI offers the same heuristic-based evaluation as the web interface, allowing you to naturally type in mathematical expressions without the need for special syntax.
 It is perfect for users who prefer working within terminal environments or need to batch-process multiple files.
 
@@ -113,6 +115,35 @@ c = a + b = 12
 Note 4 spaces and `=` to indicate we want output result.
 
 For detailed examples, [check the full guide here](userexamples.md).
+
+## Using as a Node.js Module
+
+QuickMathsJS-WebCalc can also be used as an npm module in your own projects. Here's how:
+
+### Installation
+
+```bash
+npm install quickmathsjs
+```
+
+### Usage
+
+```js
+const mathjs = require('mathjs');
+const webcalc = require('./calculator.js');
+global.math = mathjs;
+mathContent = `
+a = 5
+b = 7
+c = a + b = ?
+    = ?
+1 + 1
+    = ?
+    c = ?
+`
+mathContent = webcalc.calculate(mathContent);
+console.log(mathContent);
+```
 
 
 ## Dev Note:
