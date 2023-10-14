@@ -28,6 +28,16 @@
     const calculator = {
         totalCalculations: 0,  // Number of lines where calculations are performed
         totalResultsProvided: 0,  // Number of lines with results provided
+        // Function to calculate content with math sections
+        calculateWithMathSections(incomingContent) {
+            // Regular expression to match ```math``` sections
+            const mathSectionRegex = /```math\n([\s\S]+?)\n```/g;
+            return incomingContent.replace(mathSectionRegex, (match, mathContent) => {
+              const result = this.calculate(mathContent);
+              return '```math\n' + result + '\n```';
+            });
+        },
+        // Function to calculate content without math sections
         calculate(incomingContent) {
             /**
              * Throw error if MathJS is not loaded 

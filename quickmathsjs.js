@@ -29,12 +29,7 @@ global.math = mathjs;
 
 function calculateFileContent(content, useSections = false) {
   if (useSections) {
-    const mathSectionRegex = /```math\n([\s\S]+?)\n```/g;
-
-    return content.replace(mathSectionRegex, (match, mathContent) => {
-      const result = webcalc.calculate(mathContent);
-      return '```math\n' + result + '\n```';
-    });
+    return webcalc.calculateWithMathSections(content);
   } else {
     return webcalc.calculate(content);
   }

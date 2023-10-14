@@ -68,6 +68,7 @@ For instance, in a document like:
     CatCount = 4
     KibblePerCat = 4
     TotalKibble = CatCount * KibblePerCat
+                = ?
     ```
 
 The rest of the document can contain text, and only the section within the ```math delimiters will be evaluated.
@@ -144,6 +145,24 @@ c = a + b = ?
 mathContent = webcalc.calculate(mathContent);
 console.log(mathContent);
 ```
+
+### Functions
+
+#### `webcalc.calculate(mathContent: string): string`
+
+Calculates mathematical content within a given text and returns the result.
+
+- `mathContent` (string): The text containing mathematical content.
+
+Returns a string with the mathematical content replaced by their calculated results.
+
+#### `webcalc.calculateWithMathSections(documentContent: string): string`
+
+Calculates mathematical content within sections in a given text and replaces them with their calculated results.
+
+- `documentContent` (string): The text containing a commonmark/markdown content with `math` marked blockquote sections.
+
+Returns a string with the mathematical content replaced by their calculated results.
 
 
 ## Dev Note:
