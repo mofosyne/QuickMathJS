@@ -96,7 +96,7 @@ Type your expressions. Use `=` to display results. For example:
 a = 5
 b = 7
 c = a + b = ?
-    = ?
+  = ?
 1 + 1
     = ?
     c = ?
@@ -112,7 +112,7 @@ c = a + b = 12
     c = 12
 ```
 
-Note 4 spaces and `=` to indicate we want output result.
+Note 2 spaces and `=` to indicate we want output result.
 
 For detailed examples, [check the full guide here](userexamples.md).
 
@@ -136,7 +136,7 @@ mathContent = `
 a = 5
 b = 7
 c = a + b = ?
-    = ?
+  = ?
 1 + 1
     = ?
     c = ?

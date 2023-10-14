@@ -29,9 +29,19 @@
         totalCalculations: 0,  // Number of lines where calculations are performed
         totalResultsProvided: 0,  // Number of lines with results provided
         calculate(incomingContent) {
-            if (typeof global.math === 'undefined' && typeof require !== 'undefined')
-            {
-                throw new Error("QuickMathsJS-WebCalc: 'mathjs' is required. Please ensure 'mathjs' is imported before using this module.");
+            /**
+             * Throw error if MathJS is not loaded 
+             */
+            const isNodeEnvironment = typeof process !== 'undefined' && process.versions && process.versions.node;
+            if (isNodeEnvironment) {
+                if (typeof global.math === 'undefined' && typeof require !== 'undefined') {
+                    throw new Error("QuickMathsJS-WebCalc: 'mathjs' is required in Node.js environment. Please ensure 'mathjs' is imported before using this module.");
+                }
+            } else {
+                // For browser environment
+                if (typeof window.math === 'undefined') {
+                    throw new Error("QuickMathsJS-WebCalc: 'mathjs' is required in browser environment. Please ensure 'mathjs' is loaded before using this module.");
+                }
             }
 
             /**
@@ -207,7 +217,7 @@
                                 newContent += `${allButLast} = ${lastEvaluatedAnswer}`;
                             } else if (isVariable(leftPart) && (isExpression(rightPart) || isOutputResult(rightPart))) {
                                 // Case: Variable Assignment (e.g., "a = 1 + 1" or "a = 4") Or Result (e.g., "    a = 4") 
-                                if (indentationLevel >= 4) {
+                                if (indentationLevel >= 2) {
                                     // If indentation is 4 or more, treat the line as a result line instead of an assignment
                                     //console.log("Case: Overwrite Result:", line);
                                     this.totalResultsProvided++;
@@ -238,7 +248,7 @@
                                 newContent += `${allButLast} = ${rightPart}`;
                             } else if (isVariable(leftPart) && isEmpty(rightPart)) {
                                 // Case: Variable with no assignment/result (e.g., "a =")
-                                if (indentationLevel >= 4) {
+                                if (indentationLevel >= 2) {
                                     // This is a result
                                     //console.log("Case: Variable with no result:", line);
                                     // If indentation is 4 or more, treat the line as a result line instead of an assignment
