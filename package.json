@@ -1,6 +1,6 @@
 {
   "name": "quickmathsjs",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "A simple web-based plaintext calculator harnessing the power of math.js for intuitive free-form calculations. Now with a command-line interface (CLI) for testing purposes.",
   "main": "calculator.js",
   "bin": {
@@ -44,6 +44,8 @@
     "index.html",
     "script.js",
     "style.css",
+    "logo.ico",
+    "logo.png",
     "math.min.js"
   ]
 }
