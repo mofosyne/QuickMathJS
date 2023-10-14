@@ -287,15 +287,12 @@
                                 throw new Error("This case is not yet handled, let us know at https://github.com/mofosyne/QuickMathsJS-WebCalc/issues");
                             }
                             //console.log("Updated Scope:", scope);
-                        } else if (parts.length == 1) {
+                        } else {
                             // Solo expression outputs nothing but is calculated anyway if valid expression or result
                             if (!isEmpty(line))
                             {
                                 lastUnevaluatedLine = line;
                             }
-                            newContent += `${line}`;
-                        } else {
-                            // Any other line format remains unchanged
                             newContent += `${line}`;
                         }
                     }
