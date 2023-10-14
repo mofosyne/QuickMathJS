@@ -143,7 +143,7 @@
             // Preprocess to remove any existing "Error:"
             const cleanedLines = incomingContent.split('\n').map(line => {
                 const errorIndex = line.indexOf("Error:");
-                return errorIndex !== -1 ? line.substring(0, errorIndex).trim() : line;
+                return errorIndex !== -1 ? line.substring(0, errorIndex).trimRight() : line;
             });
             const lines = cleanedLines.join('\n').split('\n');
             let newContent = "";
@@ -154,6 +154,7 @@
             // `scope` will be used to keep track of variable values as they're declared
             let scope = {};
             let lastEvaluatedAnswer = null;
+            let lastUnevaluatedLine = null;
 
             // Iterate through each line in the textarea
             let index = 0;
@@ -267,8 +268,19 @@
                                     newContent += `${line}`;
                                 }
                             } else if (isEmpty(leftPart) && (isOutputResult(rightPart) || isEmpty(rightPart))) {
-                                //console.log("Case: Implied Results:", line);
+                                //console.log("Case: Implied Results:", line, `(indent: ${indentationLevel})`);
                                 this.totalResultsProvided++;
+                                if (lastUnevaluatedLine != null)
+                                {
+                                    console.log("lastUnevaluatedLine:", lastUnevaluatedLine);
+                                    this.totalCalculations++;
+                                    lastEvaluatedAnswer = math.evaluate(lastUnevaluatedLine, scope);
+                                    // Error handling for Infinity. Possible Division by zero, as JavaScript will return Infinity
+                                    if (lastEvaluatedAnswer === Infinity) {
+                                        throw new Error("Infinity. Possible Division by zero");
+                                    }
+                                    lastUnevaluatedLine = null;
+                                }
                                 newContent += ' '.repeat(indentationLevel) + `= ${lastEvaluatedAnswer}`;
                             } else {
                                 //console.log("Unhandled Heuristic Debug:", line, isOutputResult(leftPart), isOutputResult(rightPart), isExpression(leftPart), isExpression(rightPart), isVariable(leftPart), isVariable(rightPart));
@@ -277,17 +289,12 @@
                             //console.log("Updated Scope:", scope);
                         } else if (parts.length == 1) {
                             // Solo expression outputs nothing but is calculated anyway if valid expression or result
-                            if ((isExpression(line) || isOutputResult(line)))
+                            if (!isEmpty(line))
                             {
-                                lastEvaluatedAnswer = math.evaluate(line, scope);
-                                this.totalCalculations++;
-                                // Error handling for Infinity. Possible Division by zero, as JavaScript will return Infinity
-                                if (lastEvaluatedAnswer === Infinity) {
-                                    throw new Error("Infinity. Possible Division by zero");
-                                }
+                                lastUnevaluatedLine = line;
                             }
                             newContent += `${line}`;
-                        }else {
+                        } else {
                             // Any other line format remains unchanged
                             newContent += `${line}`;
                         }
