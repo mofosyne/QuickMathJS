@@ -67,11 +67,51 @@
                 const tokens = line.split(/\s+/);
 
                 // Math.js reserved keywords (You might want to expand this list based on your needs)
+                // Note: This is an extensive list, but it's better to be thorough even at the expense of being able to use all natural expression,
+                //       rather than hitting a problem with mathjs parsing which can throw a more silent error in such case.
                 const reservedKeywords = [
                     // Constants
                     "pi", "e", "i", "Infinity", "LN2", "LN10", "LOG2E", "LOG10E", "NaN", "SQRT1_2", "SQRT2", "tau", "phi",
                     
-                    // Sample of common functions
+                    // Relational Operators
+                    "eq", "neq", "lt", "lte", "gt", "gte",
+                
+                    // Logical Operators
+                    "not", "or", "and", "xor",
+                
+                    // Miscellaneous
+                    "bignumber", "chain", "complex", "concat", "diag", "eye", "filter", "map", "ones", "zeros", "distribution", 
+                    "partitionSelect", "combinations", "permutations", "pickRandom", "randomInt",
+                
+                    // Matrix Functions
+                    "eigen", "usolve", "qr",
+                
+                    // String Functions
+                    "split", "join",
+                
+                    // Other Constants
+                    "version",
+                
+                    // Other Functions and Keywords
+                    "uninitialized", "var", "typeof", "config", "reviver", "replacer", "parser", "Parser", "compile", "derivative", 
+                    "simplify", "rationalize", "parse", "thematicBreak", "help",
+                
+                    // Transform Functions
+                    "apply", "column", "row", "map", "forEach", "filter", "subset", "transpose", "ctranspose", "size", "resize", 
+                    "diag", "flatten", "re", "im", "conj", "abs", "arg",
+                
+                    // Construction
+                    "matrix", "sparse", "dense",
+                
+                    // Utils
+                    "clone", "isInteger", "isNaN", "isFinite", "isZero", "isPositive", "isNegative", "hasNumericValue",
+                
+                    // Expressions
+                    "node", "AccessorNode", "ArrayNode", "AssignmentNode", "BlockNode", "ConditionalNode", "ConstantNode", 
+                    "FunctionAssignmentNode", "FunctionNode", "IndexNode", "ObjectNode", "OperatorNode", "ParenthesisNode", 
+                    "RangeNode", "RelationalNode", "SymbolNode",
+                
+                    // Original list of functions and constants
                     "abs", "acos", "add", "and", "asin", "atan", "atan2", "cbrt", "ceil", "clone", "cos", "cosh", "createUnit", 
                     "cross", "csc", "cube", "det", "divide", "dot", "eigs", "erf", "eval", "exp", "filter", "flatten", "floor",
                     "forEach", "format", "fraction", "gamma", "gcd", "help", "hypot", "identity", "im", "index", "inv", 
@@ -80,13 +120,16 @@
                     "number", "or", "parse", "pow", "print", "prod", "quantileSeq", "random", "range", "re", "reshape", 
                     "resize", "round", "sec", "set", "sin", "sinh", "size", "smaller", "sort", "sparse", "sqrt", "square", 
                     "std", "subtract", "sum", "tan", "tanh", "trace", "transpose", "true", "typeOf", "unit", "variance", "xor",
-                
-                    // Sample of common units
+                    
+                    // Original list of units
                     "meter", "kilogram", "second", "ampere", "kelvin", "mole", "candela", "bit", "byte", "radian", "degree", 
                     "cycle", "steradian", "hertz", "Newton", "pascal", "joule", "watt", "coulomb", "volt", "ohm", "siemens", 
                     "farad", "capacitor", "inductor", "Weber", "tesla", "henry", "lumen", "lux", "becquerel", "gray", "sievert", 
                     "katal", "m2", "m3", "liter", "l", "angle", "Hz", "N", "Pa", "J", "W", "C", "V", "ohmSymbol", "S", "F", 
-                    "Wb", "T", "H", "lm", "lx", "Bq", "Gy", "Sv", "kat"
+                    "Wb", "T", "H", "lm", "lx", "Bq", "Gy", "Sv", "kat",
+                
+                    // Additional reserved keywords
+                    "in"
                 ];
                 
                 const transformedTokens = [];
