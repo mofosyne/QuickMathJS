@@ -431,3 +431,28 @@ a = 2
 a
     = 2
 ```
+
+### Test Case 25: Allow sentences to be variable:
+**Given:**
+```
+Per Person Delivery = 11
+People Count = 23
+Delivery = 12
+Total Food Price = Per Person Delivery * People Count
+                 = ?
+Total Price = Total Food Price + Delivery
+            = ?
+2 m + 3 km = ?
+```
+
+**Expect:**
+```
+Per Person Delivery = 11
+People Count = 23
+Delivery = 12
+Total Food Price = Per Person Delivery * People Count
+                 = 253
+Total Price = Total Food Price + Delivery
+            = 265
+2 m + 3 km = 3.002 km
+```

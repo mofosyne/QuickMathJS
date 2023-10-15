@@ -55,6 +55,110 @@
             }
 
             /**
+             * Convert natural language math expressions into a format suitable for math.js.
+             * The function combines words into variable names using underscores while preserving
+             * valid math.js expressions and keywords.
+             *
+             * @param {string} line - The input math expression in natural language.
+             * @returns {string} - Transformed expression suitable for math.js evaluation.
+             */
+            function convertNaturalMathToMathJsSyntax(line) {
+                // Split the line into tokens
+                const tokens = line.split(/\s+/);
+
+                // Math.js reserved keywords (You might want to expand this list based on your needs)
+                // Note: This is an extensive list, but it's better to be thorough even at the expense of being able to use all natural expression,
+                //       rather than hitting a problem with mathjs parsing which can throw a more silent error in such case.
+                const reservedKeywords = [
+                    // Constants
+                    "pi", "e", "i", "Infinity", "LN2", "LN10", "LOG2E", "LOG10E", "NaN", "SQRT1_2", "SQRT2", "tau", "phi",
+                    
+                    // Relational Operators
+                    "eq", "neq", "lt", "lte", "gt", "gte",
+                
+                    // Logical Operators
+                    "not", "or", "and", "xor",
+                
+                    // Miscellaneous
+                    "bignumber", "chain", "complex", "concat", "diag", "eye", "filter", "map", "ones", "zeros", "distribution", 
+                    "partitionSelect", "combinations", "permutations", "pickRandom", "randomInt",
+                
+                    // Matrix Functions
+                    "eigen", "usolve", "qr",
+                
+                    // String Functions
+                    "split", "join",
+                
+                    // Other Constants
+                    "version",
+                
+                    // Other Functions and Keywords
+                    "uninitialized", "var", "typeof", "config", "reviver", "replacer", "parser", "Parser", "compile", "derivative", 
+                    "simplify", "rationalize", "parse", "thematicBreak", "help",
+                
+                    // Transform Functions
+                    "apply", "column", "row", "map", "forEach", "filter", "subset", "transpose", "ctranspose", "size", "resize", 
+                    "diag", "flatten", "re", "im", "conj", "abs", "arg",
+                
+                    // Construction
+                    "matrix", "sparse", "dense",
+                
+                    // Utils
+                    "clone", "isInteger", "isNaN", "isFinite", "isZero", "isPositive", "isNegative", "hasNumericValue",
+                
+                    // Expressions
+                    "node", "AccessorNode", "ArrayNode", "AssignmentNode", "BlockNode", "ConditionalNode", "ConstantNode", 
+                    "FunctionAssignmentNode", "FunctionNode", "IndexNode", "ObjectNode", "OperatorNode", "ParenthesisNode", 
+                    "RangeNode", "RelationalNode", "SymbolNode",
+                
+                    // Original list of functions and constants
+                    "abs", "acos", "add", "and", "asin", "atan", "atan2", "cbrt", "ceil", "clone", "cos", "cosh", "createUnit", 
+                    "cross", "csc", "cube", "det", "divide", "dot", "eigs", "erf", "eval", "exp", "filter", "flatten", "floor",
+                    "forEach", "format", "fraction", "gamma", "gcd", "help", "hypot", "identity", "im", "index", "inv", 
+                    "isNegative", "isNumeric", "isPositive", "isPrime", "kron", "lcm", "log", "log10", "log2", "lsolve", 
+                    "mad", "matrix", "max", "mean", "median", "min", "mod", "mode", "multiply", "norm", "not", "nthRoot", 
+                    "number", "or", "parse", "pow", "print", "prod", "quantileSeq", "random", "range", "re", "reshape", 
+                    "resize", "round", "sec", "set", "sin", "sinh", "size", "smaller", "sort", "sparse", "sqrt", "square", 
+                    "std", "subtract", "sum", "tan", "tanh", "trace", "transpose", "true", "typeOf", "unit", "variance", "xor",
+                    
+                    // Original list of units
+                    "meter", "kilogram", "second", "ampere", "kelvin", "mole", "candela", "bit", "byte", "radian", "degree", 
+                    "cycle", "steradian", "hertz", "Newton", "pascal", "joule", "watt", "coulomb", "volt", "ohm", "siemens", 
+                    "farad", "capacitor", "inductor", "Weber", "tesla", "henry", "lumen", "lux", "becquerel", "gray", "sievert", 
+                    "katal", "m2", "m3", "liter", "l", "angle", "Hz", "N", "Pa", "J", "W", "C", "V", "ohmSymbol", "S", "F", 
+                    "Wb", "T", "H", "lm", "lx", "Bq", "Gy", "Sv", "kat",
+                
+                    // Additional reserved keywords
+                    "in"
+                ];
+                
+                const transformedTokens = [];
+                let buffer = [];
+
+                tokens.forEach((token, index) => {
+                    const isAlphabeticOrNumeric = /^[a-zA-Z]+$/.test(token); // Check if token is alphabetic
+                    const isReserved = reservedKeywords.includes(token.toLowerCase());
+
+                    if (!isAlphabeticOrNumeric || isReserved) {
+                        if (buffer.length) {
+                            transformedTokens.push(buffer.join('_'));
+                            buffer = [];
+                        }
+                        transformedTokens.push(token);
+                    } else {
+                        buffer.push(token);
+                    }
+
+                    // If it's the last token, clear the buffer
+                    if (index === tokens.length - 1 && buffer.length) {
+                        transformedTokens.push(buffer.join('_'));
+                    }
+                });
+
+                return transformedTokens.join(' ');
+            }
+
+            /**
              * Determines if a given string can be parsed as a symbolic name (i.e., a variable) 
              * without throwing an error using the `math.js` library.
              * @param {string} str - The string to be checked.
@@ -62,7 +166,8 @@
              */
             function isVariable(str) {
                 try {
-                    const node = math.parse(str);
+                    const normalisedStr = convertNaturalMathToMathJsSyntax(str);
+                    const node = math.parse(normalisedStr);
                     return node.isSymbolNode;
                 } catch (e) {
                     return false;
@@ -88,22 +193,23 @@
              * @returns {boolean} - True if the string is a valid result, otherwise false.
              */
             function isOutputResult(str) {
-                if (str in scope || isVariable(str)) {
+                const normalisedStr = convertNaturalMathToMathJsSyntax(str);
+                if (normalisedStr in scope || isVariable(normalisedStr)) {
                     // Don't classify known variables or strings that match variable format as results
                     return false;
                 }
                 // Check for binary format
-                if (/^\s*0b[01]+\s*$/.test(str)) {
+                if (/^\s*0b[01]+\s*$/.test(normalisedStr)) {
                     return true;
                 }
                 // Check for hexadecimal format
-                if (/^\s*0x[\da-fA-F]+\s*$/.test(str)) {
+                if (/^\s*0x[\da-fA-F]+\s*$/.test(normalisedStr)) {
                     return true;
                 }
                 // If no special numeral systems matched, then evaluate and compare
                 try {
-                    const evaluation = math.evaluate(str);
-                    return String(str) === String(evaluation);
+                    const evaluation = math.evaluate(normalisedStr);
+                    return String(normalisedStr) === String(evaluation);
                 } catch (e) {
                     return false;
                 }
@@ -117,8 +223,9 @@
              * @returns {boolean} - True if the string is a basic arithmetic expression, otherwise false.
              */
             function isExpression(str) {
+                const normalisedStr = convertNaturalMathToMathJsSyntax(str);
                 try {
-                    const node = math.parse(str);
+                    const node = math.parse(normalisedStr);
                     return node.isConditionalNode ||
                            node.isAccessorNode ||
                            node.isArrayNode ||
@@ -148,6 +255,11 @@
             function determineIndentation(line) {
                 const match = line.match(/^(\s*)/);  // Matches leading whitespace
                 return match ? match[0].length : 0;
+            }
+
+            function math_evaluate(str, scope) {
+                const normalisedStr = convertNaturalMathToMathJsSyntax(str);
+                return math.evaluate(normalisedStr, scope)
             }
 
             // Preprocess to remove any existing "Error:"
@@ -209,7 +321,7 @@
                             if (isExpression(leftPart) && (isOutputResult(rightPart) || isEmpty(rightPart) || (!isExpression(rightPart) && !isVariable(leftPart)))) {
                                 // Case: Pure Mathematical Expression (e.g., "5 + 3 = 8" or "5 + 3 =" or "5 + 3 = <corrupted output>")
                                 //console.log("Pure Mathematical Expression:", line);
-                                lastEvaluatedAnswer = math.evaluate(allButLast, scope);
+                                lastEvaluatedAnswer = math_evaluate(allButLast, scope);
                                 this.totalResultsProvided++;
                                 // Error handling for Infinity. Possible Division by zero, as JavaScript will return Infinity
                                 if (lastEvaluatedAnswer === Infinity) {
@@ -219,7 +331,7 @@
                             } else if (isOutputResult(leftPart) && (isOutputResult(rightPart) || isEmpty(rightPart))) {
                                 // Case: Direct constants (e.g., "0b1100100 =")
                                 //console.log("Case: Direct constants:", line);
-                                lastEvaluatedAnswer = math.evaluate(allButLast, scope);
+                                lastEvaluatedAnswer = math_evaluate(allButLast, scope);
                                 this.totalResultsProvided++;
                                 // Error handling for Infinity. Possible Division by zero, as JavaScript will return Infinity
                                 if (lastEvaluatedAnswer === Infinity) {
@@ -232,7 +344,7 @@
                                     // If indentation is 4 or more, treat the line as a result line instead of an assignment
                                     //console.log("Case: Overwrite Result:", line);
                                     this.totalResultsProvided++;
-                                    lastEvaluatedAnswer = math.evaluate(allButLast, scope);
+                                    lastEvaluatedAnswer = math_evaluate(allButLast, scope);
                                     // Error handling for Infinity. Possible Division by zero, as JavaScript will return Infinity
                                     if (lastEvaluatedAnswer === Infinity) {
                                         throw new Error("Infinity. Possible Division by zero");
@@ -241,7 +353,7 @@
                                 } else {
                                     // Regular assignment
                                     //console.log("Variable Assignment:", line);
-                                    lastEvaluatedAnswer = math.evaluate(line, scope);
+                                    lastEvaluatedAnswer = math_evaluate(line, scope);
                                     // Error handling for Infinity. Possible Division by zero, as JavaScript will return Infinity
                                     if (lastEvaluatedAnswer === Infinity) {
                                         throw new Error("Infinity. Possible Division by zero");
@@ -251,7 +363,7 @@
                             } else if (isVariable(leftPart) && isVariable(rightPart)) {
                                 // Case: Cascading Variable Assignment (e.g., "b = a")
                                 //console.log("Case: Cascading Variable Assignment:", line);
-                                lastEvaluatedAnswer = math.evaluate(line, scope); 
+                                lastEvaluatedAnswer = math_evaluate(line, scope); 
                                 // Error handling for Infinity. Possible Division by zero, as JavaScript will return Infinity
                                 if (lastEvaluatedAnswer === Infinity) {
                                     throw new Error("Infinity. Possible Division by zero");
@@ -262,7 +374,7 @@
                                 //console.log("Case: Variable with no result:", line);
                                 // If indentation is 4 or more, treat the line as a result line instead of an assignment
                                 this.toctalResultsProvided++;
-                                lastEvaluatedAnswer = math.evaluate(allButLast, scope);
+                                lastEvaluatedAnswer = math_evaluate(allButLast, scope);
                                 // Error handling for Infinity. Possible Division by zero, as JavaScript will return Infinity
                                 if (lastEvaluatedAnswer === Infinity) {
                                     throw new Error("Infinity. Possible Division by zero");
@@ -274,7 +386,7 @@
                                 if (lastUnevaluatedLine != null)
                                 {
                                     this.totalCalculations++;
-                                    lastEvaluatedAnswer = math.evaluate(lastUnevaluatedLine, scope);
+                                    lastEvaluatedAnswer = math_evaluate(lastUnevaluatedLine, scope);
                                     // Error handling for Infinity. Possible Division by zero, as JavaScript will return Infinity
                                     if (lastEvaluatedAnswer === Infinity) {
                                         throw new Error("Infinity. Possible Division by zero");
