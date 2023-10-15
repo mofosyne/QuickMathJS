@@ -137,7 +137,7 @@
 
                 tokens.forEach((token, index) => {
                     const isAlphabeticOrNumeric = /^[a-zA-Z]+$/.test(token); // Check if token is alphabetic
-                    const isReserved = reservedKeywords.includes(token.toLowerCase());
+                    const isReserved = reservedKeywords.includes(token);
 
                     if (!isAlphabeticOrNumeric || isReserved) {
                         if (buffer.length) {
