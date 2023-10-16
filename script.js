@@ -102,6 +102,10 @@ async function decompressBlob(blob) {
 
 // When the page loads, check for content in the hash and load it
 window.addEventListener("load", function() {
+    // Initialise webcalc internals
+    webcalc.initialise();
+
+    // Load user input
     loadFromHash();
 });
 

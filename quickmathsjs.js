@@ -183,6 +183,9 @@ function runTests() {
  * CLI
  */
 
+// Initialise webcalc internals
+webcalc.initialise();
+
 // Check for command line flags
 const useSectionsFlag = '--sections';
 const testFlag = '--test';

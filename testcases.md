@@ -456,3 +456,20 @@ Total Price = Total Food Price + Delivery
             = 265
 2 m + 3 km = 3.002 km
 ```
+
+### Test Case 25: Allow currency notation:
+**Given:**
+```
+apple_price = 32 USD
+orange_price = 43 USD
+total = 3*apple_price + 4*orange_price
+      = ?
+```
+
+**Expect:**
+```
+apple_price = 32 USD
+orange_price = 43 USD
+total = 3*apple_price + 4*orange_price
+      = 268 USD
+```
