@@ -109,8 +109,8 @@
                     "not", "or", "and", "xor",
                 
                     // Miscellaneous
-                    "bignumber", "chain", "complex", "concat", "diag", "eye", "filter", "map", "ones", "zeros", "distribution", 
-                    "partitionSelect", "combinations", "permutations", "pickRandom", "randomInt",
+                    //"bignumber", "chain", "complex", "concat", "diag", "eye", "filter", "map", "ones", "zeros", "distribution", 
+                    //"partitionSelect", "combinations", "permutations", "pickRandom", "randomInt",
                 
                     // Matrix Functions
                     "eigen", "usolve", "qr",
@@ -122,12 +122,12 @@
                     "version",
                 
                     // Other Functions and Keywords
-                    "uninitialized", "var", "typeof", "config", "reviver", "replacer", "parser", "Parser", "compile", "derivative", 
-                    "simplify", "rationalize", "parse", "thematicBreak", "help",
+                    //"uninitialized", "var", "typeof", "config", "reviver", "replacer", "parser", "Parser", "compile", "derivative", 
+                    //"simplify", "rationalize", "parse", "thematicBreak", "help",
                 
                     // Transform Functions
-                    "apply", "column", "row", "map", "forEach", "filter", "subset", "transpose", "ctranspose", "size", "resize", 
-                    "diag", "flatten", "re", "im", "conj", "abs", "arg",
+                    //"apply", "column", "row", "map", "forEach", "filter", "subset", "transpose", "ctranspose", "size", "resize", 
+                    //"diag", "flatten", "re", "im", "conj", "abs", "arg",
                 
                     // Construction
                     "matrix", "sparse", "dense",
@@ -136,19 +136,22 @@
                     "clone", "isInteger", "isNaN", "isFinite", "isZero", "isPositive", "isNegative", "hasNumericValue",
                 
                     // Expressions
-                    "node", "AccessorNode", "ArrayNode", "AssignmentNode", "BlockNode", "ConditionalNode", "ConstantNode", 
-                    "FunctionAssignmentNode", "FunctionNode", "IndexNode", "ObjectNode", "OperatorNode", "ParenthesisNode", 
-                    "RangeNode", "RelationalNode", "SymbolNode",
+                    // Note: Not in use in parser
+                    //"node", "AccessorNode", "ArrayNode", "AssignmentNode", "BlockNode", "ConditionalNode", "ConstantNode", 
+                    //"FunctionAssignmentNode", "FunctionNode", "IndexNode", "ObjectNode", "OperatorNode", "ParenthesisNode", 
+                    //"RangeNode", "RelationalNode", "SymbolNode",
                 
                     // Original list of functions and constants
-                    "abs", "acos", "add", "and", "asin", "atan", "atan2", "cbrt", "ceil", "clone", "cos", "cosh", "createUnit", 
-                    "cross", "csc", "cube", "det", "divide", "dot", "eigs", "erf", "eval", "exp", "filter", "flatten", "floor",
-                    "forEach", "format", "fraction", "gamma", "gcd", "help", "hypot", "identity", "im", "index", "inv", 
-                    "isNegative", "isNumeric", "isPositive", "isPrime", "kron", "lcm", "log", "log10", "log2", "lsolve", 
-                    "mad", "matrix", "max", "mean", "median", "min", "mod", "mode", "multiply", "norm", "not", "nthRoot", 
-                    "number", "or", "parse", "pow", "print", "prod", "quantileSeq", "random", "range", "re", "reshape", 
-                    "resize", "round", "sec", "set", "sin", "sinh", "size", "smaller", "sort", "sparse", "sqrt", "square", 
-                    "std", "subtract", "sum", "tan", "tanh", "trace", "transpose", "true", "typeOf", "unit", "variance", "xor",
+                    // Note: May remove if these keywords proven not to be an issue
+                    //        e.g. `total sum = a sum(a, b, c)` is fine as `sum(` won't trigger this concat feature. 
+                    //"abs", "acos", "add", "and", "asin", "atan", "atan2", "cbrt", "ceil", "clone", "cos", "cosh", "createUnit", 
+                    //"cross", "csc", "cube", "det", "divide", "dot", "eigs", "erf", "eval", "exp", "filter", "flatten", "floor",
+                    //"forEach", "format", "fraction", "gamma", "gcd", "help", "hypot", "identity", "im", "index", "inv", 
+                    //"isNegative", "isNumeric", "isPositive", "isPrime", "kron", "lcm", "log", "log10", "log2", "lsolve", 
+                    //"mad", "matrix", "max", "mean", "median", "min", "mod", "mode", "multiply", "norm", "not", "nthRoot", 
+                    //"number", "or", "parse", "pow", "print", "prod", "quantileSeq", "random", "range", "re", "reshape", 
+                    //"resize", "round", "sec", "set", "sin", "sinh", "size", "smaller", "sort", "sparse", "sqrt", "square", 
+                    //"std", "subtract", "sum", "tan", "tanh", "trace", "transpose", "true", "typeOf", "unit", "variance", "xor",
                     
                     // Original list of units
                     "meter", "kilogram", "second", "ampere", "kelvin", "mole", "candela", "bit", "byte", "radian", "degree", 
@@ -428,12 +431,29 @@
                                 throw new Error("This case is not yet handled, let us know at https://github.com/mofosyne/QuickMathsJS-WebCalc/issues");
                             }
                             //console.log("Updated Scope:", scope);
-                        } else {
+                        } else if (!isEmpty(line)) {
                             // Solo expression outputs nothing but is calculated anyway if valid expression or result
-                            if (!isEmpty(line))
-                            {
+                            // Unless it's a `<variable> : <result>`
+                            
+                            // Split each line by ':' to determine its structure
+                            const parts = line.split(/(?<!\:)\:(?!\:)/);
+                            
+                            // This is the last two part of the line used for huriestics matching of expression type
+                            const lastTwoParts = parts.slice(-2).map(str => str.trim());
+                            leftPart = lastTwoParts[0];
+                            rightPart = lastTwoParts[1];
+                            
+                            // A version of the line but where all part of the expression except for the last part is kept
+                            // This will be used if the last part is replaced with the result
+                            const allButLast = parts.slice(0, -1).join(':').trimRight();
+                            if ((parts.length == 2) && isVariable(leftPart) && (isEmpty(rightPart) || isOutputResult(rightPart))) {
+                                lastEvaluatedAnswer = math_evaluate(leftPart, scope);
+                                newContent += allButLast + `: ${lastEvaluatedAnswer}`;
+                            } else {
                                 lastUnevaluatedLine = line;
+                                newContent += `${line}`;
                             }
+                        } else {
                             newContent += `${line}`;
                         }
                     }

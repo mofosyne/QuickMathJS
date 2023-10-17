@@ -100,16 +100,20 @@ c = a + b = ?
 1 + 1
     = ?
     c = ?
+total = a + b + c
+total:
 ```
 Output:
 ```plaintext
 a = 5
 b = 7
 c = a + b = 12
-    = 12
+  = 12
 1 + 1
     = 2
     c = 12
+total = a + b + c
+total: 24
 ```
 
 Note 2 spaces and `=` to indicate we want output result.
@@ -124,6 +128,7 @@ Total Food Price = Per Person Delivery * People Count
                = 253
 Total Price = Total Food Price + Delivery
            = 265
+Total Price: 265
 ```
 
 <details>

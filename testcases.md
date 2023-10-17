@@ -473,3 +473,24 @@ orange_price = 43 USD
 total = 3*apple_price + 4*orange_price
       = 268 USD
 ```
+
+### Test Case 25: Allow for ':' as a result notation:
+**Given:**
+```
+apple_price = 32 USD
+orange_price = 43 USD
+total = 3*apple_price + 4*orange_price
+total:
+total: ?
+total: 268 USD
+```
+
+**Expect:**
+```
+apple_price = 32 USD
+orange_price = 43 USD
+total = 3*apple_price + 4*orange_price
+total: 268 USD
+total: 268 USD
+total: 268 USD
+```
