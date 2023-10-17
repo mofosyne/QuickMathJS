@@ -284,11 +284,24 @@
                 return str.trim() === '' || str.trim() === '?';
             }
 
+            /**
+             * Determines the effective indentation length of a line. 
+             * Each tab (\t) is considered equivalent to 4 spaces.
+             * 
+             * @param {string} line - The line whose indentation is to be determined.
+             * @return {number} The effective indentation length.
+             */
             function determineIndentation(line) {
-                const match = line.match(/^(\s*)/);  // Matches leading whitespace
-                return match ? match[0].length : 0;
+                // Extract the leading whitespace using a regex match
+                const leadingWhitespace = line.match(/^(\s*)/)[0];
+                
+                // Iterate over each character in the leading whitespace:
+                // - Add 4 for each tab character
+                // - Add 1 for each space character
+                return leadingWhitespace.split('').reduce((acc, char) => {
+                    return acc + (char === '\t' ? 4 : 1);
+                }, 0);
             }
-
             function math_evaluate(str, scope) {
                 const normalisedStr = convertNaturalMathToMathJsSyntax(str);
                 return math.evaluate(normalisedStr, scope)
@@ -344,7 +357,7 @@
     
                         // A version of the line but where all part of the expression except for the last part is kept
                         // This will be used if the last part is replaced with the result
-                        const allButLast = parts.slice(0, -1).join('=').trim();
+                        const allButLast = parts.slice(0, -1).join('=');
     
                         // Handling lines with minimum of one '='
                         if (parts.length >= 2) {
@@ -359,7 +372,7 @@
                                 if (lastEvaluatedAnswer === Infinity) {
                                     throw new Error("Infinity. Possible Division by zero");
                                 }
-                                newContent += `${allButLast} = ${lastEvaluatedAnswer}`;
+                                newContent += `${allButLast}= ${lastEvaluatedAnswer}`;
                             } else if (isOutputResult(leftPart) && (isOutputResult(rightPart) || isEmpty(rightPart))) {
                                 // Case: Direct constants (e.g., "0b1100100 =")
                                 //console.log("Case: Direct constants:", line);
@@ -369,7 +382,7 @@
                                 if (lastEvaluatedAnswer === Infinity) {
                                     throw new Error("Infinity. Possible Division by zero");
                                 }
-                                newContent += `${allButLast} = ${lastEvaluatedAnswer}`;
+                                newContent += `${allButLast}= ${lastEvaluatedAnswer}`;
                             } else if (isVariable(leftPart) && (isExpression(rightPart) || isOutputResult(rightPart))) {
                                 // Case: Variable Assignment (e.g., "a = 1 + 1" or "a = 4") Or Result (e.g., "    a = 4") 
                                 if (indentationLevel >= 2) {
@@ -381,7 +394,7 @@
                                     if (lastEvaluatedAnswer === Infinity) {
                                         throw new Error("Infinity. Possible Division by zero");
                                     }
-                                    newContent += ' '.repeat(indentationLevel) + `${allButLast} = ${lastEvaluatedAnswer}`;
+                                    newContent += `${allButLast}= ${lastEvaluatedAnswer}`;
                                 } else {
                                     // Regular assignment
                                     //console.log("Variable Assignment:", line);
@@ -390,7 +403,7 @@
                                     if (lastEvaluatedAnswer === Infinity) {
                                         throw new Error("Infinity. Possible Division by zero");
                                     }
-                                    newContent += `${allButLast} = ${rightPart}`;
+                                    newContent += `${allButLast}= ${rightPart}`;
                                 }
                             } else if (isVariable(leftPart) && isVariable(rightPart)) {
                                 // Case: Cascading Variable Assignment (e.g., "b = a")
@@ -400,7 +413,7 @@
                                 if (lastEvaluatedAnswer === Infinity) {
                                     throw new Error("Infinity. Possible Division by zero");
                                 }
-                                newContent += `${allButLast} = ${rightPart}`;
+                                newContent += `${allButLast}= ${rightPart}`;
                             } else if (isVariable(leftPart) && isEmpty(rightPart)) {
                                 // Case: Variable with no assignment/result (e.g., "a =")
                                 //console.log("Case: Variable with no result:", line);
@@ -411,7 +424,7 @@
                                 if (lastEvaluatedAnswer === Infinity) {
                                     throw new Error("Infinity. Possible Division by zero");
                                 }
-                                newContent += ' '.repeat(indentationLevel) + `${allButLast} = ${lastEvaluatedAnswer}`;
+                                newContent += `${allButLast}= ${lastEvaluatedAnswer}`;
                             } else if (isEmpty(leftPart) && (isOutputResult(rightPart) || isEmpty(rightPart))) {
                                 //console.log("Case: Implied Results:", line, `(indent: ${indentationLevel})`);
                                 this.totalResultsProvided++;
@@ -425,7 +438,7 @@
                                     }
                                     lastUnevaluatedLine = null;
                                 }
-                                newContent += ' '.repeat(indentationLevel) + `= ${lastEvaluatedAnswer}`;
+                                newContent += `${allButLast}= ${lastEvaluatedAnswer}`;
                             } else {
                                 //console.log("Unhandled Heuristic Debug:", line, isOutputResult(leftPart), isOutputResult(rightPart), isExpression(leftPart), isExpression(rightPart), isVariable(leftPart), isVariable(rightPart));
                                 throw new Error("This case is not yet handled, let us know at https://github.com/mofosyne/QuickMathsJS-WebCalc/issues");
@@ -445,10 +458,10 @@
                             
                             // A version of the line but where all part of the expression except for the last part is kept
                             // This will be used if the last part is replaced with the result
-                            const allButLast = parts.slice(0, -1).join(':').trimRight();
+                            const allButLast = parts.slice(0, -1).join(':');
                             if ((parts.length == 2) && isVariable(leftPart) && (isEmpty(rightPart) || isOutputResult(rightPart))) {
                                 lastEvaluatedAnswer = math_evaluate(leftPart, scope);
-                                newContent += allButLast + `: ${lastEvaluatedAnswer}`;
+                                newContent += `${allButLast}: ${lastEvaluatedAnswer}`;
                             } else {
                                 lastUnevaluatedLine = line;
                                 newContent += `${line}`;
