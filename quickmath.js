@@ -18,14 +18,12 @@
 */
 const fs = require('fs');
 const mathjs = require('mathjs');
-const webcalc = require('./calculator.js');
+const webcalc = require('./calculator.js')(mathjs);
 const open = require('opn');
 const express = require('express');
 const zlib = require('zlib');
 const path = require('path');
 const { version } = require('./package.json');
-
-global.math = mathjs;
 
 function calculateFileContent(content, useSections = false) {
   if (useSections) {

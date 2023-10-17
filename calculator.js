@@ -19,12 +19,13 @@
 (function (global, factory) {
     if (typeof exports === 'object' && typeof module !== 'undefined') {
         // Node/CommonJS
-        module.exports = factory();
+        module.exports = factory;
     } else {
         // Browser Globals
-        global.webcalc = factory();
+        global.webcalc = factory(global.math);
     }
-}(typeof self !== 'undefined' ? self : this, function () {
+}(typeof self !== 'undefined' ? self : this, function (mathInstance) {
+    const math = mathInstance;
     const calculator = {
         totalCalculations: 0,  // Number of lines where calculations are performed
         totalResultsProvided: 0,  // Number of lines with results provided
@@ -71,16 +72,8 @@
             /**
              * Throw error if MathJS is not loaded 
              */
-            const isNodeEnvironment = typeof process !== 'undefined' && process.versions && process.versions.node;
-            if (isNodeEnvironment) {
-                if (typeof global.math === 'undefined' && typeof require !== 'undefined') {
-                    throw new Error("QuickMathsJS-WebCalc: 'mathjs' is required in Node.js environment. Please ensure 'mathjs' is imported before using this module.");
-                }
-            } else {
-                // For browser environment
-                if (typeof window.math === 'undefined') {
-                    throw new Error("QuickMathsJS-WebCalc: 'mathjs' is required in browser environment. Please ensure 'mathjs' is loaded before using this module.");
-                }
+            if (!math) {
+                throw new Error("QuickMathsJS-WebCalc: 'mathjs' is required. Please ensure 'mathjs' is loaded before using this module.");
             }
 
             /**
