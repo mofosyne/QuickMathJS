@@ -1,20 +1,20 @@
 {
-  "name": "quickmathsjs",
-  "version": "2.1.4",
+  "name": "quickmathjs",
+  "version": "2.1.5",
   "description": "A simple web-based plaintext calculator harnessing the power of math.js for intuitive free-form calculations. Now with a command-line interface (CLI) for testing purposes.",
   "main": "calculator.js",
   "bin": {
-    "quickmathsjs": "./quickmathsjs.js"
+    "quickmathjs": "./quickmathjs.js"
   },
   "scripts": {
-    "test": "node quickmathsjs.js --test",
-    "version": "node quickmathsjs.js --version",
-    "help": "node quickmathsjs.js --help",
-    "web": "node quickmathsjs.js --web"
+    "test": "node quickmathjs.js --test",
+    "version": "node quickmathjs.js --version",
+    "help": "node quickmathjs.js --help",
+    "web": "node quickmathjs.js --web"
   },  
   "repository": {
     "type": "git",
-    "url": "https://github.com/mofosyne/QuickMathsJS-WebCalc.git"
+    "url": "https://github.com/mofosyne/QuickMathJS.git"
   },
   "keywords": [
     "calculator",
@@ -26,9 +26,9 @@
   "author": "Brian Khuu <mofosyne@gmail.com>",
   "license": "GPL-3.0-only",
   "bugs": {
-    "url": "https://github.com/mofosyne/QuickMathsJS-WebCalc/issues"
+    "url": "https://github.com/mofosyne/QuickMathJS/issues"
   },
-  "homepage": "https://github.com/mofosyne/QuickMathsJS-WebCalc",
+  "homepage": "https://github.com/mofosyne/QuickMathJS",
   "dependencies": {
     "express": "^4.18.2",
     "mathjs": "^11.11.2",
@@ -36,7 +36,7 @@
   },
   "files": [
     "calculator.js",
-    "quickmathsjs.js",
+    "quickmathjs.js",
     "LICENSE",
     "readme.md",
     "testcases.md",

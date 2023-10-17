@@ -1,12 +1,12 @@
-# QuickMathsJS-WebCalc (https://www.quickmathsjs.org/)
-[![Node.js Test Runner](https://github.com/mofosyne/QuickMathsJS-WebCalc/actions/workflows/node.js.yml/badge.svg)](https://github.com/mofosyne/QuickMathsJS-WebCalc/actions/workflows/node.js.yml)
-[![npm version](https://badge.fury.io/js/quickmathsjs.svg)](https://badge.fury.io/js/quickmathsjs)
+# Quick MathJS Web Calculator (https://www.quickmathsjs.org/)
+[![Node.js Test Runner](https://github.com/mofosyne/QuickMathJS/actions/workflows/node.js.yml/badge.svg)](https://github.com/mofosyne/QuickMathJS/actions/workflows/node.js.yml)
+[![npm version](https://badge.fury.io/js/quickmathjs.svg)](https://badge.fury.io/js/quickmathjs)
 
 An intuitive web-based plaintext calculator using [math.js](https://mathjs.org/). Features inline results and supports free-form calculations.
 
 **Quick Links:**
 - [**https://www.quickmathsjs.org/ Try Online Interface**](https://www.quickmathsjs.org/)
-- [**Download for Offline Use**](https://github.com/mofosyne/QuickMathsJS-WebCalc/releases/latest)
+- [**Download for Offline Use**](https://github.com/mofosyne/QuickMathJS/releases/latest)
 
 ## Motivation
 Inspired by [SpeQ Mathematics](https://speqmath.com/), this project aims to offer an experience where all calculations feel like working within a simple text file. Two key goals drive this project:
@@ -24,12 +24,12 @@ Inspired by [SpeQ Mathematics](https://speqmath.com/), this project aims to offe
 ## Getting Started
 
 ### Web Version
-1. **Try it Online:** [Click here](https://www.quickmathsjs.org/)
-2. **Offline Version:** [Download the latest release](https://github.com/mofosyne/QuickMathsJS-WebCalc/releases/latest), extract, and open `index.html`.
+1. **Try it Online:** [Click here](https://www.quickmathjs.org/)
+2. **Offline Version:** [Download the latest release](https://github.com/mofosyne/QuickMathJS/releases/latest), extract, and open `index.html`.
 
-## CLI Version: QuickMathsJS CLI
+## CLI Version: QuickMathJS CLI
 
-Note: The CLI tool is a command-line interface to use QuickMathsJS. However, if you're interested in integrating the calculation functionalities into your own Node.js applications, you can use `quickmathsjs` as an npm module. See the section below on "Using as a Node.js Module" for more details.
+Note: The CLI tool is a command-line interface to use QuickMathJS. However, if you're interested in integrating the calculation functionalities into your own Node.js applications, you can use `quickmathjs` as an npm module. See the section below on "Using as a Node.js Module" for more details.
 
 The CLI offers the same heuristic-based evaluation as the web interface, allowing you to naturally type in mathematical expressions without the need for special syntax.
 It is perfect for users who prefer working within terminal environments or need to batch-process multiple files.
@@ -37,15 +37,15 @@ It is perfect for users who prefer working within terminal environments or need 
 To use the CLI, first install it via npm:
 
 ```bash
-npm install -g quickmathsjs
+npm install -g quickmathjs
 ```
 
-For more details and documentation, [check it out on npm](https://www.npmjs.com/package/quickmathsjs).
+For more details and documentation, [check it out on npm](https://www.npmjs.com/package/quickmathjs).
 
-After installation, you can immediately use QuickMathsJS from the terminal:
+After installation, you can immediately use QuickMathJS from the terminal:
 
 ```bash
-npx quickmathsjs path/to/your/file.txt
+npx quickmathjs path/to/your/file.txt
 ```
 
 This will evaluate the entire file and write the results of each calculation back into the file.
@@ -55,7 +55,7 @@ This will evaluate the entire file and write the results of each calculation bac
 If you have files where only specific sections are meant for calculations, you can use the `--sections` flag. This flag will evaluate only the portions surrounded by the ```math delimiters:
 
 ```bash
-npx quickmathsjs --sections path/to/your/file.md
+npx quickmathjs --sections path/to/your/file.md
 ```
 
 For instance, in a document like:
@@ -74,16 +74,16 @@ The rest of the document can contain text, and only the section within the ```ma
 
 ### Launching Web Interface with `--web` Feature
 
-If you prefer to use the web interface but have installed QuickMathsJS via npm, you can launch the web calculator interface locally:
+If you prefer to use the web interface but have installed QuickMathJS via npm, you can launch the web calculator interface locally:
 
 ```bash
-npx quickmathsjs --web
+npx quickmathjs --web
 ```
 
-This will open your default web browser with the QuickMathsJS web interface ready to use. Any file specified will be preloaded into the web interface.
+This will open your default web browser with the QuickMathJS web interface ready to use. Any file specified will be preloaded into the web interface.
 
 ```bash
-npx quickmathsjs --web path/to/your/file.txt
+npx quickmathjs --web path/to/your/file.txt
 ```
 
 **Note**: Ensure the `--web` flag is placed before specifying the file path.
@@ -175,12 +175,12 @@ For detailed examples, [check the full guide here](userexamples.md).
 
 ## Using as a Node.js Module
 
-QuickMathsJS-WebCalc can also be used as an npm module in your own projects. Here's how:
+QuickMathJS can also be used as an npm module in your own projects. Here's how:
 
 ### Installation
 
 ```bash
-npm install quickmathsjs
+npm install quickmathjs
 ```
 
 ### Usage
@@ -226,13 +226,13 @@ Returns a string with the mathematical content replaced by their calculated resu
 * Why is the backend CI/CD Node.js based and not deno based?
     - I've tried Deno, but it uses 'export' keyword which messes with browser syntax parsing (if module is not enabled). I could try enabling modules, but my aim is for the code to be useable without CORS being triggered... so you could use it offline without having to start a local server for it.
 
-* For developers working on quickmathsjs, there is a built-in testing feature that can be triggered using the --test flag. This is primarily for development and CI/CD purposes.
+* For developers working on quickmathjs, there is a built-in testing feature that can be triggered using the --test flag. This is primarily for development and CI/CD purposes.
 
 ### Tips for Developers:
-- While developing or making changes, use the `npx quickmathsjs --test` flag to run the predefined test cases and ensure the core functionalities remain intact. This helps in catching any regression bugs early on.
+- While developing or making changes, use the `npx quickmathjs --test` flag to run the predefined test cases and ensure the core functionalities remain intact. This helps in catching any regression bugs early on.
 
 ## Contributing
-Feedback, suggestions, and contributions are always appreciated. Kindly [open an issue](https://github.com/mofosyne/QuickMathsJS-WebCalc/issues) or submit a pull request.
+Feedback, suggestions, and contributions are always appreciated. Kindly [open an issue](https://github.com/mofosyne/QuickMathJS/issues) or submit a pull request.
 
 ## License
-This project is under the [GNU General Public License v3.0](https://github.com/mofosyne/QuickMathsJS-WebCalc/blob/main/LICENSE).
+This project is under the [GNU General Public License v3.0](https://github.com/mofosyne/QuickMathJS/blob/main/LICENSE).
