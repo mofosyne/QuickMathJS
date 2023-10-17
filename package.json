@@ -1,16 +1,16 @@
 {
   "name": "quickmathjs",
-  "version": "2.1.5",
+  "version": "2.1.6",
   "description": "A simple web-based plaintext calculator harnessing the power of math.js for intuitive free-form calculations. Now with a command-line interface (CLI) for testing purposes.",
   "main": "calculator.js",
   "bin": {
-    "quickmathjs": "./quickmathjs.js"
+    "quickmath": "./quickmath.js"
   },
   "scripts": {
-    "test": "node quickmathjs.js --test",
-    "version": "node quickmathjs.js --version",
-    "help": "node quickmathjs.js --help",
-    "web": "node quickmathjs.js --web"
+    "test": "node quickmath.js --test",
+    "version": "node quickmath.js --version",
+    "help": "node quickmath.js --help",
+    "web": "node quickmath.js --web"
   },  
   "repository": {
     "type": "git",
@@ -20,8 +20,7 @@
     "calculator",
     "math.js",
     "CLI",
-    "web",
-    "QuickMaths"
+    "web"
   ],
   "author": "Brian Khuu <mofosyne@gmail.com>",
   "license": "GPL-3.0-only",
@@ -36,7 +35,7 @@
   },
   "files": [
     "calculator.js",
-    "quickmathjs.js",
+    "quickmath.js",
     "LICENSE",
     "readme.md",
     "testcases.md",
