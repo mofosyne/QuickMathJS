@@ -45,7 +45,7 @@ For more details and documentation, [check it out on npm](https://www.npmjs.com/
 After installation, you can immediately use QuickMathJS from the terminal:
 
 ```bash
-npx quickmathjs path/to/your/file.txt
+npx quickmath path/to/your/file.txt
 ```
 
 This will evaluate the entire file and write the results of each calculation back into the file.
@@ -55,7 +55,7 @@ This will evaluate the entire file and write the results of each calculation bac
 If you have files where only specific sections are meant for calculations, you can use the `--sections` flag. This flag will evaluate only the portions surrounded by the ```math delimiters:
 
 ```bash
-npx quickmathjs --sections path/to/your/file.md
+npx quickmath --sections path/to/your/file.md
 ```
 
 For instance, in a document like:
@@ -77,13 +77,13 @@ The rest of the document can contain text, and only the section within the ```ma
 If you prefer to use the web interface but have installed QuickMathJS via npm, you can launch the web calculator interface locally:
 
 ```bash
-npx quickmathjs --web
+npx quickmath --web
 ```
 
 This will open your default web browser with the QuickMathJS web interface ready to use. Any file specified will be preloaded into the web interface.
 
 ```bash
-npx quickmathjs --web path/to/your/file.txt
+npx quickmath --web path/to/your/file.txt
 ```
 
 **Note**: Ensure the `--web` flag is placed before specifying the file path.

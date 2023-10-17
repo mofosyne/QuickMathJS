@@ -195,7 +195,7 @@ const versionFlag = '--version';
 
 function displayHelp() {
   console.log(`
-Usage: quickmathsjs [OPTIONS] [FILE]
+Usage: quickmath [OPTIONS] [FILE]
 
 Options:
   --help        Show this help message and exit.
@@ -205,12 +205,12 @@ Options:
   --test        Run predefined test cases.
 
 Examples:
-  quickmathsjs --help                           Show this help message and exit.
-  quickmathsjs --version                        Display the current version.
-  quickmathsjs path/to/your/file.txt            Evaluate entire file.
-  quickmathsjs --sections path/to/your/file.txt Evaluate only math sections in file.
-  quickmathsjs --web path/to/your/file.txt      Launch the web interface and load entire file.
-  quickmathsjs --test                           Run predefined test cases.
+  quickmath --help                           Show this help message and exit.
+  quickmath --version                        Display the current version.
+  quickmath path/to/your/file.txt            Evaluate entire file.
+  quickmath --sections path/to/your/file.txt Evaluate only math sections in file.
+  quickmath --web path/to/your/file.txt      Launch the web interface and load entire file.
+  quickmath --test                           Run predefined test cases.
 `);
 }
 
