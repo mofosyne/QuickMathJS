@@ -494,3 +494,18 @@ total: 268 USD
 total: 268 USD
 total: 268 USD
 ```
+
+### Test Case 25: Allow for mathjs functions:
+**Given:**
+```
+f(x) = 2 * x
+result = f(3)
+result : ?
+```
+
+**Expect:**
+```
+f(x) = 2 * x
+result = f(3)
+result : 6
+```

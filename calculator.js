@@ -269,6 +269,22 @@
             }
 
             /**
+             * Determines if a given string can be parsed as a function call 
+             * (e.g., f(x,y,z) or sin(x) ) using the `math.js` library.
+             * @param {string} str - The string to be checked.
+             * @returns {boolean} - True if the string is a function call, otherwise false.
+             */
+            function isFunctionCall(str) {
+                const normalisedStr = convertNaturalMathToMathJsSyntax(str);
+                try {
+                    const node = math.parse(normalisedStr);
+                    return node.isFunctionNode;
+                } catch (e) {
+                    return false;
+                }
+            }
+
+            /**
              * Determines if the provided string represents an empty slot or a placeholder
              * @param {string} str - The string to be checked.
              * @returns {boolean} - True if the string is empty, contains only whitespace, or is a '?', otherwise false.
@@ -432,8 +448,17 @@
                                     lastUnevaluatedLine = null;
                                 }
                                 newContent += `${allButLast}= ${lastEvaluatedAnswer}`;
+                            } else if (isFunctionCall(leftPart) && (isOutputResult(rightPart) || isVariable(rightPart) || (isExpression(rightPart)))) {
+                                // Case: Function Definition (e.g., "b(a) = a*2")
+                                //console.log("Case: Function Definition:", line);
+                                math_evaluate(line, scope); 
+                                newContent += `${allButLast}= ${rightPart}`;
                             } else {
-                                //console.log("Unhandled Heuristic Debug:", line, isOutputResult(leftPart), isOutputResult(rightPart), isExpression(leftPart), isExpression(rightPart), isVariable(leftPart), isVariable(rightPart));
+                                console.log("Unhandled Heuristic Debug:", line, isOutputResult(leftPart), isOutputResult(rightPart), isExpression(leftPart), isExpression(rightPart), isVariable(leftPart), isVariable(rightPart), isFunctionDefinition(leftPart));
+                                console.log("Split Parts:", leftPart, " :: ", rightPart);
+                                console.log("MathJS Syntax:", convertNaturalMathToMathJsSyntax(line));
+                                const normalisedStr = convertNaturalMathToMathJsSyntax(line);
+                                console.log(math.parse(leftPart));
                                 throw new Error("This case is not yet handled, let us know at https://github.com/mofosyne/QuickMathsJS-WebCalc/issues");
                             }
                             //console.log("Updated Scope:", scope);
