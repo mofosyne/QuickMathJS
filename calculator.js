@@ -61,10 +61,10 @@
         // Function to calculate content with math sections
         calculateWithMathSections(incomingContent) {
             // Regular expression to match ```math``` sections
-            const mathSectionRegex = /```math\n([\s\S]+?)\n```/g;
+            const mathSectionRegex = /^```math\n([\s\S]+?)\n^```$/gm;
             return incomingContent.replace(mathSectionRegex, (match, mathContent) => {
-              const result = this.calculate(mathContent);
-              return '```math\n' + result + '\n```';
+                const result = this.calculate(mathContent);
+                return '```math\n' + result + '\n```';
             });
         },
         // Function to calculate content without math sections

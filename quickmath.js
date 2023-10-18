@@ -85,78 +85,90 @@ function runTestCaseFile(testCaseFilePath) {
 }
 
 function runDelimTests() {
-    // Test for the math delimiter feature
-    let failures = 0;
-    const mockContent = 
-    'This is a sample content.\n' +
-    '\n' +
-    '```math\n' +
-    '1 + 1 = \n' +
-    '```\n' +
-    '\n' +
-    '\n' +
-    '\n' +
-    '\n' +
-    '```math\n' +
-    '1 + 1 =\n' +
-    '1 + 1 = \n' +
-    'a = 1\n' +
-    'a + 1 = 1\n' +
-    '```\n' +
-    '\n' +
-    '```math\n' +
-    '1 + 1 = \n' +
-    '1 + 1 = 5\n' +
-    '```\n' +
-    '\n' +
-    '```math\n' +
-    '1 + 1\n' +
-    '1 + 1 = \n' +
-    '1 + 1 = \n' +
-    '```\n' +
-    '\n' +
-    'This should remain unchanged.\n';
+  // Test for the math delimiter feature
+  let failures = 0;
+  const mockContent = 
+  'This is a sample content.\n' +
+  '\n' +
+  '```math\n' +
+  '1 + 1 = \n' +
+  '```\n' +
+  '\n' +
+  '\n' +
+  '\n' +
+  '\n' +
+  '```math\n' +
+  '1 + 1 =\n' +
+  '1 + 1 = \n' +
+  'a = 1\n' +
+  'a + 1 = 1\n' +
+  '```\n' +
+  '\n' +
+  '```math\n' +
+  '1 + 1 = \n' +
+  '1 + 1 = 5\n' +
+  '```\n' +
+  '\n' +
+  '```math\n' +
+  '1 + 1\n' +
+  '1 + 1 = \n' +
+  '1 + 1 = \n' +
+  '```\n' +
+  '\n' +
+  'This should remain unchanged.\n' +
+  '\n' +
+  '    ```math\n' + // Indented code block
+  '    1 + 1 = \n' +
+  '    ```\n' +
+  '\n' +
+  'This should also remain unchanged.\n';
 
-    const expectedContent = 
-    'This is a sample content.\n' +
-    '\n' +
-    '```math\n' +
-    '1 + 1 = 2\n' +
-    '```\n' +
-    '\n' +
-    '\n' +
-    '\n' +
-    '\n' +
-    '```math\n' +
-    '1 + 1 = 2\n' +
-    '1 + 1 = 2\n' +
-    'a = 1\n' +
-    'a + 1 = 2\n' +
-    '```\n' +
-    '\n' +
-    '```math\n' +
-    '1 + 1 = 2\n' +
-    '1 + 1 = 2\n' +
-    '```\n' +
-    '\n' +
-    '```math\n' +
-    '1 + 1\n' +
-    '1 + 1 = 2\n' +
-    '1 + 1 = 2\n' +
-    '```\n' +
-    '\n' +
-    'This should remain unchanged.\n';
+  const expectedContent = 
+  'This is a sample content.\n' +
+  '\n' +
+  '```math\n' +
+  '1 + 1 = 2\n' +
+  '```\n' +
+  '\n' +
+  '\n' +
+  '\n' +
+  '\n' +
+  '```math\n' +
+  '1 + 1 = 2\n' +
+  '1 + 1 = 2\n' +
+  'a = 1\n' +
+  'a + 1 = 2\n' +
+  '```\n' +
+  '\n' +
+  '```math\n' +
+  '1 + 1 = 2\n' +
+  '1 + 1 = 2\n' +
+  '```\n' +
+  '\n' +
+  '```math\n' +
+  '1 + 1\n' +
+  '1 + 1 = 2\n' +
+  '1 + 1 = 2\n' +
+  '```\n' +
+  '\n' +
+  'This should remain unchanged.\n' +
+  '\n' +
+  '    ```math\n' + // Indented code block remains unchanged
+  '    1 + 1 = \n' +
+  '    ```\n' +
+  '\n' +
+  'This should also remain unchanged.\n';
 
-    const mathDelimiterResult = calculateFileContent(mockContent, true);
-    if (mathDelimiterResult.trim() === expectedContent.trim()) {
-        console.log(`Math delimiter test: PASS`);
-    } else {
-        console.log(`Math delimiter test: FAIL`);
-        console.log('Expected:\n', expectedContent);
-        console.log('Got:\n', mathDelimiterResult);
-        failures++;
-    }
-  return failures;
+  const mathDelimiterResult = calculateFileContent(mockContent, true);
+  if (mathDelimiterResult.trim() === expectedContent.trim()) {
+      console.log(`Math delimiter test: PASS`);
+  } else {
+      console.log(`Math delimiter test: FAIL`);
+      console.log('Expected:\n', expectedContent);
+      console.log('Got:\n', mathDelimiterResult);
+      failures++;
+  }
+return failures;
 }
 
 function runTests() {
