@@ -4,6 +4,9 @@
 
 An intuitive web-based plaintext calculator using [math.js](https://mathjs.org/). Features inline results and supports free-form calculations.
 
+- This is also an extention for [VSCode in Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=mofosyne.quickcalc) and [Codium on open-vsx](https://open-vsx.org/extension/mofosyne/quickcalc)
+
+
 **Quick Links:**
 - [**https://www.quickmathjs.com/ Try Online Interface**](https://www.quickmathjs.com/)
 - [**Download for Offline Use**](https://github.com/mofosyne/QuickMathJS/releases/latest)
