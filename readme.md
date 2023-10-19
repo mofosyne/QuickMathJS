@@ -189,8 +189,7 @@ npm install quickmathjs
 
 ```js
 const mathjs = require('mathjs');
-const webcalc = require('./calculator.js');
-global.math = mathjs;
+const webcalc = require('./calculator.js')(mathjs);
 mathContent = `
 a = 5
 b = 7
