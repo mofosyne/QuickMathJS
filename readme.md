@@ -2,10 +2,9 @@
 [![Node.js Test Runner](https://github.com/mofosyne/QuickMathJS/actions/workflows/node.js.yml/badge.svg)](https://github.com/mofosyne/QuickMathJS/actions/workflows/node.js.yml)
 [![npm version](https://badge.fury.io/js/quickmathjs.svg)](https://badge.fury.io/js/quickmathjs)
 
-An intuitive web-based plaintext calculator using [math.js](https://mathjs.org/). Features inline results and supports free-form calculations.
+QuickCalc is an intuitive web-based plaintext calculator powered by [math.js](https://mathjs.org/). Designed to deliver inline results, it supports free-form calculations without the fuss of special syntax. Much like how markdown mirrors the natural writing style of emails, QuickCalc emulates the informal way people jot down mathematical expressions in everyday communications. It's math, made as simple as typing out your thoughts.
 
-- This is also an extention for [VSCode in Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=mofosyne.quickcalc) and [Codium on open-vsx](https://open-vsx.org/extension/mofosyne/quickcalc)
-
+- This has also been adapted for VSCode and Codium in an extention called [QuickCalc](https://github.com/mofosyne/vscode-quickcalc)
 
 **Quick Links:**
 - [**https://www.quickmathjs.com/ Try Online Interface**](https://www.quickmathjs.com/)
