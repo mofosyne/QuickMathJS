@@ -86,77 +86,96 @@ function runTestCaseFile(testCaseFilePath) {
 function runDelimTests() {
   // Test for the math delimiter feature
   let failures = 0;
-  const mockContent = 
-  'This is a sample content.\n' +
-  '\n' +
-  '```math\n' +
-  '1 + 1 = \n' +
-  '```\n' +
-  '\n' +
-  '\n' +
-  '\n' +
-  '\n' +
-  '```math\n' +
-  '1 + 1 =\n' +
-  '1 + 1 = \n' +
-  'a = 1\n' +
-  'a + 1 = 1\n' +
-  '```\n' +
-  '\n' +
-  '```math\n' +
-  '1 + 1 = \n' +
-  '1 + 1 = 5\n' +
-  '```\n' +
-  '\n' +
-  '```math\n' +
-  '1 + 1\n' +
-  '1 + 1 = \n' +
-  '1 + 1 = \n' +
-  '```\n' +
-  '\n' +
-  'This should remain unchanged.\n' +
-  '\n' +
-  '    ```math\n' + // Indented code block
-  '    1 + 1 = \n' +
-  '    ```\n' +
-  '\n' +
-  'This should also remain unchanged.\n';
 
-  const expectedContent = 
-  'This is a sample content.\n' +
-  '\n' +
-  '```math\n' +
-  '1 + 1 = 2\n' +
-  '```\n' +
-  '\n' +
-  '\n' +
-  '\n' +
-  '\n' +
-  '```math\n' +
-  '1 + 1 = 2\n' +
-  '1 + 1 = 2\n' +
-  'a = 1\n' +
-  'a + 1 = 2\n' +
-  '```\n' +
-  '\n' +
-  '```math\n' +
-  '1 + 1 = 2\n' +
-  '1 + 1 = 2\n' +
-  '```\n' +
-  '\n' +
-  '```math\n' +
-  '1 + 1\n' +
-  '1 + 1 = 2\n' +
-  '1 + 1 = 2\n' +
-  '```\n' +
-  '\n' +
-  'This should remain unchanged.\n' +
-  '\n' +
-  '    ```math\n' + // Indented code block remains unchanged
-  '    1 + 1 = \n' +
-  '    ```\n' +
-  '\n' +
-  'This should also remain unchanged.\n';
+  /**
+   * Tagged template function to remove common indentation from template literals.
+   * This allows for cleaner code formatting without affecting the string's actual content.
+   * 
+   * @param {Array<string>} strings - The static parts of the template literal.
+   * @param {...any} values - The interpolated values within the template literal.
+   * @return {string} - The processed string with common indentation removed.
+   */
+  function stripIndent(strings, ...values) {
+    // Combine the strings and values back into the full string
+    const fullString = strings.reduce((acc, str, i) => `${acc}${str}${values[i] || ''}`, '');
+    // Find the common indentation at the beginning of each line
+    const match = fullString.match(/^[ \t]*(?=\S)/gm);
+    if (!match) return fullString;
+    // Calculate the amount of indentation to remove
+    const indent = Math.min(...match.map(el => el.length));
+    // Create a regular expression to remove the common indentation
+    const regexp = new RegExp(`^[ \\t]{${indent}}`, 'gm');
+    // Return the string with the common indentation removed
+    return indent > 0 ? fullString.replace(regexp, '') : fullString;
+  }
+
+  const mockContent = stripIndent`
+    This is a sample content.
+
+    \`\`\`math
+    1 + 1 = 
+    \`\`\`
+
+
+    \`\`\`math
+    1 + 1 =
+    1 + 1 = 
+    a = 1
+    a + 1 = 1
+    \`\`\`
+
+    \`\`\`math {id = "testid"}
+    1 + 1 = 
+    1 + 1 = 5
+    \`\`\`
+
+    \`\`\`math
+    1 + 1
+    1 + 1 = 
+    1 + 1 = 
+    \`\`\`
+
+    This should remain unchanged.
+
+        \`\`\`math
+        1 + 1 = 
+        \`\`\`
+
+    This should also remain unchanged.`;
+  
+  const expectedContent = stripIndent`
+    This is a sample content.
+
+    \`\`\`math
+    1 + 1 = 2
+    \`\`\`
+
+
+    \`\`\`math
+    1 + 1 = 2
+    1 + 1 = 2
+    a = 1
+    a + 1 = 2
+    \`\`\`
+
+    \`\`\`math {id = "testid"}
+    1 + 1 = 2
+    1 + 1 = 2
+    \`\`\`
+
+    \`\`\`math
+    1 + 1
+    1 + 1 = 2
+    1 + 1 = 2
+    \`\`\`
+
+    This should remain unchanged.
+
+        \`\`\`math
+        1 + 1 = 
+        \`\`\`
+
+    This should also remain unchanged.`;
 
   const mathDelimiterResult = calculateFileContent(mockContent, true);
   if (mathDelimiterResult.trim() === expectedContent.trim()) {
