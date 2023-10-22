@@ -1,8 +1,53 @@
-# User Example And Test Cases
+# User Guides And Examples
 
-## Test Cases for the Calculate function
+## Syntax Quickstart
 
-### Test Case 1: Basic Arithmetic
+How to get results from expression and assign variables
+
+### Arithmetic with Variables and output plus assignment
+**Given:**
+```
+a = 5
+b = a + 1 =
+```
+
+**Expect:**
+```
+a = 5
+b = a + 1 = 6
+```
+
+### Multiple Variable Assignments
+**Given:**
+```
+x = y = z = 5 + 2 =
+```
+
+**Expect:**
+```
+x = y = z = 5 + 2 = 7
+```
+
+### Test Case 12: Cascading Calculations
+**Given:**
+```
+a = 5
+b = a + 1 = 9
+c = b + 1
+d = c + 1 = 6
+```
+
+**Expect:**
+```
+a = 5
+b = a + 1 = 6
+c = b + 1
+d = c + 1 = 8
+```
+
+## Basic Operations
+
+### Basic Arithmetic
 **Given:**
 ```
 1 + 1 =
@@ -13,7 +58,7 @@
 1 + 1 = 2
 ```
 
-### Test Case 2: Variable Assignment
+### Variable Assignment
 **Given:**
 ```
 a = 5
@@ -24,7 +69,7 @@ a = 5
 a = 5
 ```
 
-### Test Case 3: Arithmetic, Multiplication and other basic operations with Variables
+### Arithmetic, Multiplication and other basic operations with Variables
 **Given:**
 ```
 a = 6
@@ -47,7 +92,9 @@ a ^ 3 = 216
 a % 3 = 0
 ```
 
-### Test Case 3.0: More Advance Operators
+## Medium Operations
+
+### More Advance Operators
 **Given:**
 ```
 sqrt(9) = 
@@ -62,7 +109,7 @@ nthRoot(27, 3) = 3
 5! = 120
 ```
 
-### Test Case 3.1: Trigonometric Functions and output plus assignment
+### Trigonometric Functions and output plus assignment
 **Given:**
 ```
 sin(pi/2) =
@@ -85,171 +132,7 @@ log(100) = 4.605170185988092
 exp(2) = 7.38905609893065
 ```
 
-### Test Case 3.2: Arithmetic with Variables and output plus assignment
-**Given:**
-```
-a = 5
-b = a + 1 =
-```
 
-**Expect:**
-```
-a = 5
-b = a + 1 = 6
-```
-
-### Test Case 4: Multiple Variable Assignments
-**Given:**
-```
-x = y = z = 5 + 2 =
-```
-
-**Expect:**
-```
-x = y = z = 5 + 2 = 7
-```
-
-### Test Case 5: Expression with Provided Result (Correct)
-**Given:**
-```
-4 * 3 = 12
-```
-
-**Expect:**
-```
-4 * 3 = 12
-```
-
-### Test Case 6: Expression with Provided Result (Incorrect)
-**Given:**
-```
-4 * 3 = 11
-```
-
-**Expect:**
-```
-4 * 3 = 12
-```
-
-### Test Case 7: Division by Zero
-**Given:**
-```
-1 / 0 =
-```
-
-**Expect:**
-```
-1 / 0 = Error: Infinity. Possible Division by zero
-```
-
-### Test Case 8: Undefined Variable
-**Given:**
-```
-a + b =
-```
-
-**Expect:**
-```
-a + b = Error: Undefined symbol a
-```
-
-### Test Case 9: Multi Variable Assignment with Expression
-**Given:**
-```
-a = b = 2 + 3 =
-```
-
-**Expect:**
-```
-a = b = 2 + 3 = 5
-```
-
-### Test Case 10: Error Replacement
-**Given:**
-```
-1 / 0 = Error: Something went wrong
-```
-
-**Expect:**
-```
-1 / 0 = Error: Infinity. Possible Division by zero
-```
-
-### Test Case 11: Invalid Multi Variable Assignment
-**Given:**
-```
-y = 2
-x = 1 + y = 3 =
-```
-
-**Expect:**
-```
-y = 2
-x = 1 + y = 3
-```
-
-### Test Case 12: Cascading Calculations
-**Given:**
-```
-a = 5
-b = a + 1 = 9
-c = b + 1
-d = c + 1 = 6
-```
-
-**Expect:**
-```
-a = 5
-b = a + 1 = 6
-c = b + 1
-d = c + 1 = 8
-```
-
-
-### Test Case 13: Cascading failure
-**Given:**
-```
-a = 5
-b = a + 1/0
-c = b + 1
-c + 1 = 8
-```
-
-**Expect:**
-```
-a = 5
-b = a + 1/0 Error: Infinity. Possible Division by zero
-c = b + 1 Error: Infinity. Possible Division by zero
-c + 1 = 8 Error: Infinity. Possible Division by zero
-```
-
-### Test Case 14: Multi Variable Assignment with Expression but no results
-**Given:**
-```
-a = b = 2 + 3
-```
-
-**Expect:**
-```
-a = b = 2 + 3
-```
-
-### Test Case 14: Multi Variable Assignment with Expression but no results
-**Given:**
-```
-matrix = [[1, 2], [3, 4]]
-matrix + [1, 1; 1, 1] = 
-det(matrix) = 
-transpose(matrix) = 
-```
-
-**Expect:**
-```
-matrix = [[1, 2], [3, 4]]
-matrix + [1, 1; 1, 1] = [[2, 3], [4, 5]]
-det(matrix) = -2
-transpose(matrix) = [[1, 3], [2, 4]]
-```
 
 ### Test Case 15: Units
 **Given:**
@@ -300,19 +183,36 @@ tau/2 = 3.141592653589793
 2 * phi = 3.23606797749979
 ```
 
-### Test Case 17: multiple assignments
+### Currency pairs and pair ratios 
+
+Tip: only alphanumeric characters are allowed in unit names
+
 **Given:**
 ```
-a = 5
-b = 7
-c = a + b
-c * 2 = 24
+# Glimmer to Shimmer
+GLM/SHM = 50
+5 SHM to GLM = ?
+
+# Euros to US Dollars
+EUR/USD = 1.30
+5 USD to EUR = ?
+
+# Euros incusive of GST (10% gst tax)
+EURincGST/EUR = 1.1
+10.0 EUR in EURincGST = 11 EURincGST
 ```
 
 **Expect:**
 ```
-a = 5
-b = 7
-c = a + b
-c * 2 = 24
+# Glimmer to Shimmer
+GLM/SHM = 50
+5 SHM to GLM = 250 GLM
+
+# Euros to US Dollars
+EUR/USD = 1.30
+5 USD to EUR = 6.5 EUR
+
+# Euros incusive of GST (10% gst tax)
+EURincGST/EUR = 1.1
+10.0 EUR in EURincGST = 11 EURincGST
 ```
