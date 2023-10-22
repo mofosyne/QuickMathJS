@@ -93,7 +93,11 @@ npx quickmath --web path/to/your/file.txt
 
 ## How It Works
 
-Type your expressions. Use `=` to display results. For example:
+For detailed examples, [check the full guide here](userexamples.md).
+
+Type your expressions. Use `=` to display results.
+
+**For Example:**
 ```plaintext
 a = 5
 b = 7
@@ -105,7 +109,8 @@ c = a + b = ?
 total = a + b + c
 total:
 ```
-Output:
+
+**Output:**
 ```plaintext
 a = 5
 b = 7
@@ -120,9 +125,11 @@ total: 24
 
 Note 2 spaces and `=` to indicate we want output result.
 
+### Phrase As Variables
+
 Also note you can use english sentence as variable as long as it does not conflict with MathJS reserved keywords like `in`, `i`, `or` and any other reserved keywords.
 
-```
+```math
 Per Person Delivery = 11
 People Count = 23
 Delivery = 12
@@ -133,33 +140,11 @@ Total Price = Total Food Price + Delivery
 Total Price: 265
 ```
 
-<details>
-<summary> Full reserved keywords list </summary>
-
- - Constants: "pi", "e", "i", "Infinity", "LN2", "LN10", "LOG2E", "LOG10E", "NaN", "SQRT1_2", "SQRT2", "tau", "phi",
- - Relational Operators: "eq", "neq", "lt", "lte", "gt", "gte",
- - Logical Operators: "not", "or", "and", "xor",
- - Miscellaneous: "bignumber", "chain", "complex", "concat", "diag", "eye", "filter", "map", "ones", "zeros", "distribution", 
-"partitionSelect", "combinations", "permutations", "pickRandom", "randomInt",
- - Matrix Functions: "eigen", "usolve", "qr",
- - String Functions: "split", "join",
- - Other Constants: "version",
- - Other Functions and Keywords: "uninitialized", "var", "typeof", "config", "reviver", "replacer", "parser", "Parser", "compile", "derivative", "simplify", "rationalize", "parse", "thematicBreak", "help",
- - Transform Functions: "apply", "column", "row", "map", "forEach", "filter", "subset", "transpose", "ctranspose", "size", "resize", 
-"diag", "flatten", "re", "im", "conj", "abs", "arg",
- - Construction: "matrix", "sparse", "dense",
- - Utils: "clone", "isInteger", "isNaN", "isFinite", "isZero", "isPositive", "isNegative", "hasNumericValue",
- - Expressions: "node", "AccessorNode", "ArrayNode", "AssignmentNode", "BlockNode", "ConditionalNode", "ConstantNode", "FunctionAssignmentNode", "FunctionNode", "IndexNode", "ObjectNode", "OperatorNode", "ParenthesisNode", 
-"RangeNode", "RelationalNode", "SymbolNode",
- - Original list of functions and constants: "abs", "acos", "add", "and", "asin", "atan", "atan2", "cbrt", "ceil", "clone", "cos", "cosh", "createUnit", "cross", "csc", "cube", "det", "divide", "dot", "eigs", "erf", "eval", "exp", "filter", "flatten", "floor", "forEach", "format", "fraction", "gamma", "gcd", "help", "hypot", "identity", "im", "index", "inv", "isNegative", "isNumeric", "isPositive", "isPrime", "kron", "lcm", "log", "log10", "log2", "lsolve", "mad", "matrix", "max", "mean", "median", "min", "mod", "mode", "multiply", "norm", "not", "nthRoot", "number", "or", "parse", "pow", "print", "prod", "quantileSeq", "random", "range", "re", "reshape", "resize", "round", "sec", "set", "sin", "sinh", "size", "smaller", "sort", "sparse", "sqrt", "square", "std", "subtract", "sum", "tan", "tanh", "trace", "transpose", "true", "typeOf", "unit", "variance", "xor",
- - Original list of units: "meter", "kilogram", "second", "ampere", "kelvin", "mole", "candela", "bit", "byte", "radian", "degree", "cycle", "steradian", "hertz", "Newton", "pascal", "joule", "watt", "coulomb", "volt", "ohm", "siemens", "farad", "capacitor", "inductor", "Weber", "tesla", "henry", "lumen", "lux", "becquerel", "gray", "sievert", "katal", "m2", "m3", "liter", "l", "angle", "Hz", "N", "Pa", "J", "W", "C", "V", "ohmSymbol", "S", "F", "Wb", "T", "H", "lm", "lx", "Bq", "Gy", "Sv", "kat"
- - Additional reserved keywords: "in"
-
-</details>
+### Currency Support
 
 For convenience, currency notation is supported (but not conversion, unless you want to help add that in?):
 
-```
+```math
 apple_price = 32 USD
 orange_price = 43 USD
 total = 3*apple_price + 4*orange_price
@@ -173,7 +158,6 @@ AED, AFN, ALL, AMD, ANG, AOA, ARS, AUD, AWG, AZN, BAM, BBD, BDT, BGN, BHD, BIF, 
 
 </details>
 
-For detailed examples, [check the full guide here](userexamples.md).
 
 ## Using as a Node.js Module
 

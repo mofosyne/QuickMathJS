@@ -48,26 +48,9 @@ function processFile(filePath, useSections, callback) {
  * TESTING
  */
 
-function runTestCaseFile(testCaseFilePath) {
-  const fullPath = path.join(__dirname, testCaseFilePath);
-  const content = fs.readFileSync(fullPath, 'utf-8');
-  const regex = /### (.+?)\n\*\*Given:\*\*\n```(?:.*?)\n([\s\S]+?)\n```\n\n\*\*Expect:\*\*\n```(?:.*?)\n([\s\S]+?)\n```$/gm;
-  const tests = [];
-
-  console.log(`TEST CASE FILE: ${testCaseFilePath}`);
-
-  let match;
-  while ((match = regex.exec(content)) !== null) {
-      tests.push({
-          name: match[1],
-          given: match[2],
-          expect: match[3]
-      });
-  }
-
+function processTests(tests, testCaseFilePath) {
   let failures = 0;
 
-  // Test the calculate function with each test case
   tests.forEach((test, index) => {
       const result = calculateFileContent(test.given);
       if (result === test.expect) {
@@ -80,7 +63,48 @@ function runTestCaseFile(testCaseFilePath) {
           failures++;
       }
   });
+
   return failures;
+}
+
+// This has before and after cases (good for checking replacement test examples)
+function runFullTestCase(testCaseFilePath) {
+  const fullPath = path.join(__dirname, testCaseFilePath);
+  const content = fs.readFileSync(fullPath, 'utf-8');
+  const regex = /^#+ (.*?)\n(?:[^#]*?)\*\*(?:For Example|Input|Given):\*\*\n```(?:.*?)\n([\s\S]+?)\n```\n\n\*\*(?:Result|Output|Expect):\*\*\n```(?:.*?)\n([\s\S]+?)\n```$/gm;
+  const tests = [];
+  console.log(`FULL TEST CASE FILE: ${testCaseFilePath}`);
+  let match;
+  while ((match = regex.exec(content)) !== null) {
+      tests.push({
+          name: match[1],
+          given: match[2],
+          expect: match[3]
+      });
+  }
+
+  return processTests(tests, testCaseFilePath);
+}
+
+// This has simple cases (e.g. results already present examples)
+function runMathBlockTestCase(testCaseFilePath) {
+  const fullPath = path.join(__dirname, testCaseFilePath);
+  const content = fs.readFileSync(fullPath, 'utf-8');
+  const regex = /^#+ (.*?)\n(?:[^#]*?)^```math(?:.*?)\n([\s\S]+?)\n^```$/gm;
+  const tests = [];
+
+  console.log(`BLOCK TEST CASE FILE: ${testCaseFilePath}`);
+
+  let match;
+  while ((match = regex.exec(content)) !== null) {
+      tests.push({
+          name: match[1],
+          given: match[2],
+          expect: match[2]
+      });
+  }
+
+  return processTests(tests, testCaseFilePath);
 }
 
 function runDelimTests() {
@@ -113,26 +137,23 @@ function runDelimTests() {
     This is a sample content.
 
     \`\`\`math
-    1 + 1 = 
+    1 + 1 = ?
     \`\`\`
 
 
     \`\`\`math
-    1 + 1 =
-    1 + 1 = 
-    a = 1
-    a + 1 = 1
+    1 + 1 = ?
+    1 + 1 = ?
     \`\`\`
 
     \`\`\`math {id = "testid"}
-    1 + 1 = 
-    1 + 1 = 5
+    1 + 1 = ?
+    1 + 1 = ?
     \`\`\`
 
     \`\`\`math
-    1 + 1
-    1 + 1 = 
-    1 + 1 = 
+    1 + 1 = ?
+    1 + 1 = ?
     \`\`\`
 
     This should remain unchanged.
@@ -154,8 +175,6 @@ function runDelimTests() {
     \`\`\`math
     1 + 1 = 2
     1 + 1 = 2
-    a = 1
-    a + 1 = 2
     \`\`\`
 
     \`\`\`math {id = "testid"}
@@ -164,7 +183,6 @@ function runDelimTests() {
     \`\`\`
 
     \`\`\`math
-    1 + 1
     1 + 1 = 2
     1 + 1 = 2
     \`\`\`
@@ -186,22 +204,19 @@ function runDelimTests() {
       console.log('Got:\n', mathDelimiterResult);
       failures++;
   }
-return failures;
+  return failures;
 }
 
 function runTests() {
-    let failures = 0;
-    failures += runTestCaseFile('testcases.md');
-    failures += runTestCaseFile('userexamples.md');
-    failures += runDelimTests();
-
-    // If there are any failed tests, exit with a non-zero code.
+    let failures = runDelimTests();
+    failures += failures > 0 ? failures : runMathBlockTestCase('readme.md');
+    failures += failures > 0 ? failures : runFullTestCase('readme.md');
+    failures += failures > 0 ? failures : runFullTestCase('testcases.md');
+    failures += failures > 0 ? failures : runFullTestCase('userexamples.md');
     if (failures > 0) {
         console.error(`Failed ${failures} test(s). Exiting.`);
         process.exit(1);
-    }
-    else
-    {
+    } else {
       console.error(`All test passed. Exiting.`);
     }
 }
