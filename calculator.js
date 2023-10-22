@@ -88,81 +88,23 @@
                 // Split the line into tokens
                 const tokens = line.split(/\s+/);
 
-                // Math.js reserved keywords (You might want to expand this list based on your needs)
-                // Note: This is an extensive list, but it's better to be thorough even at the expense of being able to use all natural expression,
-                //       rather than hitting a problem with mathjs parsing which can throw a more silent error in such case.
-                const reservedKeywords = [
-                    // Constants
-                    "pi", "e", "i", "Infinity", "LN2", "LN10", "LOG2E", "LOG10E", "NaN", "SQRT1_2", "SQRT2", "tau", "phi",
-                    
-                    // Relational Operators
-                    "eq", "neq", "lt", "lte", "gt", "gte",
-                
-                    // Logical Operators
-                    "not", "or", "and", "xor",
-                
-                    // Miscellaneous
-                    //"bignumber", "chain", "complex", "concat", "diag", "eye", "filter", "map", "ones", "zeros", "distribution", 
-                    //"partitionSelect", "combinations", "permutations", "pickRandom", "randomInt",
-                
-                    // Matrix Functions
-                    "eigen", "usolve", "qr",
-                
-                    // String Functions
-                    "split", "join",
-                
-                    // Other Constants
-                    "version",
-                
-                    // Other Functions and Keywords
-                    //"uninitialized", "var", "typeof", "config", "reviver", "replacer", "parser", "Parser", "compile", "derivative", 
-                    //"simplify", "rationalize", "parse", "thematicBreak", "help",
-                
-                    // Transform Functions
-                    //"apply", "column", "row", "map", "forEach", "filter", "subset", "transpose", "ctranspose", "size", "resize", 
-                    //"diag", "flatten", "re", "im", "conj", "abs", "arg",
-                
-                    // Construction
-                    "matrix", "sparse", "dense",
-                
-                    // Utils
-                    "clone", "isInteger", "isNaN", "isFinite", "isZero", "isPositive", "isNegative", "hasNumericValue",
-                
-                    // Expressions
-                    // Note: Not in use in parser
-                    //"node", "AccessorNode", "ArrayNode", "AssignmentNode", "BlockNode", "ConditionalNode", "ConstantNode", 
-                    //"FunctionAssignmentNode", "FunctionNode", "IndexNode", "ObjectNode", "OperatorNode", "ParenthesisNode", 
-                    //"RangeNode", "RelationalNode", "SymbolNode",
-                
-                    // Original list of functions and constants
-                    // Note: May remove if these keywords proven not to be an issue
-                    //        e.g. `total sum = a sum(a, b, c)` is fine as `sum(` won't trigger this concat feature. 
-                    //"abs", "acos", "add", "and", "asin", "atan", "atan2", "cbrt", "ceil", "clone", "cos", "cosh", "createUnit", 
-                    //"cross", "csc", "cube", "det", "divide", "dot", "eigs", "erf", "eval", "exp", "filter", "flatten", "floor",
-                    //"forEach", "format", "fraction", "gamma", "gcd", "help", "hypot", "identity", "im", "index", "inv", 
-                    //"isNegative", "isNumeric", "isPositive", "isPrime", "kron", "lcm", "log", "log10", "log2", "lsolve", 
-                    //"mad", "matrix", "max", "mean", "median", "min", "mod", "mode", "multiply", "norm", "not", "nthRoot", 
-                    //"number", "or", "parse", "pow", "print", "prod", "quantileSeq", "random", "range", "re", "reshape", 
-                    //"resize", "round", "sec", "set", "sin", "sinh", "size", "smaller", "sort", "sparse", "sqrt", "square", 
-                    //"std", "subtract", "sum", "tan", "tanh", "trace", "transpose", "true", "typeOf", "unit", "variance", "xor",
-                    
-                    // Original list of units
-                    "meter", "kilogram", "second", "ampere", "kelvin", "mole", "candela", "bit", "byte", "radian", "degree", 
-                    "cycle", "steradian", "hertz", "Newton", "pascal", "joule", "watt", "coulomb", "volt", "ohm", "siemens", 
-                    "farad", "capacitor", "inductor", "Weber", "tesla", "henry", "lumen", "lux", "becquerel", "gray", "sievert", 
-                    "katal", "m2", "m3", "liter", "l", "angle", "Hz", "N", "Pa", "J", "W", "C", "V", "ohmSymbol", "S", "F", 
-                    "Wb", "T", "H", "lm", "lx", "Bq", "Gy", "Sv", "kat",
-                
-                    // Additional reserved keywords
-                    "in"
-                ];
-                
                 const transformedTokens = [];
                 let buffer = [];
 
                 tokens.forEach((token, index) => {
                     const isAlphabeticOrNumeric = /^[a-zA-Z]+$/.test(token); // Check if token is alphabetic
-                    const isReserved = reservedKeywords.includes(token);
+
+                    // Check if token is a reserved keyword
+                    let isReserved = false;
+                    if (isAlphabeticOrNumeric)
+                    {
+                        try {
+                            math.evaluate(token);
+                            isReserved = true;
+                        } catch (e) {
+                            //console.log(`${token} not a known constant?`)
+                        }
+                    }
 
                     if (!isAlphabeticOrNumeric || isReserved) {
                         if (buffer.length) {
@@ -285,6 +227,55 @@
             }
 
             /**
+             * Extracts the base and quote identifiers from a given ratio definition string in the formats `XXX / YYY` or `XXX/YYY`.
+             * @param {string} str - The ratio definition string to be parsed.
+             * @returns {object|null} - An object with the base and quote identifiers or null if the format is invalid.
+             */
+            function extractPairRatioDefinition(str) {
+                // Regular expression to match both ratio definition formats with capturing groups
+                const ratioDefinitionRegex = /^([A-Za-z]+) *\/ *([A-Za-z]+)$/i;
+                const match = str.trim().match(ratioDefinitionRegex);
+
+                if (match === null)
+                    return null;
+
+                return {base: match[1], quote: match[2]};
+            }
+
+            /**
+             * Checks if a given string conforms to the valid ratio definition format of `XXX / YYY`.
+             * 
+             * @param {string} str - The string to be validated.
+             * @param {object} scope - The current math.js scope containing defined variables.
+             * @returns {boolean} - True if the string matches the valid ratio definition format, otherwise false.
+             * 
+             * This function was originally designed to support currency pair definitions like `XXX / YYY` or `XXX/YYY`.
+             * It has been extended to support longer unit identifiers, such as `EUR/EURincGST`. 
+             * Note: In math.js, only alphanumeric characters are allowed in unit definitions.
+             * 
+             * The function also checks against the provided scope to ensure that the base and quote from the ratio definition
+             * are not already defined as variables. This is to prevent overwriting existing variables or 
+             * inadvertently using a variable name as a unit identifier.
+             */
+            function isValidPairRatioDefinition(str, scope) {
+                // Regular expression pattern to validate the ratio definition format
+                const ratioDefinitionRegex = /^[A-Za-z]+ *\/ *[A-Za-z]+$/i;
+
+                // If the string doesn't match the expected pattern, return false
+                if (!ratioDefinitionRegex.test(str.trim())) return false;
+
+                // Extract the base and quote from the string
+                const ratioDefinition = extractPairRatioDefinition(str);
+                if (!ratioDefinition) return false;
+
+                // Check if either the base or quote is already defined in the provided scope as a variable
+                if (ratioDefinition.base in scope || ratioDefinition.quote in scope) return false;
+                
+                // If all checks pass, return true
+                return true;
+            }
+
+            /**
              * Determines if the provided string represents an empty slot or a placeholder
              * @param {string} str - The string to be checked.
              * @returns {boolean} - True if the string is empty, contains only whitespace, or is a '?', otherwise false.
@@ -311,8 +302,10 @@
                     return acc + (char === '\t' ? 4 : 1);
                 }, 0);
             }
+
             function math_evaluate(str, scope) {
-                const normalisedStr = convertNaturalMathToMathJsSyntax(str);
+                const normalisedStr = convertNaturalMathToMathJsSyntax(str).trim();
+                //console.log(`evaluating '${normalisedStr}'`)
                 return math.evaluate(normalisedStr, scope)
             }
 
@@ -372,7 +365,23 @@
                         if (parts.length >= 2) {
                             this.totalCalculations++;
                             //console.log("Initial Scope:", scope);
-                            if (isExpression(leftPart) && (isOutputResult(rightPart) || isEmpty(rightPart) || (!isExpression(rightPart) && !isVariable(leftPart)))) {
+                            if (isValidPairRatioDefinition(leftPart, scope) && (isOutputResult(rightPart) || isEmpty(rightPart))) {
+                                const quotation = parseFloat(rightPart); // Convert the quotation string to a float
+                                if (!isNaN(quotation))
+                                {
+                                    const currencypair = extractPairRatioDefinition(leftPart);
+                                    //console.log(`Base currency: ${currencypair.base}`);
+                                    //console.log(`Quote currency: ${currencypair.quote}`);
+                                    //console.log(`Currency Quotation: ${quotation}`);
+                                    // Check and create base currency if it doesn't exist
+                                    if (!math.Unit.isValuelessUnit(currencypair.base)) {
+                                        math.createUnit(currencypair.base);
+                                    }
+                                    // Update or create the quote currency
+                                    math.createUnit(currencypair.quote, `${quotation} ${currencypair.base}`, {override: true});
+                                }
+                                newContent += `${allButLast}= ${rightPart}`;
+                            } else if (isExpression(leftPart) && (isOutputResult(rightPart) || isEmpty(rightPart) || (!isExpression(rightPart) && !isVariable(leftPart)))) {
                                 // Case: Pure Mathematical Expression (e.g., "5 + 3 = 8" or "5 + 3 =" or "5 + 3 = <corrupted output>")
                                 //console.log("Pure Mathematical Expression:", line);
                                 lastEvaluatedAnswer = math_evaluate(allButLast, scope);
@@ -454,7 +463,7 @@
                                 math_evaluate(line, scope); 
                                 newContent += `${allButLast}= ${rightPart}`;
                             } else {
-                                console.log("Unhandled Heuristic Debug:", line, isOutputResult(leftPart), isOutputResult(rightPart), isExpression(leftPart), isExpression(rightPart), isVariable(leftPart), isVariable(rightPart), isFunctionDefinition(leftPart));
+                                console.log("Unhandled Heuristic Debug:", line, isOutputResult(leftPart), isOutputResult(rightPart), isExpression(leftPart), isExpression(rightPart), isVariable(leftPart), isVariable(rightPart));
                                 console.log("Split Parts:", leftPart, " :: ", rightPart);
                                 console.log("MathJS Syntax:", convertNaturalMathToMathJsSyntax(line));
                                 const normalisedStr = convertNaturalMathToMathJsSyntax(line);
@@ -464,7 +473,7 @@
                             //console.log("Updated Scope:", scope);
                         } else if (!isEmpty(line)) {
                             // Solo expression outputs nothing but is calculated anyway if valid expression or result
-                            // Unless it's a `<variable> : <result>`
+                            // Unless it's a `<variable> : <result>` in which it is an explicit result output
                             
                             // Split each line by ':' to determine its structure
                             const parts = line.split(/(?<!\:)\:(?!\:)/);

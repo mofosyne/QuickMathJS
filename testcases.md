@@ -509,3 +509,34 @@ f(x) = 2 * x
 result = f(3)
 result : 6
 ```
+
+### Test Case 26: Allow for currency pairs and pair ratios (Tip: only alphanumeric characters are allowed in unit names):
+**Given:**
+```
+# Glimmer to Shimmer
+GLM/SHM = 50
+5 SHM to GLM = ?
+
+# Euros to US Dollars
+EUR/USD = 1.25
+5 USD to EUR = ?
+
+# Euros incusive of GST (10% gst tax)
+EURincGST/EUR = 1.1
+10.0 EUR in EURincGST = 11 EURincGST
+```
+
+**Expect:**
+```
+# Glimmer to Shimmer
+GLM/SHM = 50
+5 SHM to GLM = 250 GLM
+
+# Euros to US Dollars
+EUR/USD = 1.25
+5 USD to EUR = 6.25 EUR
+
+# Euros incusive of GST (10% gst tax)
+EURincGST/EUR = 1.1
+10.0 EUR in EURincGST = 11 EURincGST
+```
