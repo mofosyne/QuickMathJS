@@ -51,11 +51,10 @@ function processFile(filePath, useSections, callback) {
 function runTestCaseFile(testCaseFilePath) {
   const fullPath = path.join(__dirname, testCaseFilePath);
   const content = fs.readFileSync(fullPath, 'utf-8');
-  const regex = /### (.+?)\n\*\*Given:\*\*\n```\n([\s\S]+?)\n```\n\n\*\*Expect:\*\*\n```\n([\s\S]+?)\n```/g;
+  const regex = /### (.+?)\n\*\*Given:\*\*\n```(?:.*?)\n([\s\S]+?)\n```\n\n\*\*Expect:\*\*\n```(?:.*?)\n([\s\S]+?)\n```$/gm;
   const tests = [];
 
   console.log(`TEST CASE FILE: ${testCaseFilePath}`);
-
 
   let match;
   while ((match = regex.exec(content)) !== null) {
