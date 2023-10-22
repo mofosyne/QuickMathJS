@@ -126,6 +126,15 @@
             }
 
             /**
+             * Determines if the provided string represents an empty slot or a placeholder
+             * @param {string} str - The string to be checked.
+             * @returns {boolean} - True if the string is empty, contains only whitespace, or is a '?', otherwise false.
+             */
+            function isEmpty(str) {
+                return str.trim() === '' || str.trim() === '?';
+            }
+
+            /**
              * Determines if a given string can be parsed as a symbolic name (i.e., a variable) 
              * without throwing an error using the `math.js` library.
              * @param {string} str - The string to be checked.
@@ -143,40 +152,54 @@
 
             /**
              * Determines if a given string represents a valid numerical result. 
-             * This includes checking for standard numeric representations as well 
-             * as binary and hexadecimal formats.
+             * The function checks for standard numeric representations as well as implicit multiplications 
+             * between constants and symbols (e.g., "2m" which is internally "2 * m").
              * 
              * Developer Notes:
-             * 1. This function does not utilize math.parse() and node.isConstantNode to determine if a 
-             *    string represents a constant. This decision was based on issues encountered with math.js' 
-             *    handling of certain expressions.
-             * 2. Instead, a combination of regular expressions and direct evaluation (math.evaluate()) 
-             *    has been found to be more reliable for this specific use case. 
-             * 3. The method tries to evaluate the string and sees if the result matches the input.
-             *    If they match, it's a valid result; otherwise, it's not. This method is more
-             *    versatile than checking against specific node types.
+             * - The function does not rely solely on math.parse() and node.isConstantNode to determine 
+             *   if a string represents a constant due to issues with math.js' handling of certain expressions.
+             * - Instead, a combination of the mathjs parser and specific checks for node types is utilized.
+             *   This approach was found to be more reliable and versatile for the intended use case.
+             * - Special handling is incorporated for certain cases:
+             *   1. Empty strings are treated distinctly as they are parsed as constants by mathjs.
+             *   2. Strings representing variables (e.g., 'number_of_cats') are excluded.
+             *   3. Expressions involving operations (e.g., 2.1 + 3.0) are excluded.
              *
              * @param {string} str - The string to be checked.
              * @returns {boolean} - True if the string is a valid result, otherwise false.
              */
             function isOutputResult(str) {
-                const normalisedStr = convertNaturalMathToMathJsSyntax(str);
-                if (normalisedStr in scope || isVariable(normalisedStr)) {
-                    // Don't classify known variables or strings that match variable format as results
-                    return false;
-                }
-                // Check for binary format
-                if (/^\s*0b[01]+\s*$/.test(normalisedStr)) {
-                    return true;
-                }
-                // Check for hexadecimal format
-                if (/^\s*0x[\da-fA-F]+\s*$/.test(normalisedStr)) {
-                    return true;
-                }
-                // If no special numeral systems matched, then evaluate and compare
                 try {
-                    const evaluation = math.evaluate(normalisedStr);
-                    return String(normalisedStr) === String(evaluation);
+                    const normalisedStr = convertNaturalMathToMathJsSyntax(str);
+                    const node = math.parse(normalisedStr);
+                    
+                    // Check if string is considered empty
+                    // Note: Internally mathjs parser consider empty string as constant
+                    //       hence we need a specific check for this
+                    if (isEmpty(str))
+                        return false;
+
+                    // Check if it's a variable by itself e.g. 'number_of_cats'
+                    if (node.isSymbolNode)
+                        return false;
+
+                    if (node.isOperatorNode) {
+                        // Check for implicit multiplication between a constant and a unit symbol 
+                        // e.g. '2m' which is actually internally '2 * m'
+                        if (node.implicit && node.args.length === 2) {
+                            if (node.args[0].isConstantNode && node.args[1].isSymbolNode)
+                                return true;
+                        }
+
+                        // Is more likely to be an actual expression e.g. 2.1 + 3.0
+                        return false;
+                    }
+
+                    // Check for simple constants (e.g. 0b1010, 0x2234, 23.3)
+                    if (node.isConstantNode)
+                        return true;
+
+                    return false;
                 } catch (e) {
                     return false;
                 }
@@ -273,15 +296,6 @@
                 
                 // If all checks pass, return true
                 return true;
-            }
-
-            /**
-             * Determines if the provided string represents an empty slot or a placeholder
-             * @param {string} str - The string to be checked.
-             * @returns {boolean} - True if the string is empty, contains only whitespace, or is a '?', otherwise false.
-             */
-            function isEmpty(str) {
-                return str.trim() === '' || str.trim() === '?';
             }
 
             /**

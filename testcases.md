@@ -540,3 +540,15 @@ EUR/USD = 1.25
 EURincGST/EUR = 1.1
 10.0 EUR in EURincGST = 11 EURincGST
 ```
+
+### Test Case 26: Check that exponent results with unit is recognised as a result (Edge Case):
+**Given:**
+```
+4.6 MB in B = ?
+```
+
+**Expect:**
+```
+4.6 MB in B = 4.6e+6 B
+```
+
