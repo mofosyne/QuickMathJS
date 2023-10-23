@@ -85,46 +85,69 @@
              * @returns {string} - Transformed expression suitable for math.js evaluation.
              */
             function convertNaturalMathToMathJsSyntax(line) {
+                // Add spaces after '(' and before ')'
+                line = line.replace(/(\()|(\))/g, match => match === '(' ? `${match} ` : ` ${match}`);
+            
+                // Add spaces after '[' and before ']'
+                line = line.replace(/(\[)|(\])/g, match => match === '[' ? `${match} ` : ` ${match}`);
+            
+                // Add spaces after '{' and before '}'
+                line = line.replace(/(\{)|(\})/g, match => match === '{' ? `${match} ` : ` ${match}`);
+            
                 // Split the line into tokens
                 const tokens = line.split(/\s+/);
-
+            
                 const transformedTokens = [];
                 let buffer = [];
-
+            
                 tokens.forEach((token, index) => {
                     const isAlphabeticOrNumeric = /^[a-zA-Z]+$/.test(token); // Check if token is alphabetic
-
+            
                     // Check if token is a reserved keyword
                     let isReserved = false;
-                    if (isAlphabeticOrNumeric)
-                    {
-                        try {
-                            math.evaluate(token);
-                            isReserved = true;
-                        } catch (e) {
-                            //console.log(`${token} not a known constant?`)
+                    if (isAlphabeticOrNumeric) {
+                        if (math.Unit.isValuelessUnit(token))
+                        {
+                            // Currencies, Weights not reserved...
+                            // Note: This is so you can do stuff like 'EUR inc gst'
+                            //       or name things 'steering degree'
+                            if (token == 'in' || token == 'to')
+                            {
+                                // These definitely have special meaning in relation to unit conversion in math.js
+                                // so do not break this behaviour
+                                isReserved = true;
+                            }
+                        } else {
+                            try {
+                                // We check if this is a known constant
+                                // Note: We might remove this if in practice we dont do implicit variable phrase and unit name... 
+                                math.evaluate(token);
+                                isReserved = true;
+                            } catch (e) {
+                                //console.log(`${token} not a known constant?`)
+                            }
                         }
                     }
-
+            
                     if (!isAlphabeticOrNumeric || isReserved) {
                         if (buffer.length) {
-                            transformedTokens.push(buffer.join('_'));
+                            transformedTokens.push(buffer.join(''));
                             buffer = [];
                         }
                         transformedTokens.push(token);
                     } else {
                         buffer.push(token);
                     }
-
+            
                     // If it's the last token, clear the buffer
                     if (index === tokens.length - 1 && buffer.length) {
-                        transformedTokens.push(buffer.join('_'));
+                        transformedTokens.push(buffer.join(''));
                     }
                 });
-
+            
                 return transformedTokens.join(' ');
             }
-
+            
             /**
              * Determines if the provided string represents an empty slot or a placeholder
              * @param {string} str - The string to be checked.
@@ -258,9 +281,9 @@
                 // Regular expression to match both ratio definition formats with capturing groups
                 const ratioDefinitionRegex = /^([A-Za-z]+) *\/ *([A-Za-z]+)$/i;
                 const match = str.trim().match(ratioDefinitionRegex);
-
+                
                 if (match === null)
-                    return null;
+                return null;
 
                 return {base: match[1], quote: match[2]};
             }
@@ -281,19 +304,24 @@
              * inadvertently using a variable name as a unit identifier.
              */
             function isValidPairRatioDefinition(str, scope) {
+                const normalisedStr = convertNaturalMathToMathJsSyntax(str).trim();
+                
                 // Regular expression pattern to validate the ratio definition format
                 const ratioDefinitionRegex = /^[A-Za-z]+ *\/ *[A-Za-z]+$/i;
-
+                
                 // If the string doesn't match the expected pattern, return false
-                if (!ratioDefinitionRegex.test(str.trim())) return false;
-
+                if (!ratioDefinitionRegex.test(normalisedStr.trim()))
+                    return false;
+                
                 // Extract the base and quote from the string
-                const ratioDefinition = extractPairRatioDefinition(str);
-                if (!ratioDefinition) return false;
+                const ratioDefinition = extractPairRatioDefinition(normalisedStr);
+                if (!ratioDefinition)
+                    return false;
 
                 // Check if either the base or quote is already defined in the provided scope as a variable
-                if (ratioDefinition.base in scope || ratioDefinition.quote in scope) return false;
-                
+                if (ratioDefinition.base in scope || ratioDefinition.quote in scope)
+                    return false;
+            
                 // If all checks pass, return true
                 return true;
             }
@@ -383,16 +411,17 @@
                                 const quotation = parseFloat(rightPart); // Convert the quotation string to a float
                                 if (!isNaN(quotation))
                                 {
-                                    const currencypair = extractPairRatioDefinition(leftPart);
-                                    //console.log(`Base currency: ${currencypair.base}`);
-                                    //console.log(`Quote currency: ${currencypair.quote}`);
-                                    //console.log(`Currency Quotation: ${quotation}`);
+                                    const normalisedStr = convertNaturalMathToMathJsSyntax(leftPart).trim();
+                                    const pairRatio = extractPairRatioDefinition(normalisedStr);
+                                    //console.log(`Base unit: ${pairRatio.base}`);
+                                    //console.log(`Quote unit: ${pairRatio.quote}`);
+                                    //console.log(`unit quote: ${quotation}`);
                                     // Check and create base currency if it doesn't exist
-                                    if (!math.Unit.isValuelessUnit(currencypair.base)) {
-                                        math.createUnit(currencypair.base);
+                                    if (!math.Unit.isValuelessUnit(pairRatio.base)) {
+                                        math.createUnit(pairRatio.base);
                                     }
                                     // Update or create the quote currency
-                                    math.createUnit(currencypair.quote, `${quotation} ${currencypair.base}`, {override: true});
+                                    math.createUnit(pairRatio.quote, `${quotation} ${pairRatio.base}`, {override: true});
                                 }
                                 newContent += `${allButLast}= ${rightPart}`;
                             } else if (isExpression(leftPart) && (isOutputResult(rightPart) || isEmpty(rightPart) || (!isExpression(rightPart) && !isVariable(leftPart)))) {

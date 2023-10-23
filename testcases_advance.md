@@ -1,5 +1,22 @@
 ## Refactored and Enhanced Test Cases for the Calculate function
 
+### Test Case: Variable Phrase in unit conversion and functions (Edge Case)
+**Given:**
+```
+EUR inc GST / EUR = 1.1
+10.0 EUR in EUR inc GST = ?
+driver steering angle = 34
+sin(driver steering angle) = ?
+```
+
+**Expect:**
+```
+EUR inc GST / EUR = 1.1
+10.0 EUR in EUR inc GST = 11 EURincGST
+driver steering angle = 34
+sin(driver steering angle) = 0.5290826861200238
+```
+
 ### Test Case: Complex Variable Assignments with Cascading References
 **Given:**
 ```
