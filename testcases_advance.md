@@ -5,7 +5,11 @@
 ```
 EUR inc GST / EUR = 1.1
 10.0 EUR in EUR inc GST = ?
-driver steering angle = 34
+EURincGST / EUR = 1.1
+10.0 EUR in EUR inc GST = ?
+driver steering angle = 34 degree
+sin(driver steering angle) = ?
+driver steering angle = 34 rad
 sin(driver steering angle) = ?
 ```
 
@@ -13,7 +17,11 @@ sin(driver steering angle) = ?
 ```
 EUR inc GST / EUR = 1.1
 10.0 EUR in EUR inc GST = 11 EUR inc GST
-driver steering angle = 34
+EURincGST / EUR = 1.1
+10.0 EUR in EUR inc GST = 11 EURincGST
+driver steering angle = 34 degree
+sin(driver steering angle) = 0.5591929034707469
+driver steering angle = 34 rad
 sin(driver steering angle) = 0.5290826861200238
 ```
 

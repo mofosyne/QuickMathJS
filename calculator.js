@@ -31,33 +31,6 @@
         totalResultsProvided: 0,  // Number of lines with results provided
         unitNameExpansion: {},  // Mapping between unit names and it's expanded form if needed
         initialise() {
-            // Load at least all known currency
-            // Note: In the future we could try allowing for people to use their own API key from fixer.io 
-            //       and use this example https://mathjs.org/examples/browser/currency_conversion.html to load all the 
-            //       latest currency conversion rate as needed.
-            const currencies = [
-                'AED', 'AFN', 'ALL', 'AMD', 'ANG', 'AOA', 'ARS', 'AUD', 'AWG', 'AZN',
-                'BAM', 'BBD', 'BDT', 'BGN', 'BHD', 'BIF', 'BMD', 'BND', 'BOB', 'BRL',
-                'BSD', 'BTC', 'BTN', 'BWP', 'BYN', 'BYR', 'BZD', 'CAD', 'CDF', 'CHF',
-                'CLF', 'CLP', 'CNY', 'COP', 'CRC', 'CUC', 'CUP', 'CVE', 'CZK', 'DJF',
-                'DKK', 'DOP', 'DZD', 'EGP', 'ERN', 'ETB', 'EUR', 'FJD', 'FKP', 'GBP',
-                'GEL', 'GGP', 'GHS', 'GIP', 'GMD', 'GNF', 'GTQ', 'GYD', 'HKD', 'HNL',
-                'HRK', 'HTG', 'HUF', 'IDR', 'ILS', 'IMP', 'INR', 'IQD', 'IRR', 'ISK',
-                'JEP', 'JMD', 'JOD', 'JPY', 'KES', 'KGS', 'KHR', 'KMF', 'KPW', 'KRW',
-                'KWD', 'KYD', 'KZT', 'LAK', 'LBP', 'LKR', 'LRD', 'LSL', 'LTL', 'LVL',
-                'LYD', 'MAD', 'MDL', 'MGA', 'MKD', 'MMK', 'MNT', 'MOP', 'MRO', 'MUR',
-                'MVR', 'MWK', 'MXN', 'MYR', 'MZN', 'NAD', 'NGN', 'NIO', 'NOK', 'NPR',
-                'NZD', 'OMR', 'PAB', 'PEN', 'PGK', 'PHP', 'PKR', 'PLN', 'PYG', 'QAR',
-                'RON', 'RSD', 'RUB', 'RWF', 'SAR', 'SBD', 'SCR', 'SDG', 'SEK', 'SGD',
-                'SHP', 'SLE', 'SLL', 'SOS', 'SSP', 'SRD', 'STD', 'SYP', 'SZL', 'THB',
-                'TJS', 'TMT', 'TND', 'TOP', 'TRY', 'TTD', 'TWD', 'TZS', 'UAH', 'UGX',
-                'USD', 'UYU', 'UZS', 'VEF', 'VES', 'VND', 'VUV', 'WST', 'XAF', 'XAG',
-                'XAU', 'XCD', 'XDR', 'XOF', 'XPF', 'YER', 'ZAR', 'ZMK', 'ZMW', 'ZWL'
-            ];
-            currencies.forEach(currency => {
-                // Reload 
-                math.createUnit(currency);
-            });
         },
         // Function to calculate content with math sections
         calculateWithMathSections(incomingContent) {
@@ -340,20 +313,76 @@
                 return true;
             }
 
+            /**
+             * Captures the unit string from the end of the input string.
+             * @param {string} inputString - The input string containing a unit string at the end.
+             * @returns {string|null} - The captured unit string or null if not found.
+             * 
+             * Design Note: This function employs an exactish check to avoid inadvertent matches.
+             */
             function captureUnitsFromString(inputString) {
-                // Define a regular expression pattern to capture the unit string
-                const unitPattern = /[a-zA-Z ]+$/;
-            
-                // Use the regular expression to find the unit string at the end of the input string
-                const match = inputString.match(unitPattern);
-            
-                if (match === null)
+
+                function checkAndStrip(regex, inputString) {
+                    if (!(regex.test(inputString)))
+                        return null;
+                    return inputString.replace(regex, '').trim();
+                }
+                
+                function checkAndStripAll(inputString) {
+                    // Strip Matrices
+                    outputString = checkAndStrip(/^\[.*?\]/, inputString);
+                    if (outputString !== null) return outputString;
+                    // Strip Binary
+                    outputString = checkAndStrip(/^0[bB][01]+\s*/, inputString); 
+                    if (outputString !== null) return outputString;
+                    // Strip Hex
+                    outputString = checkAndStrip(/^0[xX][0-9a-fA-F]+\s*/, inputString); 
+                    if (outputString !== null) return outputString;
+                    // Strip Octal
+                    outputString = checkAndStrip(/^0[oO][0-7]+\s*/, inputString); 
+                    if (outputString !== null) return outputString;
+                    // Strip Numerical (int, float, exponent)
+                    outputString = checkAndStrip(/^[+-]?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?/, inputString); 
+                    if (outputString !== null) return outputString;
+                    // No matches found anymore, no supported values present
                     return null;
-            
-                // Extract the matched unit string
-                const unitString = match[0].trim();
-                return unitString;
+                }
+
+                // Check if mandatory value is present and also strip it out
+                unitRawString = checkAndStripAll(inputString);
+                if (unitRawString === null)
+                    return null;
+
+                // Check if the remaining string is alphabet-only (plus spaces)
+                if (!(/^[a-zA-Z ]+$/.test(unitRawString)))
+                    return null;
+                
+                return unitRawString.trim();
             }
+
+            /**
+             * Captures and processes a unit assignment from the input string.
+             * @param {string} inputString - The input string containing a unit assignment.
+             */
+            const assignmentUnitCapture = (inputString) => {
+
+                // Capture the full unit string from the input
+                // Note: Exit if assignment is missing value, we expect a value if assignment is performed.
+                const fullUnitString = captureUnitsFromString(inputString);
+                if (fullUnitString === null)
+                    return;
+
+                // Normalize the unit name for consistent representation and math.js compatibility
+                const normalizedUnitName = convertNaturalMathToMathJsSyntax(fullUnitString);
+
+                // Check and create the base currency unit if it doesn't exist
+                if (!math.Unit.isValuelessUnit(normalizedUnitName)) {
+                    math.createUnit(normalizedUnitName);
+                }
+
+                // Capture the unit name expansion
+                this.captureUnitExpandedRepresentation(normalizedUnitName, fullUnitString);
+            };
 
             /**
              * Determines the effective indentation length of a line. 
@@ -498,6 +527,7 @@
                                 } else {
                                     // Regular assignment
                                     //console.log("Variable Assignment:", line);
+                                    assignmentUnitCapture(rightPart);
                                     lastEvaluatedAnswer = math_evaluate(line, scope);
                                     // Error handling for Infinity. Possible Division by zero, as JavaScript will return Infinity
                                     if (lastEvaluatedAnswer === Infinity) {
