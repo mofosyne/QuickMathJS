@@ -12,7 +12,7 @@ sin(driver steering angle) = ?
 **Expect:**
 ```
 EUR inc GST / EUR = 1.1
-10.0 EUR in EUR inc GST = 11 EURincGST
+10.0 EUR in EUR inc GST = 11 EUR inc GST
 driver steering angle = 34
 sin(driver steering angle) = 0.5290826861200238
 ```
@@ -249,7 +249,7 @@ EUR/USD = 1.30
 
 # Euros incusive of GST (10% gst tax)
 EURincGST/EUR = 1.1
-10.0 EUR in EURincGST = 11 EURincGST
+10.0 EUR in EURincGST = ?
 ```
 
 **Expect:**

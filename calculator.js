@@ -29,6 +29,7 @@
     const calculator = {
         totalCalculations: 0,  // Number of lines where calculations are performed
         totalResultsProvided: 0,  // Number of lines with results provided
+        unitNameExpansion: {},  // Mapping between unit names and it's expanded form if needed
         initialise() {
             // Load at least all known currency
             // Note: In the future we could try allowing for people to use their own API key from fixer.io 
@@ -66,6 +67,32 @@
                 const result = this.calculate(mathContent);
                 return '```math' + attributes + '\n' + result + '\n```';
             });
+        },
+        captureUnitExpandedRepresentation(normalisedPairRatio, expandedPairRatio) {
+            if ((normalisedPairRatio === expandedPairRatio) && !this.unitNameExpansion.hasOwnProperty(normalisedPairRatio))
+                return;
+
+            this.unitNameExpansion[normalisedPairRatio] = expandedPairRatio;
+        },
+        replaceWithUnitExpandedRepresentation(str) {
+            
+            // Split into tokens by spaces
+            // Always convert to string as this is only going to be used for output formatting   
+            const words = str.toString().split(/\s+/);
+
+            // Replace tokens with expanded representations
+            const replacedWords = words.map(word => {
+                // Check if the word is a unit token and has an expanded representation
+                if (this.unitNameExpansion.hasOwnProperty(word)) {
+                    return this.unitNameExpansion[word];
+                } else {
+                    return word; // Keep the original word
+                }
+            });
+
+            // Join the replaced words back into a string
+            const replacedString = replacedWords.join(' ');
+            return replacedString;
         },
         // Function to calculate content without math sections
         calculate(incomingContent) {
@@ -273,22 +300,6 @@
             }
 
             /**
-             * Extracts the base and quote identifiers from a given ratio definition string in the formats `XXX / YYY` or `XXX/YYY`.
-             * @param {string} str - The ratio definition string to be parsed.
-             * @returns {object|null} - An object with the base and quote identifiers or null if the format is invalid.
-             */
-            function extractPairRatioDefinition(str) {
-                // Regular expression to match both ratio definition formats with capturing groups
-                const ratioDefinitionRegex = /^([A-Za-z]+) *\/ *([A-Za-z]+)$/i;
-                const match = str.trim().match(ratioDefinitionRegex);
-                
-                if (match === null)
-                return null;
-
-                return {base: match[1], quote: match[2]};
-            }
-
-            /**
              * Checks if a given string conforms to the valid ratio definition format of `XXX / YYY`.
              * 
              * @param {string} str - The string to be validated.
@@ -312,18 +323,36 @@
                 // If the string doesn't match the expected pattern, return false
                 if (!ratioDefinitionRegex.test(normalisedStr.trim()))
                     return false;
-                
-                // Extract the base and quote from the string
-                const ratioDefinition = extractPairRatioDefinition(normalisedStr);
-                if (!ratioDefinition)
+
+                const parts = normalisedStr.split('/');
+                if (parts.length !== 2)
                     return false;
 
                 // Check if either the base or quote is already defined in the provided scope as a variable
-                if (ratioDefinition.base in scope || ratioDefinition.quote in scope)
+                const pairRatioBase = parts[0].trim();
+                const pairRatioQuote = parts[1].trim();
+                //console.log(`Base unit: ${pairRatioBase}`);
+                //console.log(`Quote unit: ${pairRatioQuote}`);
+                if (pairRatioBase in scope || pairRatioQuote in scope)
                     return false;
             
                 // If all checks pass, return true
                 return true;
+            }
+
+            function captureUnitsFromString(inputString) {
+                // Define a regular expression pattern to capture the unit string
+                const unitPattern = /[a-zA-Z ]+$/;
+            
+                // Use the regular expression to find the unit string at the end of the input string
+                const match = inputString.match(unitPattern);
+            
+                if (match === null)
+                    return null;
+            
+                // Extract the matched unit string
+                const unitString = match[0].trim();
+                return unitString;
             }
 
             /**
@@ -409,19 +438,29 @@
                             //console.log("Initial Scope:", scope);
                             if (isValidPairRatioDefinition(leftPart, scope) && (isOutputResult(rightPart) || isEmpty(rightPart))) {
                                 const quotation = parseFloat(rightPart); // Convert the quotation string to a float
-                                if (!isNaN(quotation))
+                                const parts = leftPart.split('/');
+                                if (!isNaN(quotation) && (parts.length === 2))
                                 {
-                                    const normalisedStr = convertNaturalMathToMathJsSyntax(leftPart).trim();
-                                    const pairRatio = extractPairRatioDefinition(normalisedStr);
-                                    //console.log(`Base unit: ${pairRatio.base}`);
-                                    //console.log(`Quote unit: ${pairRatio.quote}`);
+                                    // Check if either the base or quote is already defined in the provided scope as a variable
+                                    const pairRatioBase = parts[0].trim();
+                                    const pairRatioQuote = parts[1].trim();
+                                    const normalisedPairRatioBase = convertNaturalMathToMathJsSyntax(pairRatioBase);
+                                    const normalisedPairRatioQuote = convertNaturalMathToMathJsSyntax(pairRatioQuote);
+                                    //console.log(`Base unit: ${normalisedPairRatioBase}`);
+                                    //console.log(`Quote unit: ${normalisedPairRatioQuote}`);
                                     //console.log(`unit quote: ${quotation}`);
+
                                     // Check and create base currency if it doesn't exist
-                                    if (!math.Unit.isValuelessUnit(pairRatio.base)) {
-                                        math.createUnit(pairRatio.base);
+                                    if (!math.Unit.isValuelessUnit(normalisedPairRatioBase)) {
+                                        math.createUnit(normalisedPairRatioBase);
                                     }
+
                                     // Update or create the quote currency
-                                    math.createUnit(pairRatio.quote, `${quotation} ${pairRatio.base}`, {override: true});
+                                    math.createUnit(normalisedPairRatioQuote, `${quotation} ${normalisedPairRatioBase}`, {override: true});
+
+                                    // Capture unit name expansion
+                                    this.captureUnitExpandedRepresentation(normalisedPairRatioBase, pairRatioBase);
+                                    this.captureUnitExpandedRepresentation(normalisedPairRatioQuote, pairRatioQuote);
                                 }
                                 newContent += `${allButLast}= ${rightPart}`;
                             } else if (isExpression(leftPart) && (isOutputResult(rightPart) || isEmpty(rightPart) || (!isExpression(rightPart) && !isVariable(leftPart)))) {
@@ -433,7 +472,7 @@
                                 if (lastEvaluatedAnswer === Infinity) {
                                     throw new Error("Infinity. Possible Division by zero");
                                 }
-                                newContent += `${allButLast}= ${lastEvaluatedAnswer}`;
+                                newContent += `${allButLast}= ${this.replaceWithUnitExpandedRepresentation(lastEvaluatedAnswer)}`;
                             } else if (isOutputResult(leftPart) && (isOutputResult(rightPart) || isEmpty(rightPart))) {
                                 // Case: Direct constants (e.g., "0b1100100 =")
                                 //console.log("Case: Direct constants:", line);
@@ -443,7 +482,7 @@
                                 if (lastEvaluatedAnswer === Infinity) {
                                     throw new Error("Infinity. Possible Division by zero");
                                 }
-                                newContent += `${allButLast}= ${lastEvaluatedAnswer}`;
+                                newContent += `${allButLast}= ${this.replaceWithUnitExpandedRepresentation(lastEvaluatedAnswer)}`;
                             } else if (isVariable(leftPart) && (isExpression(rightPart) || isOutputResult(rightPart))) {
                                 // Case: Variable Assignment (e.g., "a = 1 + 1" or "a = 4") Or Result (e.g., "    a = 4") 
                                 if (indentationLevel >= 2) {
@@ -455,7 +494,7 @@
                                     if (lastEvaluatedAnswer === Infinity) {
                                         throw new Error("Infinity. Possible Division by zero");
                                     }
-                                    newContent += `${allButLast}= ${lastEvaluatedAnswer}`;
+                                    newContent += `${allButLast}= ${this.replaceWithUnitExpandedRepresentation(lastEvaluatedAnswer)}`;
                                 } else {
                                     // Regular assignment
                                     //console.log("Variable Assignment:", line);
@@ -485,7 +524,7 @@
                                 if (lastEvaluatedAnswer === Infinity) {
                                     throw new Error("Infinity. Possible Division by zero");
                                 }
-                                newContent += `${allButLast}= ${lastEvaluatedAnswer}`;
+                                newContent += `${allButLast}= ${this.replaceWithUnitExpandedRepresentation(lastEvaluatedAnswer)}`;
                             } else if (isEmpty(leftPart) && (isOutputResult(rightPart) || isEmpty(rightPart))) {
                                 //console.log("Case: Implied Results:", line, `(indent: ${indentationLevel})`);
                                 this.totalResultsProvided++;
@@ -499,7 +538,7 @@
                                     }
                                     lastUnevaluatedLine = null;
                                 }
-                                newContent += `${allButLast}= ${lastEvaluatedAnswer}`;
+                                newContent += `${allButLast}= ${this.replaceWithUnitExpandedRepresentation(lastEvaluatedAnswer)}`;
                             } else if (isFunctionCall(leftPart) && (isOutputResult(rightPart) || isVariable(rightPart) || (isExpression(rightPart)))) {
                                 // Case: Function Definition (e.g., "b(a) = a*2")
                                 //console.log("Case: Function Definition:", line);
@@ -531,7 +570,7 @@
                             const allButLast = parts.slice(0, -1).join(':');
                             if ((parts.length == 2) && (isVariable(leftPart) || isExpression(leftPart)) && (isEmpty(rightPart) || isOutputResult(rightPart))) {
                                 lastEvaluatedAnswer = math_evaluate(leftPart, scope);
-                                newContent += `${allButLast}: ${lastEvaluatedAnswer}`;
+                                newContent += `${allButLast}: ${this.replaceWithUnitExpandedRepresentation(lastEvaluatedAnswer)}`;
                             } else {
                                 lastUnevaluatedLine = line;
                                 newContent += `${line}`;
@@ -552,6 +591,7 @@
                     //console.log("ERR:", e.message);
                     //console.log("ERRLINE:", line);
                     //console.log("Current Scope:", scope);
+                    //console.log(e.stack.toString());
                 }
 
                 // Always append a newline unless it's the last line
