@@ -101,44 +101,41 @@
                 let buffer = [];
             
                 tokens.forEach((token, index) => {
-                    const isAlphabeticOrNumeric = /^[a-zA-Z]+$/.test(token); // Check if token is alphabetic
-            
-                    // Check if token is a reserved keyword
-                    let isReserved = false;
-                    if (isAlphabeticOrNumeric) {
-                        if (math.Unit.isValuelessUnit(token))
-                        {
-                            // Currencies, Weights not reserved...
-                            // Note: This is so you can do stuff like 'EUR inc gst'
-                            //       or name things 'steering degree'
-                            if (token == 'in' || token == 'to')
-                            {
-                                // These definitely have special meaning in relation to unit conversion in math.js
-                                // so do not break this behaviour
-                                isReserved = true;
-                            }
-                        } else {
-                            try {
-                                // We check if this is a known constant (e.g. phi) or function (e.g. xor)
-                                // Note: We might remove this if in practice we dont do implicit variable phrase and unit name... 
-                                math.evaluate(token);
-                                isReserved = true;
-                            } catch (e) {
-                                //console.log(`${token} not a known constant?`)
-                            }
+                    let normaliseThisToken = true;
+                    
+                    // Check if token is alphabetic
+                    if (/^[a-zA-Z]+$/.test(token)) {
+                        // Token consist of only alphabet characters
+
+                        // These keywords have special meanings in math.js
+                        // and may represent implicit functions like '<word> mod <word>'
+                        // which cannot be easily managed using normal operators like '+' or '*'.
+                        const reservedKeywords = ['in', 'to', 'mod', 'not', 'and', 'xor', 'or'];
+
+                        // If the current token is in the list of reserved keywords, we do not want to normalize it.
+                        if (reservedKeywords.includes(token)) {
+                            normaliseThisToken = false;
                         }
+                    } else {
+                        // Not Alphabet so no need to merge these token
+                        // e.g. might be an operator or function
+                        normaliseThisToken = false;
                     }
-            
-                    if (!isAlphabeticOrNumeric || isReserved) {
+
+                    // Process each token based on if it should be normalised or not
+                    if (normaliseThisToken) {
+                        // Normalise these tokens so save for later
+                        buffer.push(token);
+                    } else {
+                        // Don't normalise this token
                         if (buffer.length) {
+                            // Let's normalise any token we found so far 
                             transformedTokens.push(buffer.join(''));
                             buffer = [];
                         }
                         transformedTokens.push(token);
-                    } else {
-                        buffer.push(token);
                     }
-            
+
                     // If it's the last token, clear the buffer
                     if (index === tokens.length - 1 && buffer.length) {
                         transformedTokens.push(buffer.join(''));
