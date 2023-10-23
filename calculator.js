@@ -119,7 +119,7 @@
                             }
                         } else {
                             try {
-                                // We check if this is a known constant
+                                // We check if this is a known constant (e.g. phi) or function (e.g. xor)
                                 // Note: We might remove this if in practice we dont do implicit variable phrase and unit name... 
                                 math.evaluate(token);
                                 isReserved = true;
