@@ -529,7 +529,7 @@
                             // A version of the line but where all part of the expression except for the last part is kept
                             // This will be used if the last part is replaced with the result
                             const allButLast = parts.slice(0, -1).join(':');
-                            if ((parts.length == 2) && isVariable(leftPart) && (isEmpty(rightPart) || isOutputResult(rightPart))) {
+                            if ((parts.length == 2) && (isVariable(leftPart) || isExpression(leftPart)) && (isEmpty(rightPart) || isOutputResult(rightPart))) {
                                 lastEvaluatedAnswer = math_evaluate(leftPart, scope);
                                 newContent += `${allButLast}: ${lastEvaluatedAnswer}`;
                             } else {
