@@ -1,5 +1,35 @@
 ## Edge Test Cases for the Calculate function
 
+### Test Case: Non Simple Unit Type
+**Given:**
+```
+format(1/2, {notation: 'exponential'}) = ?
+format(1/2, {notation: 'exponential'}) : ?
+```
+
+**Expect:**
+```
+format(1/2, {notation: 'exponential'}) = 5e-1
+format(1/2, {notation: 'exponential'}) : 5e-1
+```
+
+### Test Case: Non Simple Unit Type (edge case)
+**Given:**
+```
+a = 4 km/h
+a:
+b = 4 km^2
+b:
+```
+
+**Expect:**
+```
+a = 4 km/h
+a: 4 km / h
+b = 4 km^2
+b: 4 km^2
+```
+
 ### Test Case: Variable Overwrites
 **Given:**
 ```

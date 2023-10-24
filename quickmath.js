@@ -25,6 +25,9 @@ const zlib = require('zlib');
 const path = require('path');
 const { version } = require('./package.json');
 
+require('colors');
+const Diff = require('diff');
+
 function calculateFileContent(content, useSections = false) {
   if (useSections) {
     return webcalc.calculateWithMathSections(content);
@@ -58,8 +61,14 @@ function processTests(tests, testCaseFilePath) {
       } else {
           console.log(`Test ${index + 1} (${test.name}): FAIL`);
           console.log('Given:\n', test.given);
-          console.log('Expected:\n', test.expect);
-          console.log('Got:\n', result);
+          console.log('diff:');
+          const diff = Diff.diffChars(test.expect, result);
+          diff.forEach((part) => {
+            const color = part.added ? 'bgGreen' :
+              part.removed ? 'bgRed' : 'grey';
+              process.stderr.write(part.value[color]);
+          });
+          console.log('\n');
           failures++;
       }
   });

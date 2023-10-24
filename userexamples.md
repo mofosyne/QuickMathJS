@@ -186,6 +186,7 @@ tau/2 = 3.141592653589793
 ### Currency pairs and pair ratios 
 
 Tip: only alphanumeric characters are allowed in unit names
+Note: `EUR inc GST` is automatically converted internally into `EURincGST`
 
 **Given:**
 ```
@@ -199,7 +200,11 @@ EUR/USD = 1.30
 
 # Euros incusive of GST (10% gst tax)
 EURincGST/EUR = 1.1
-10.0 EUR in EURincGST = 11 EURincGST
+10.0 EUR in EURincGST = ?
+
+# Euros incusive of GST (10% gst tax)
+EUR inc GST / EUR = 1.1
+10.0 EUR in EUR inc GST = ?
 ```
 
 **Expect:**
@@ -215,4 +220,37 @@ EUR/USD = 1.30
 # Euros incusive of GST (10% gst tax)
 EURincGST/EUR = 1.1
 10.0 EUR in EURincGST = 11 EURincGST
+
+# Euros incusive of GST (10% gst tax)
+EUR inc GST / EUR = 1.1
+10.0 EUR in EUR inc GST = 11 EUR inc GST
 ```
+
+### Use phrases as variable and define custom units
+
+In this example we define dogs and cats as `fancy animals`.
+Internally we are concating `fancy animals` into `fancyanimals` so it is compatible with math.js .
+Note that `fancyanimals^2` is not expanded, but we opted not to put in the effort to expand it
+as it can be argued that it would be easier to read such compounded units.
+
+**Given:**
+```
+pitbull dogs = 234 fancy animals
+flowery cats = 423 fancy animals
+animal count = pitbull dogs + flowery cats
+animal count: ?
+animal count = pitbull dogs * flowery cats
+animal count: ?
+```
+
+**Expect:**
+```
+pitbull dogs = 234 fancy animals
+flowery cats = 423 fancy animals
+animal count = pitbull dogs + flowery cats
+animal count: 657 fancy animals
+animal count = pitbull dogs * flowery cats
+animal count: 98982 fancyanimals^2
+```
+
+

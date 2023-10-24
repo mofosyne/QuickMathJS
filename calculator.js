@@ -194,32 +194,107 @@
                     const node = math.parse(normalisedStr);
                     
                     // Check if string is considered empty
-                    // Note: Internally mathjs parser consider empty string as constant
+                    // Note: Internally mathjs parser considers empty string as constant
                     //       hence we need a specific check for this
-                    if (isEmpty(str))
-                        return false;
-
-                    // Check if it's a variable by itself e.g. 'number_of_cats'
-                    if (node.isSymbolNode)
-                        return false;
-
-                    if (node.isOperatorNode) {
-                        // Check for implicit multiplication between a constant and a unit symbol 
-                        // e.g. '2m' which is actually internally '2 * m'
-                        if (node.implicit && node.args.length === 2) {
-                            if (node.args[0].isConstantNode && node.args[1].isSymbolNode)
-                                return true;
-                        }
-
-                        // Is more likely to be an actual expression e.g. 2.1 + 3.0
+                    if (isEmpty(str)) {
                         return false;
                     }
 
-                    // Check for simple constants (e.g. 0b1010, 0x2234, 23.3)
-                    if (node.isConstantNode)
-                        return true;
+                    /*
+                    //    Expression trees : https://mathjs.org/docs/expressions/expression_trees.html
+                    //        FunctionNode    sqrt
+                    //                         |
+                    //        OperatorNode     +
+                    //                        / \
+                    //        ConstantNode   2   x   SymbolNode
+                    //    
+                    //    What we care about here to check if this is a pure result is to traverse
+                    //    this structure and check if:
+                    //        - No Function Node as that is always evaluated into a result
+                    //        - Operator Node : '*' or '/' is okay... but '-' and '+' is not
+                    //        - '*' must be implicit as 
+                    //        - Constant Node is optional
+                    //        - SymbolNode is okay as long as confirmed to be a unit via math.Unit.isValuelessUnit()
+                    */
 
-                    return false;
+                    // Specific check here 
+                    if (node.isSymbolNode) {
+                        // A single symbol here might be a valid result as a solo unit e.g. evaluate('km') --> 'km'
+                        //  but this will cause an syntax edge case with detecting assignment
+                        //  because of the ambiguity between a unit and variable.
+                        //  This will remain the case unless we increase the complexity of the heuristic.
+                        //  To keep things simple... lets just assume invalid if just symbol by itself.
+                        //  in most context this will be correct as normal people wont just write 'km'.
+                        //  e.g. is the 'b' in 'b = 2'  
+                        return false;
+                    }
+                    
+                    /**
+                     * Recursively checks if a Math.js node represents a valid result.
+                     * @param {MathNode} node - The current Math.js node to check.
+                     * @returns {boolean} - True if the node represents a valid result, otherwise false.
+                     */
+                    function checkNode(node) {
+                        if (node.isSymbolNode) {
+                            
+                            // Check if name is object placeholder result '[object Object]' 
+                            if (node.name == 'object' || node.name == 'Object')
+                                return true;
+                        
+                            // Check if the symbol node represents a unit
+                            // if not a unit, then it may be a variable which is not a result
+                            return math.Unit.isValuelessUnit(node.name);
+                        }
+                        
+                        if (node.isConstantNode) {
+                            // Constants is part of result (e.g., 0b1010, 0x2234, 23.3)
+                            return true;
+                        } 
+                        
+                        if (node.isFunctionNode) {
+                            // Solo Functions is not found in result (e.g. sin() )
+                            return false;
+                        }
+
+                        if (node.isOperatorNode) {
+                            // Check for implicit multiplication or explicit division between constants and unit symbols
+                            // Implicit multiplication and explicit division will always have two arguments so can be assumed
+                            if (node.implicit) {
+                                return node.args.every(checkNode);
+                            }
+
+                            if (node.op === '/' ) {
+                                return node.args.every(checkNode);
+                            }
+
+                            // Check for addition or subtraction operators
+                            if (node.op === '+' || node.op === '-' || node.op === '*') {
+                                return false; // Reject expressions with addition or subtraction
+                            }
+
+                            // Check if '^' is being used as part of unit definition 
+                            if (node.op === '^') {
+                                const [arg1, arg2] = node.args;
+                                // Check if only constants here e.g. 2^2 is invalid
+                                if (arg1.isConstantNode && arg2.isConstantNode)
+                                    return false;
+                                // Check if child is okay and power is constant value e.g. m^2 is valid
+                                if (checkNode(arg1) && arg2.isConstantNode)
+                                    return true;
+                                // Assume all other forms as invalid e.g. ?^km is invalid
+                                return false;
+                            }
+
+                            // Recursively check the children nodes
+                            return node.args.every(checkNode);
+                        }
+
+                        // Unhandled, but just check all members is valid
+                        // E.g. isArrayNode()
+                        return node.args.every(checkNode);
+                    }
+
+                    return checkNode(node);
                 } catch (e) {
                     return false;
                 }
@@ -584,20 +659,19 @@
                             // Solo expression outputs nothing but is calculated anyway if valid expression or result
                             // Unless it's a `<variable> : <result>` in which it is an explicit result output
                             
-                            // Split each line by ':' to determine its structure
-                            const parts = line.split(/(?<!\:)\:(?!\:)/);
-                            
-                            // This is the last two part of the line used for huriestics matching of expression type
-                            const lastTwoParts = parts.slice(-2).map(str => str.trim());
-                            leftPart = lastTwoParts[0];
-                            rightPart = lastTwoParts[1];
-                            
-                            // A version of the line but where all part of the expression except for the last part is kept
-                            // This will be used if the last part is replaced with the result
-                            const allButLast = parts.slice(0, -1).join(':');
-                            if ((parts.length == 2) && (isVariable(leftPart) || isExpression(leftPart)) && (isEmpty(rightPart) || isOutputResult(rightPart))) {
-                                lastEvaluatedAnswer = math_evaluate(leftPart, scope);
-                                newContent += `${allButLast}: ${this.replaceWithUnitExpandedRepresentation(lastEvaluatedAnswer)}`;
+                            // Split each line by rightmost ':' to determine its structure
+                            // Must account for extra ':' in case of inputs like 'format(1/2, {notation: 'exponential'})'
+                            const match = line.match(/^(.*):([^:]*)$/);
+                            if (match) {
+                                const leftPart = match[1];
+                                const rightPart = match[2];
+                                if ((isVariable(leftPart) || isExpression(leftPart)) && (isEmpty(rightPart) || isOutputResult(rightPart))) {
+                                    lastEvaluatedAnswer = math_evaluate(leftPart, scope);
+                                    newContent += `${leftPart}: ${this.replaceWithUnitExpandedRepresentation(lastEvaluatedAnswer)}`;
+                                } else {
+                                    lastUnevaluatedLine = line;
+                                    newContent += `${line}`;
+                                }
                             } else {
                                 lastUnevaluatedLine = line;
                                 newContent += `${line}`;
