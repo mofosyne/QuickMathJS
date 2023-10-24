@@ -16,18 +16,28 @@ format(1/2, {notation: 'exponential'}) : 5e-1
 ### Test Case: Non Simple Unit Type (edge case)
 **Given:**
 ```
-a = 4 km/h
-a:
-b = 4 km^2
-b:
+a = 1 km/h
+a: ?
+a^2 : ?
+b = 1 km^2
+b: ?
+b^2: ?
+c = 1 km s
+c: ?
+c^2: ?
 ```
 
 **Expect:**
 ```
-a = 4 km/h
-a: 4 km / h
-b = 4 km^2
-b: 4 km^2
+a = 1 km/h
+a: 1 km / h
+a^2 : 1.0000000000000002 km^2 / h^2
+b = 1 km^2
+b: 1 km^2
+b^2: 1 km^4
+c = 1 km s
+c: 1 km s
+c^2: 1 km^2 s^2
 ```
 
 ### Test Case: Variable Overwrites

@@ -93,13 +93,32 @@
             
                 // Add spaces after '{' and before '}'
                 line = line.replace(/(\{)|(\})/g, match => match === '{' ? `${match} ` : ` ${match}`);
-            
+
                 // Split the line into tokens
                 const tokens = line.split(/\s+/);
-            
+
                 const transformedTokens = [];
                 let buffer = [];
-            
+
+                function joinTokens(input_buffer) {
+                    // Scan these series of words in case it is representing a compounded unit e.g. 'kg m'
+                    // If we have a string like 'steering degree' we can tell it's not a compounded unit even though 'degree'
+                    // is a unit because 'steering' is not a known unit, so by context the whole thing is actually a variable.
+                    const compounded_unit = input_buffer.every(token => math.Unit.isValuelessUnit(token));
+                    if (compounded_unit)
+                    {
+                        // Is an implicit compounded unit
+                        // Do not normalise any tokens found so far in the buffer
+                        return input_buffer.join(' ');
+                    }
+                    else
+                    {
+                        // There is some non unit tokens here
+                        // Let's normalise any token we found so far in the buffer
+                        return input_buffer.join('');
+                    }
+                }
+
                 tokens.forEach((token, index) => {
                     let normaliseThisToken = true;
                     
@@ -129,19 +148,19 @@
                     } else {
                         // Don't normalise this token
                         if (buffer.length) {
-                            // Let's normalise any token we found so far 
-                            transformedTokens.push(buffer.join(''));
+                            // Let's normalise any token we found so far
+                            transformedTokens.push(joinTokens(buffer));
                             buffer = [];
                         }
                         transformedTokens.push(token);
                     }
-
+                    
                     // If it's the last token, clear the buffer
                     if (index === tokens.length - 1 && buffer.length) {
-                        transformedTokens.push(buffer.join(''));
+                        transformedTokens.push(joinTokens(buffer));
                     }
                 });
-            
+
                 return transformedTokens.join(' ');
             }
             
@@ -444,6 +463,15 @@
                 if (fullUnitString === null)
                     return;
 
+                // Scan these series of words in case it is representing a compounded unit e.g. 'kg m'
+                // If we have a string like 'steering degree' we can tell it's not a compounded unit even though 'degree'
+                // is a unit because 'steering' is not a known unit, so by context the whole thing is actually a variable.
+                // Double check that this is not a compound unit
+                const tokens = fullUnitString.split(/\s+/);
+                const compounded_unit = tokens.every(token => math.Unit.isValuelessUnit(token));
+                if (compounded_unit)
+                    return;
+
                 // Normalize the unit name for consistent representation and math.js compatibility
                 const normalizedUnitName = convertNaturalMathToMathJsSyntax(fullUnitString);
 
@@ -666,6 +694,7 @@
                                 const leftPart = match[1];
                                 const rightPart = match[2];
                                 if ((isVariable(leftPart) || isExpression(leftPart)) && (isEmpty(rightPart) || isOutputResult(rightPart))) {
+                                    this.totalResultsProvided++;
                                     lastEvaluatedAnswer = math_evaluate(leftPart, scope);
                                     newContent += `${leftPart}: ${this.replaceWithUnitExpandedRepresentation(lastEvaluatedAnswer)}`;
                                 } else {
