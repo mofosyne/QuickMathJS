@@ -680,11 +680,14 @@
                                 math_evaluate(line, scope); 
                                 newContent += `${allButLast}= ${rightPart}`;
                             } else {
-                                console.log("Unhandled Heuristic Debug:", line, isOutputResult(leftPart), isOutputResult(rightPart), isExpression(leftPart), isExpression(rightPart), isVariable(leftPart), isVariable(rightPart));
-                                console.log("Split Parts:", leftPart, " :: ", rightPart);
+                                console.log(`Unhandled Heuristic Debug: ${line}`);
                                 console.log("MathJS Syntax:", convertNaturalMathToMathJsSyntax(line));
-                                const normalisedStr = convertNaturalMathToMathJsSyntax(line);
+                                console.log(`(leftPart)  isOutputResult:${ isOutputResult(leftPart)}, isExpression:${ isExpression(leftPart)}, isVariable: ${ isVariable(leftPart)} :: ${leftPart} `);
+                                console.log(`(rightPart) isOutputResult:${isOutputResult(rightPart)}, isExpression:${isExpression(rightPart)}, isVariable: ${isVariable(rightPart)} :: ${rightPart}`);
+                                console.log("## math.parse(leftPart) =");
                                 console.log(math.parse(leftPart));
+                                console.log("## math.parse(rightPart) =");
+                                console.log(math.parse(rightPart));
                                 throw new Error("This case is not yet handled, let us know at https://github.com/mofosyne/QuickMathsJS-WebCalc/issues");
                             }
                             //console.log("Updated Scope:", scope);
