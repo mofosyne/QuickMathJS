@@ -55,22 +55,30 @@ function processTests(tests, testCaseFilePath) {
   let failures = 0;
 
   tests.forEach((test, index) => {
+    try {
       const result = calculateFileContent(test.given);
-      if (result === test.expect) {
-          console.log(`Test ${index + 1} (${test.name}): PASS`);
-      } else {
-          console.log(`Test ${index + 1} (${test.name}): FAIL`);
-          console.log('Given:\n', test.given);
-          console.log('diff:');
+      const passfail = (result === test.expect) ? "PASS"['green'] : "FAIL"['red']
+      console.log(`Test ${index + 1} (${test.name}): ${passfail}`);
+      if (result !== test.expect) {
           const diff = Diff.diffChars(test.expect, result);
+          let diff_list = '';
           diff.forEach((part) => {
-            const color = part.added ? 'bgGreen' :
-              part.removed ? 'bgRed' : 'grey';
-              process.stderr.write(part.value[color]);
+            diff_list += part.added ? part.value.underline.green:
+                          part.removed ? part.value.strikethrough.red: 
+                          part.value.grey;
           });
-          console.log('\n');
+          console.log(`Given:\n${test.given}`);
+          console.log(`Diff:\n${diff_list}`);
           failures++;
       }
+    } catch (error) {
+      // Extract the undefined symbol name from the error message
+      console.log(`\nTest ${index + 1} (${test.name}): ${"FAIL - ERROR"['red']}`);
+      console.log("ERR:", error.message);
+      console.log(error.stack.toString());
+      console.log('\n');
+      failures++;
+    }
   });
 
   return failures;
@@ -90,6 +98,11 @@ function runFullTestCase(testCaseFilePath) {
           given: match[2],
           expect: match[3]
       });
+      tests.push({
+          name: match[1] + "- STATIC TESTING",
+          given: match[3],
+          expect: match[3]
+      });
   }
 
   return processTests(tests, testCaseFilePath);
@@ -106,11 +119,11 @@ function runMathBlockTestCase(testCaseFilePath) {
 
   let match;
   while ((match = regex.exec(content)) !== null) {
-      tests.push({
-          name: match[1],
-          given: match[2],
-          expect: match[2]
-      });
+    tests.push({
+        name: match[1],
+        given: match[2],
+        expect: match[2]
+    });
   }
 
   return processTests(tests, testCaseFilePath);
