@@ -2,7 +2,7 @@
 [![Node.js Test Runner](https://github.com/mofosyne/QuickMathJS/actions/workflows/node.js.yml/badge.svg)](https://github.com/mofosyne/QuickMathJS/actions/workflows/node.js.yml)
 [![npm version](https://badge.fury.io/js/quickmathjs.svg)](https://badge.fury.io/js/quickmathjs)
 
-QuickCalc is an intuitive web-based plaintext calculator powered by [math.js](https://mathjs.org/). Designed to deliver inline results, it supports free-form calculations without the fuss of special syntax. Much like how markdown mirrors the natural writing style of emails, QuickCalc emulates the informal way people jot down mathematical expressions in everyday communications. It's math, made as simple as typing out your thoughts.
+QuickMathJS is an intuitive web-based plaintext calculator powered by [math.js](https://mathjs.org/). Designed to deliver inline results, it supports free-form calculations without the fuss of special syntax. Much like how markdown mirrors the natural writing style of emails, QuickMathJS emulates the informal way people jot down mathematical expressions in everyday communications. It's math, made as simple as typing out your thoughts.
 
 - This has also been adapted for VSCode and Codium in an extention called [QuickCalc](https://github.com/mofosyne/vscode-quickcalc)
 
@@ -99,65 +99,86 @@ Type your expressions. Use `=` to display results.
 
 **For Example:**
 ```plaintext
-a = 5
-b = 7
-c = a + b = ?
+# Basic Expressions with Direct Calculation
+1 + 1 = ?
   = ?
-1 + 1
-    = ?
-    c = ?
-total = a + b + c
-total:
+
+# Variable Assignment with Explicit Value Retrieval
+a = 3
+a: ?
+
+# Simultaneous Assignment And Results
+c = a + 3 = ?
+
+# 2> spaces as alt method for Explicit Value Retrieval
+  c = ?
 ```
 
 **Output:**
 ```plaintext
-a = 5
-b = 7
-c = a + b = 12
-  = 12
-1 + 1
-    = 2
-    c = 12
-total = a + b + c
-total: 24
+# Basic Expressions with Direct Calculation
+1 + 1 = 2
+  = 2
+
+# Variable Assignment with Explicit Value Retrieval
+a = 3
+a: 3
+
+# Simultaneous Assignment And Results
+c = a + 3 = 6
+
+# 2> spaces as alt method for Explicit Value Retrieval
+  c = 6
 ```
 
 Note 2 spaces and `=` to indicate we want output result.
 
-### Phrase As Variables
+### Detailed Examples
 
-Also note you can use english sentence as variable as long as it does not conflict with MathJS reserved keywords like `in`, `i`, `or` and any other reserved keywords.
+1. **Currency Conversions** : QuickMathJS allows for intuitive currency conversions using custom pair ratios. This can also be extended to other types of custom ratios.
+1. **Unit Conversion and Mathematical Expressions** : Leverage the power of Math.js to convert between units seamlessly and evaluate complex expressions.
+1. **Custom Functions** : Users can define custom functions and evaluate them with specific arguments. This allows for a reusable approach to complex calculations.
+1. **Phrases as Variables** : Beyond traditional variable names, QuickMathJS supports using sentences as variable names. Just ensure they don't conflict with reserved keywords in Math.js.
+1. **Custom Units and Compound Calculations** : Define your own custom units and perform arithmetic operations with them, even allowing for compound calculations.
 
 ```math
+# Custom Pair Ratios (e.g. Currency Conversion and Arithmetic with Defined Exchange Rate)
+EUR/USD = 1.2
+a = 2 USD
+b = 2.4 EUR
+c = a + 2 * b = 6 USD
+a + b in EUR : 4.8 EUR
+total = a + c
+total in EUR: 9.6 EUR
+
+# Unit Conversion with Math.js
+length = 5.08 cm + 2 inch = 10.16 cm
+length in cm to inch = 4 inch
+
+# Evaluating Mathematical Expressions
+1.2 / (3.3 + 1.7) = 0.24
+sin(90 deg) = 1
+
+# Defining and Evaluating Custom Functions
+f(x, y) = x ^ y
+f(2, 3) = 8
+
+# Phrase As Variabes
 Per Person Delivery = 11
 People Count = 23
 Delivery = 12
-Total Food Price = Per Person Delivery * People Count
-               = 253
-Total Price = Total Food Price + Delivery
-           = 265
+Total Food Price = Per Person Delivery * People Count = 253
+Total Price = Total Food Price + Delivery = 265
 Total Price: 265
+
+# Custom Units
+pitbull dogs = 234 fancy animals
+flowery cats = 423 fancy animals
+animal count = pitbull dogs + flowery cats
+animal count: 657 fancy animals
+animal count = pitbull dogs * flowery cats
+animal count: 98982 fancyanimals^2
 ```
-
-### Currency Support
-
-For convenience, currency notation is supported (but not conversion, unless you want to help add that in?):
-
-```math
-apple_price = 32 USD
-orange_price = 43 USD
-total = 3*apple_price + 4*orange_price
-      = 268 USD
-```
-
-<details>
-<summary> Full list of supported currency notation </summary>
-
-AED, AFN, ALL, AMD, ANG, AOA, ARS, AUD, AWG, AZN, BAM, BBD, BDT, BGN, BHD, BIF, BMD, BND, BOB, BRL, BSD, BTC, BTN, BWP, BYN, BYR, BZD, CAD, CDF, CHF, CLF, CLP, CNY, COP, CRC, CUC, CUP, CVE, CZK, DJF, DKK, DOP, DZD, EGP, ERN, ETB, EUR, FJD, FKP, GBP, GEL, GGP, GHS, GIP, GMD, GNF, GTQ, GYD, HKD, HNL, HRK, HTG, HUF, IDR, ILS, IMP, INR, IQD, IRR, ISK, JEP, JMD, JOD, JPY, KES, KGS, KHR, KMF, KPW, KRW, KWD, KYD, KZT, LAK, LBP, LKR, LRD, LSL, LTL, LVL, LYD, MAD, MDL, MGA, MKD, MMK, MNT, MOP, MRO, MUR, MVR, MWK, MXN, MYR, MZN, NAD, NGN, NIO, NOK, NPR, NZD, OMR, PAB, PEN, PGK, PHP, PKR, PLN, PYG, QAR, RON, RSD, RUB, RWF, SAR, SBD, SCR, SDG, SEK, SGD, SHP, SLE, SLL, SOS, SSP, SRD, STD, SYP, SZL, THB, TJS, TMT, TND, TOP, TRY, TTD, TWD, TZS, UAH, UGX, USD, UYU, UZS, VEF, VES, VND, VUV, WST, XAF, XAG, XAU, XCD, XDR, XOF, XPF, YER, ZAR, ZMK, ZMW, ZWL, EUR
-
-</details>
-
 
 ## Using as a Node.js Module
 

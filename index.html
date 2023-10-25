@@ -12,7 +12,7 @@
 </head>
 <body>
     <div class="calculator">
-        <textarea id="input" placeholder="Enter math expressions..." onkeydown="handleKeyDown(event)"></textarea>
+        <textarea id="input" placeholder="Enter math expressions... (Example: '1 + 1 = ?' or 'a = 3' then 'a + 1 = ?')" onkeydown="handleKeyDown(event)"></textarea>
     </div>
 
     <div class="bottom-bar">
@@ -39,26 +39,34 @@
                 <h2>Quick Start</h2>
                 <strong>Example: Given this input</strong>:
                 <pre>
-a = 5
-b = 7
-c = a + b = ?
-  = ?
-1 + 1
+# Basic Expressions with Direct Calculation
+1 + 1 = ?
     = ?
-    c = ?
-total = a + b + c
-total: ?</pre>
+
+# Variable Assignment with Explicit Value Retrieval
+a = 3
+a: ?
+
+# Simultaneous Assignment And Results
+c = a + 3 = ?
+
+# 2> spaces as alt method for Explicit Value Retrieval
+    c = ?</pre>
                 <strong>After calculation, you will get this output</strong>:
                 <pre>
-a = 5
-b = 7
-c = a + b = 12
-  = 12
-1 + 1
+# Basic Expressions with Direct Calculation
+1 + 1 = 2
     = 2
-    c = 12
-total = a + b + c
-total: 24</pre>
+
+# Variable Assignment with Explicit Value Retrieval
+a = 3
+a: 3
+
+# Simultaneous Assignment And Results
+c = a + 3 = 6
+
+# 2> spaces as alt method for Explicit Value Retrieval
+    c = 6</pre>
                 <ol>
                     <li>Open the calculator by simply loading this webpage in your preferred web browser.</li>
                     <li>Type mathematical expressions in the provided textarea.</li>
