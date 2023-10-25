@@ -308,8 +308,13 @@
                             return node.args.every(checkNode);
                         }
 
+                        // Array Nodes Has a specific handling required
+                        //   but just check all members is valid
+                        if (node.isArrayNode){
+                            return node.items.every(checkNode);
+                        }
+
                         // Unhandled, but just check all members is valid
-                        // E.g. isArrayNode()
                         return node.args.every(checkNode);
                     }
 

@@ -235,6 +235,7 @@ matrix = [[1, 2], [3, 4]]
 matrix + [1, 1; 1, 1] = 
 det(matrix) = 
 transpose(matrix) = 
+matrix + [1, 1; 1, 1] = [[2, 3], [4, 5]]
 ```
 
 **Expect:**
@@ -243,4 +244,5 @@ matrix = [[1, 2], [3, 4]]
 matrix + [1, 1; 1, 1] = [[2, 3], [4, 5]]
 det(matrix) = -2
 transpose(matrix) = [[1, 3], [2, 4]]
+matrix + [1, 1; 1, 1] = [[2, 3], [4, 5]]
 ```
