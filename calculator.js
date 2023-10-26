@@ -34,11 +34,11 @@
         },
         // Function to calculate content with math sections
         calculateWithMathSections(incomingContent) {
-            // Regular expression to match ```math``` sections with potential attributes
-            const mathSectionRegex = /^```math(.*?)\n([\s\S]+?)\n^```$/gm;
+            // Regular expression to match ```calc``` sections with potential attributes
+            const mathSectionRegex = /^```calc(.*?)\n([\s\S]+?)\n^```$/gm;
             return incomingContent.replace(mathSectionRegex, (match, attributes, mathContent) => {
                 const result = this.calculate(mathContent);
-                return '```math' + attributes + '\n' + result + '\n```';
+                return '```calc' + attributes + '\n' + result + '\n```';
             });
         },
         captureUnitExpandedRepresentation(normalisedPairRatio, expandedPairRatio) {

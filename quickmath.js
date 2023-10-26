@@ -112,7 +112,7 @@ function runFullTestCase(testCaseFilePath) {
 function runMathBlockTestCase(testCaseFilePath) {
   const fullPath = path.join(__dirname, testCaseFilePath);
   const content = fs.readFileSync(fullPath, 'utf-8');
-  const regex = /^#+ (.*?)\n(?:[^#]*?)^```math(?:.*?)\n([\s\S]+?)\n^```$/gm;
+  const regex = /^#+ (.*?)\n(?:[^#]*?)^```calc(?:.*?)\n([\s\S]+?)\n^```$/gm;
   const tests = [];
 
   console.log(`BLOCK TEST CASE FILE: ${testCaseFilePath}`);
@@ -158,29 +158,29 @@ function runDelimTests() {
   const mockContent = stripIndent`
     This is a sample content.
 
-    \`\`\`math
+    \`\`\`calc
     1 + 1 = ?
     \`\`\`
 
 
-    \`\`\`math
+    \`\`\`calc
     1 + 1 = ?
     1 + 1 = ?
     \`\`\`
 
-    \`\`\`math {id = "testid"}
+    \`\`\`calc {id = "testid"}
     1 + 1 = ?
     1 + 1 = ?
     \`\`\`
 
-    \`\`\`math
+    \`\`\`calc
     1 + 1 = ?
     1 + 1 = ?
     \`\`\`
 
     This should remain unchanged.
 
-        \`\`\`math
+        \`\`\`calc
         1 + 1 = 
         \`\`\`
 
@@ -189,29 +189,29 @@ function runDelimTests() {
   const expectedContent = stripIndent`
     This is a sample content.
 
-    \`\`\`math
+    \`\`\`calc
     1 + 1 = 2
     \`\`\`
 
 
-    \`\`\`math
+    \`\`\`calc
     1 + 1 = 2
     1 + 1 = 2
     \`\`\`
 
-    \`\`\`math {id = "testid"}
+    \`\`\`calc {id = "testid"}
     1 + 1 = 2
     1 + 1 = 2
     \`\`\`
 
-    \`\`\`math
+    \`\`\`calc
     1 + 1 = 2
     1 + 1 = 2
     \`\`\`
 
     This should remain unchanged.
 
-        \`\`\`math
+        \`\`\`calc
         1 + 1 = 
         \`\`\`
 
@@ -269,7 +269,7 @@ Usage: quickmath [OPTIONS] [FILE]
 Options:
   --help        Show this help message and exit.
   --version     Display the current version of QuickMathsJS.
-  --sections    Evaluate only sections surrounded by the \`\`\`math delimiter.
+  --sections    Evaluate only sections surrounded by the \`\`\`calc delimiter.
   --web         Launch the web interface.
   --test        Run predefined test cases.
 

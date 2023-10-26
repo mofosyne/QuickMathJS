@@ -54,7 +54,7 @@ This will evaluate the entire file and write the results of each calculation bac
 
 ### Using `--sections` Feature
 
-If you have files where only specific sections are meant for calculations, you can use the `--sections` flag. This flag will evaluate only the portions surrounded by the ```math delimiters:
+If you have files where only specific sections are meant for calculations, you can use the `--sections` flag. This flag will evaluate only the portions surrounded by the ```calc delimiters:
 
 ```bash
 npx quickmath --sections path/to/your/file.md
@@ -65,14 +65,14 @@ For instance, in a document like:
     # Kibble Calc
     This calcs how much kibble we need to buy
 
-    ```math
+    ```calc
     CatCount = 4
     KibblePerCat = 4
     TotalKibble = CatCount * KibblePerCat
                 = ?
     ```
 
-The rest of the document can contain text, and only the section within the ```math delimiters will be evaluated.
+The rest of the document can contain text, and only the section within the ```calc delimiters will be evaluated.
 
 ### Launching Web Interface with `--web` Feature
 
@@ -141,7 +141,7 @@ Note 2 spaces and `=` to indicate we want output result.
 1. **Phrases as Variables** : Beyond traditional variable names, QuickMathJS supports using sentences as variable names. Just ensure they don't conflict with reserved keywords in Math.js.
 1. **Custom Units and Compound Calculations** : Define your own custom units and perform arithmetic operations with them, even allowing for compound calculations.
 
-```math
+```calc
 # Custom Pair Ratios (e.g. Currency Conversion and Arithmetic with Defined Exchange Rate)
 EUR/USD = 1.2
 a = 2 USD
