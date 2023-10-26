@@ -1,5 +1,18 @@
 ## Edge Test Cases for the Calculate function
 
+### Test Case: Unary Minus
+**Given:**
+```
+1 - 2 = ?
+1kg - 2kg = ?
+```
+
+**Expect:**
+```
+1 - 2 = -1
+1kg - 2kg = -1 kg
+```
+
 ### Test Case: Non Simple Unit Type
 **Given:**
 ```
@@ -108,7 +121,7 @@ a =
 
 **Expect:**
 ```
-a =  Error: Undefined symbol a
+a = Error: Undefined symbol a
 ```
 
 

@@ -288,6 +288,10 @@
 
                             // Check for addition or subtraction operators
                             if (node.op === '+' || node.op === '-' || node.op === '*') {
+                                if (node.fn === "unaryMinus"){
+                                    return node.args.every(checkNode);
+                                }
+
                                 return false; // Reject expressions with addition or subtraction
                             }
 
@@ -718,14 +722,19 @@
                         }
                     }
                 } catch (e) {  
+
+                    // Append original content with extra space
+                    newContent += `${line.trimRight()} `;
+
                     // Extract the undefined symbol name from the error message
                     const undefinedSymbolMatch = e.message.match(/Undefined symbol (\w+)/);
                     if (undefinedSymbolMatch) {
                         const undefinedSymbol = undefinedSymbolMatch[1];
-                        newContent += `${line} Error: Undefined symbol ${undefinedSymbol}`;
+                        newContent += `Error: Undefined symbol ${undefinedSymbol}`;
                     } else {
-                        newContent += `${line} Error: ${e.message}`;
+                        newContent += `Error: ${e.message}`;
                     }
+
                     //console.log("ERR:", e.message);
                     //console.log("ERRLINE:", line);
                     //console.log("Current Scope:", scope);
