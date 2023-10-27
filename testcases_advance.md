@@ -256,8 +256,8 @@ EUR/USD = 1.30
 5 USD to EUR = ?
 
 # Euros incusive of GST (10% gst tax)
-EURincGST/EUR = 1.1
-10.0 EUR in EURincGST = ?
+EUR / EUR inc GST = 1/1.1
+10.0 EUR in EUR inc GST = ?
 ```
 
 **Expect:**
@@ -271,6 +271,6 @@ EUR/USD = 1.30
 5 USD to EUR = 6.5 EUR
 
 # Euros incusive of GST (10% gst tax)
-EURincGST/EUR = 1.1
-10.0 EUR in EURincGST = 11 EURincGST
+EUR / EUR inc GST = 1/1.1
+10.0 EUR in EUR inc GST = 11 EUR inc GST
 ```

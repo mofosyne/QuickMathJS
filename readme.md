@@ -163,7 +163,7 @@ sin(90 deg) = 1
 f(x, y) = x ^ y
 f(2, 3) = 8
 
-# Phrase As Variabes
+# Phrase As Variable
 Per Person Delivery = 11
 People Count = 23
 Delivery = 12
@@ -178,6 +178,30 @@ animal count = pitbull dogs + flowery cats
 animal count: 657 fancy animals
 animal count = pitbull dogs * flowery cats
 animal count: 98982 fancyanimals^2
+```
+
+### Currency Notation Support
+
+This is a list of all the 3 letters ISO 4217 currency unit name that is supported because of it's usage as a national currency representation:
+
+AED, AFN, ALL, AMD, ANG, AOA, ARS, AUD, AWG, AZN, BAM, BBD, BDT, BGN, BHD, BIF, BMD, BND, BOB, BRL, BSD, BTC, BTN, BWP, BYN, BYR, BZD, CAD, CDF, CHF, CLF, CLP, CNY, COP, CRC, CUC, CUP, CVE, CZK, DJF, DKK, DOP, DZD, EGP, ERN, ETB, EUR, FJD, FKP, GBP, GEL, GGP, GHS, GIP, GMD, GNF, GTQ, GYD, HKD, HNL, HRK, HTG, HUF, IDR, ILS, IMP, INR, IQD, IRR, ISK, JEP, JMD, JOD, JPY, KES, KGS, KHR, KMF, KPW, KRW, KWD, KYD, KZT, LAK, LBP, LKR, LRD, LSL, LTL, LVL, LYD, MAD, MDL, MGA, MKD, MMK, MNT, MOP, MRO, MUR, MVR, MWK, MXN, MYR, MZN, NAD, NGN, NIO, NOK, NPR, NZD, OMR, PAB, PEN, PGK, PHP, PKR, PLN, PYG, QAR, RON, RSD, RUB, RWF, SAR, SBD, SCR, SDG, SEK, SGD, SHP, SLE, SLL, SOS, SSP, SRD, STD, SYP, SZL, THB, TJS, TMT, TND, TOP, TRY, TTD, TWD, TZS, UAH, UGX, USD, UYU, UZS, VEF, VES, VND, VUV, WST, XAF, XAG, XAU, XCD, XDR, XOF, XPF, YER, ZAR, ZMK, ZMW, ZWL, EUR
+
+Also for each currency an additional secondary representation is provided for the taxed/untaxed notation.
+So for `USD` there will also be `USD inc tax`, `USD exc tax`, `USD inc gst`, `USD exc gst` avaliable for your convenience.
+
+```calc
+# 10% gst flat tax ratio 
+EUR / EUR inc GST = 1/1.1
+10.0 EUR in EUR inc GST = 10 EUR inc GST
+
+# Adjust notation to include inc/exc tax notation
+(10.0 + 1) EUR to EUR exc tax : 11 EUR exc tax
+(10.0 + 2) EUR to EUR inc tax : 12 EUR inc tax
+(10.0 + 2) EUR to EUR exc gst : 12 EUR exc gst
+(10.0 + 2) EUR to EUR inc gst : 12 EUR inc gst
+
+# Can also convert between extended notation
+(10.0 + 2) EUR exc tax to EUR inc tax : 12 EUR inc tax
 ```
 
 ## Using as a Node.js Module

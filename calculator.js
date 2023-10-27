@@ -31,6 +31,63 @@
         totalResultsProvided: 0,  // Number of lines with results provided
         unitNameExpansion: {},  // Mapping between unit names and it's expanded form if needed
         initialise() {
+
+            // Load at least all known currency
+            // Note: While you can implicity declare your own custom units on assignments,
+            //       there are cases where you would not use assignment but still need these units...
+            //       hence I will now be including it in again by default to avoid this annoyance.
+            // Note: In the future we could try allowing for people to use their own API key from fixer.io 
+            //       and use this example https://mathjs.org/examples/browser/currency_conversion.html to load all the 
+            //       latest currency conversion rate as needed.
+            const currencies = [
+                'AED', 'AFN', 'ALL', 'AMD', 'ANG', 'AOA', 'ARS', 'AUD', 'AWG', 'AZN',
+                'BAM', 'BBD', 'BDT', 'BGN', 'BHD', 'BIF', 'BMD', 'BND', 'BOB', 'BRL',
+                'BSD', 'BTC', 'BTN', 'BWP', 'BYN', 'BYR', 'BZD', 'CAD', 'CDF', 'CHF',
+                'CLF', 'CLP', 'CNY', 'COP', 'CRC', 'CUC', 'CUP', 'CVE', 'CZK', 'DJF',
+                'DKK', 'DOP', 'DZD', 'EGP', 'ERN', 'ETB', 'EUR', 'FJD', 'FKP', 'GBP',
+                'GEL', 'GGP', 'GHS', 'GIP', 'GMD', 'GNF', 'GTQ', 'GYD', 'HKD', 'HNL',
+                'HRK', 'HTG', 'HUF', 'IDR', 'ILS', 'IMP', 'INR', 'IQD', 'IRR', 'ISK',
+                'JEP', 'JMD', 'JOD', 'JPY', 'KES', 'KGS', 'KHR', 'KMF', 'KPW', 'KRW',
+                'KWD', 'KYD', 'KZT', 'LAK', 'LBP', 'LKR', 'LRD', 'LSL', 'LTL', 'LVL',
+                'LYD', 'MAD', 'MDL', 'MGA', 'MKD', 'MMK', 'MNT', 'MOP', 'MRO', 'MUR',
+                'MVR', 'MWK', 'MXN', 'MYR', 'MZN', 'NAD', 'NGN', 'NIO', 'NOK', 'NPR',
+                'NZD', 'OMR', 'PAB', 'PEN', 'PGK', 'PHP', 'PKR', 'PLN', 'PYG', 'QAR',
+                'RON', 'RSD', 'RUB', 'RWF', 'SAR', 'SBD', 'SCR', 'SDG', 'SEK', 'SGD',
+                'SHP', 'SLE', 'SLL', 'SOS', 'SSP', 'SRD', 'STD', 'SYP', 'SZL', 'THB',
+                'TJS', 'TMT', 'TND', 'TOP', 'TRY', 'TTD', 'TWD', 'TZS', 'UAH', 'UGX',
+                'USD', 'UYU', 'UZS', 'VEF', 'VES', 'VND', 'VUV', 'WST', 'XAF', 'XAG',
+                'XAU', 'XCD', 'XDR', 'XOF', 'XPF', 'YER', 'ZAR', 'ZMK', 'ZMW', 'ZWL'
+            ];
+            currencies.forEach(currency => {
+                
+                const extraCurrencyRepresentations = [
+                    `${currency} inc tax`, 
+                    `${currency} exc tax`, 
+                    `${currency} inc gst`, 
+                    `${currency} exc gst`];
+
+                // Register Base Currency Representation
+                if (!math.Unit.isValuelessUnit(currency)) {
+                    math.createUnit(currency);
+                }
+
+                // Register Alt Currency Representation
+                extraCurrencyRepresentations.forEach(extraCurrencyUnit => {
+                    // Remove spaces as mathjs only support alphabet names for units
+                    const nomalisedUnitName = extraCurrencyUnit.replace(/\s+/g, '');
+                    if (!math.Unit.isValuelessUnit(nomalisedUnitName)) {
+                        math.createUnit(nomalisedUnitName);
+
+                        // Link these alternative representations together
+                        // Note: Can still be overridden later on if flat tax pair ratio can be used
+                        math.createUnit(nomalisedUnitName, `1 ${currency}`, {override: true});
+
+                        // Register expanded name so it renders correctly in output
+                        this.captureUnitExpandedRepresentation(nomalisedUnitName, extraCurrencyUnit);
+                    }
+                })
+            });
+
         },
         // Function to calculate content with math sections
         calculateWithMathSections(incomingContent) {
@@ -575,7 +632,7 @@
                             this.totalCalculations++;
                             //console.log("Initial Scope:", scope);
                             if (isValidPairRatioDefinition(leftPart, scope) && (isOutputResult(rightPart) || isEmpty(rightPart))) {
-                                const quotation = parseFloat(rightPart); // Convert the quotation string to a float
+                                const quotation = math.evaluate(rightPart).toString(); // Convert the quotation string to a float
                                 const parts = leftPart.split('/');
                                 if (!isNaN(quotation) && (parts.length === 2))
                                 {
