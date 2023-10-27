@@ -192,7 +192,7 @@ So for `USD` there will also be `USD inc tax`, `USD exc tax`, `USD inc gst`, `US
 ```calc
 # 10% gst flat tax ratio 
 EUR / EUR inc GST = 1/1.1
-10.0 EUR in EUR inc GST = 10 EUR inc GST
+10.0 EUR in EUR inc GST = 11 EUR inc GST
 
 # Adjust notation to include inc/exc tax notation
 (10.0 + 1) EUR to EUR exc tax : 11 EUR exc tax
