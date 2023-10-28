@@ -158,6 +158,12 @@
                 // Add spaces after '{' and before '}'
                 line = line.replace(/(\{)|(\})/g, match => match === '{' ? `${match} ` : ` ${match}`);
 
+                // Add spaces around '/' to make it easier to detect variable phrases and compound units
+                line = line.replace(/\//g, ' / ');
+
+                // Add spaces around '*' to make it easier to detect variable phrases and compound units
+                line = line.replace(/\*/g, ' * ');
+
                 // Split the line into tokens
                 const tokens = line.split(/\s+/);
 
@@ -269,13 +275,14 @@
              *   3. Expressions involving operations (e.g., 2.1 + 3.0) are excluded.
              *
              * @param {string} str - The string to be checked.
+             * @param {boolean} customUnitDeclarationMode - Ignore unit check, we will allow for declaring new units
              * @returns {boolean} - True if the string is a valid result, otherwise false.
              */
-            function isOutputResult(str) {
+            function isOutputResult(str, customUnitDeclarationMode=false) {
                 try {
                     const normalisedStr = convertNaturalMathToMathJsSyntax(str);
                     const node = math.parse(normalisedStr);
-                    
+
                     // Check if string is considered empty
                     // Note: Internally mathjs parser considers empty string as constant
                     //       hence we need a specific check for this
@@ -323,7 +330,11 @@
                             // Check if name is object placeholder result '[object Object]' 
                             if (node.name == 'object' || node.name == 'Object')
                                 return true;
-                        
+
+                            // Skip unit check, since we will be declaring new units
+                            if (customUnitDeclarationMode)
+                                return true;
+
                             // Check if the symbol node represents a unit
                             // if not a unit, then it may be a variable which is not a result
                             return math.Unit.isValuelessUnit(node.name);
@@ -479,10 +490,10 @@
 
             /**
              * Captures the unit string from the end of the input string.
-             * @param {string} inputString - The input string containing a unit string at the end.
-             * @returns {string|null} - The captured unit string or null if not found.
+             * @param {string} inputString - The input string containing possible units.
+             * @returns {string[]|null} - An array of captured unit strings or null if none are found.
              * 
-             * Design Note: This function employs an exactish check to avoid inadvertent matches.
+             * Design Note: This function employs specific checks to avoid inadvertent matches.
              */
             function captureUnitsFromString(inputString) {
 
@@ -493,6 +504,7 @@
                 }
                 
                 function checkAndStripAll(inputString) {
+                    let outputString;
                     // Strip Matrices
                     outputString = checkAndStrip(/^\[.*?\]/, inputString);
                     if (outputString !== null) return outputString;
@@ -512,16 +524,25 @@
                     return null;
                 }
 
-                // Check if mandatory value is present and also strip it out
+                // Strip known value patterns from the input to isolate possible unit strings
                 unitRawString = checkAndStripAll(inputString);
                 if (unitRawString === null)
                     return null;
 
-                // Check if the remaining string is alphabet-only (plus spaces)
-                if (!(/^[a-zA-Z ]+$/.test(unitRawString)))
+                // Check if the remaining string has recognizable units
+                // The string can have alphanumerics, '/', '^' followed by integers
+                if (!(/^[a-zA-Z\/ ]+(\^-?\d+[a-zA-Z\/ ]*)*$/).test(unitRawString))
                     return null;
-                
-                return unitRawString.trim();
+
+                // Replace power notations (like ^2 or ^-3) with '/', which will be split later
+                unitRawString = unitRawString.replace(/\^-?\d+/g, '/');
+
+                // Split by '/', resulting in individual units
+                let units = unitRawString.split(/\//).map(unit => unit.trim()).filter(unit => unit !== '');
+
+                // Retain only units that are purely alphabetical or spaces
+                units = units.filter(unit => /^[a-zA-Z ]+$/.test(unit));
+                return units;
             }
 
             /**
@@ -531,30 +552,33 @@
             const assignmentUnitCapture = (inputString) => {
 
                 // Capture the full unit string from the input
-                // Note: Exit if assignment is missing value, we expect a value if assignment is performed.
-                const fullUnitString = captureUnitsFromString(inputString);
-                if (fullUnitString === null)
+                // Note: Exit if assignment is missing value, as we expect a value if an assignment is performed.
+                const unitsArray = captureUnitsFromString(inputString);
+                if (!unitsArray || unitsArray.length === 0)
                     return;
 
-                // Scan these series of words in case it is representing a compounded unit e.g. 'kg m'
-                // If we have a string like 'steering degree' we can tell it's not a compounded unit even though 'degree'
-                // is a unit because 'steering' is not a known unit, so by context the whole thing is actually a variable.
-                // Double check that this is not a compound unit
-                const tokens = fullUnitString.split(/\s+/);
-                const compounded_unit = tokens.every(token => math.Unit.isValuelessUnit(token));
-                if (compounded_unit)
-                    return;
+                // Process each unit captured
+                unitsArray.forEach(unitString => {
 
-                // Normalize the unit name for consistent representation and math.js compatibility
-                const normalizedUnitName = convertNaturalMathToMathJsSyntax(fullUnitString);
+                    // For strings like 'steering degree', if 'degree' is a recognized unit but 'steering' isn't, 
+                    // then the entire string 'steering degree' can be treated as a variable instead of a compound unit.
+                    // Double check that this isn't the case
+                    const tokens = unitString.split(/\s+/);
+                    const compounded_unit = tokens.every(token => math.Unit.isValuelessUnit(token));
+                    if (compounded_unit)
+                        return;
 
-                // Check and create the base currency unit if it doesn't exist
-                if (!math.Unit.isValuelessUnit(normalizedUnitName)) {
-                    math.createUnit(normalizedUnitName);
-                }
+                    // Normalize the unit name for consistent representation and math.js compatibility
+                    const normalizedUnitName = convertNaturalMathToMathJsSyntax(unitString);
 
-                // Capture the unit name expansion
-                this.captureUnitExpandedRepresentation(normalizedUnitName, fullUnitString);
+                    // Check and create the base unit if it doesn't exist
+                    if (!math.Unit.isValuelessUnit(normalizedUnitName)) {
+                        math.createUnit(normalizedUnitName);
+                    }
+
+                    // Capture the unit name expansion
+                    this.captureUnitExpandedRepresentation(normalizedUnitName, unitString);
+                });
             };
 
             /**
@@ -686,7 +710,7 @@
                                     throw new Error("Infinity. Possible Division by zero");
                                 }
                                 newContent += `${allButLast}= ${this.replaceWithUnitExpandedRepresentation(lastEvaluatedAnswer)}`;
-                            } else if (isVariable(leftPart) && (isExpression(rightPart) || isOutputResult(rightPart))) {
+                            } else if (isVariable(leftPart) && (isExpression(rightPart) || isOutputResult(rightPart, customUnitDeclarationMode = true))) {
                                 // Case: Variable Assignment (e.g., "a = 1 + 1" or "a = 4") Or Result (e.g., "    a = 4") 
                                 if (indentationLevel >= 2) {
                                     // If indentation is 4 or more, treat the line as a result line instead of an assignment
@@ -701,7 +725,12 @@
                                 } else {
                                     // Regular assignment
                                     //console.log("Variable Assignment:", line);
-                                    assignmentUnitCapture(rightPart);
+                                    if (isOutputResult(rightPart, customUnitDeclarationMode = true))
+                                    {
+                                        // Capture Custom Unit only if it's a simple output result
+                                        // Complex expressions with variables will make it harder to tell variable and custom units apart  
+                                        assignmentUnitCapture(rightPart);
+                                    }
                                     lastEvaluatedAnswer = math_evaluate(line, scope);
                                     // Error handling for Infinity. Possible Division by zero, as JavaScript will return Infinity
                                     if (lastEvaluatedAnswer === Infinity) {

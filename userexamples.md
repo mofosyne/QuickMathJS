@@ -254,3 +254,58 @@ animal count: 98982 fancyanimals^2
 ```
 
 
+## Use Cases Examples
+
+
+### Catering 
+
+# Use Cases Examples
+
+Maybe you want to do some pricing estimations?
+This shows how you can use 
+
+```calc
+# Range Quote Input
+upper_bound_price = 50.33 AUD exc gst / pax
+upper_pax_count = 30 pax
+lower_bound_price = 55.55 AUD exc gst / pax
+lower_pax_count = 10 pax
+
+# Slope Intercept Formula (y = mx + c)
+m(y1, y2, x1, x2) = ((y1 - y2) / (x1 - x2))
+c(y1, y2, x1, x2) = y1 - m(y1, y2, x1, x2)*x1
+y_linear(x, y1, y2, x1, x2) = m(y1, y2, x1, x2)*x + c(y1, y2, x1, x2)
+
+# Food Price Per Persion Function
+foodPricePP(paxCount) = y_linear(paxCount, upper_bound_price, lower_bound_price, upper_pax_count, lower_pax_count)
+
+# Note that unit price is $ per person
+foodPricePP(10 pax): 55.55 AUD exc gst / pax
+
+# Ah here, this fails because round() doesn't support units... solved by using .toNumber() to remove units for now
+foodPricePP_rounded(paxCount) = round(foodPricePP(paxCount).toNumber(), 2) * AUD exc gst / pax
+foodPricePP_rounded(3 pax): 57.38 AUD exc gst / pax
+
+# Formatted Output Functions
+style = {notation: 'fixed', precision: 2}
+foodPricePPout(paxCount) = format(foodPricePP_rounded(paxCount) , style)
+foodTotalPrice(paxCount) = format(foodPricePP_rounded(paxCount) * paxCount , style)
+
+# People Count To Per Person Price
+foodPricePPout(10 pax): 55.55 AUD exc gst / pax
+foodPricePPout(11 pax): 55.29 AUD exc gst / pax
+foodPricePPout(12 pax): 55.03 AUD exc gst / pax
+#... etc...
+foodPricePPout(28 pax): 50.85 AUD exc gst / pax
+foodPricePPout(29 pax): 50.59 AUD exc gst / pax
+foodPricePPout(30 pax): 50.33 AUD exc gst / pax
+
+# People Count To Total Food Cost
+foodTotalPrice(10 pax): 555.50 AUD exc gst
+foodTotalPrice(11 pax): 608.19 AUD exc gst
+foodTotalPrice(12 pax): 660.36 AUD exc gst
+#... etc...
+foodTotalPrice(28 pax): 1423.80 AUD exc gst
+foodTotalPrice(29 pax): 1467.11 AUD exc gst
+foodTotalPrice(30 pax): 1509.90 AUD exc gst
+```
