@@ -799,7 +799,7 @@
                             if (match) {
                                 const leftPart = match[1];
                                 const rightPart = match[2];
-                                if ((isVariable(leftPart) || isExpression(leftPart)) && (isEmpty(rightPart) || isOutputResult(rightPart))) {
+                                if (isVariable(leftPart) || isExpression(leftPart)) {
                                     this.totalResultsProvided++;
                                     lastEvaluatedAnswer = math_evaluate(leftPart, scope);
                                     newContent += `${leftPart}: ${this.replaceWithUnitExpandedRepresentation(lastEvaluatedAnswer)}`;
