@@ -27,9 +27,16 @@
 }(typeof self !== 'undefined' ? self : this, function (mathInstance) {
     const math = mathInstance;
     const calculator = {
+
+        // These are used as statistics and for checking if a new user unfamilar
+        // with QuickMathJS syntax is using it. As they would usually just type 
         totalCalculations: 0,  // Number of lines where calculations are performed
+        totalSoloExpressions: 0,  // Number of lines with potential expressions entered
         totalResultsProvided: 0,  // Number of lines with results provided
+
+        // Unit Expanded Name Representations (e.g. USD exc tax)
         unitNameExpansion: {},  // Mapping between unit names and it's expanded form if needed
+
         initialise() {
 
             // Load at least all known currency
@@ -584,6 +591,7 @@
             let newContent = "";
 
             this.totalCalculations = 0;
+            this.totalSoloExpressions = 0;
             this.totalResultsProvided = 0;
 
             // `scope` will be used to keep track of variable values as they're declared
@@ -771,10 +779,19 @@
                                     newContent += `${line}`;
                                 }
                             } else {
+                                // Not (Yet) Evaluated Line
+
+                                // Possible Solo Expressions
+                                if (isExpression(line)) {
+                                    // This is used to assist the UI in detecting newbies just typing expressions expecting results
+                                    this.totalSoloExpressions++;
+                                }
+
                                 lastUnevaluatedLine = line;
                                 newContent += `${line}`;
                             }
                         } else {
+                            // Empty Line
                             newContent += `${line}`;
                         }
                     }

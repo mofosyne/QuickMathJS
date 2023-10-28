@@ -153,7 +153,7 @@ function handleKeyDown(event) {
         // Update the textarea content with the processed content
         textarea.value = webcalc.calculate(previousContent);  // Trim to avoid any trailing newlines
 
-        if (previouslyWarnedMissingResult == false && webcalc.totalCalculations > 0 && webcalc.totalResultsProvided === 0) {
+        if (previouslyWarnedMissingResult == false && webcalc.totalSoloExpressions > 0 && webcalc.totalCalculations === 0 && webcalc.totalResultsProvided === 0) {
             alert("Tip: Use '=' after an expression to indicate where you want to see the result!");
             previouslyWarnedMissingResult = true;
         }
@@ -254,7 +254,7 @@ function triggerRecalc() {
     previousContent = textarea.value;  // Cache the current state before calculations
     textarea.value = webcalc.calculate(previousContent);
 
-    if (previouslyWarnedMissingResult == false && webcalc.totalCalculations > 0 && webcalc.totalResultsProvided === 0) {
+    if (previouslyWarnedMissingResult == false && webcalc.totalSoloExpressions > 0 && webcalc.totalCalculations === 0 && webcalc.totalResultsProvided === 0) {
         alert("Tip: Use '=' after an expression to indicate where you want to see the result!");
         previouslyWarnedMissingResult = true;
     }
