@@ -256,13 +256,12 @@ animal count: 98982 fancyanimals^2
 
 ## Use Cases Examples
 
-
-### Catering 
-
-# Use Cases Examples
+### Catering Use Case Example
 
 Maybe you want to do some pricing estimations?
-This shows how you can use 
+This shows how you can use your own units e.g. `pax` as it is declared during assignment.
+Also shows how you can use math.js function declaration to define your own equations.
+And also shows how units can have spaces if needed.
 
 ```calc
 # Range Quote Input
