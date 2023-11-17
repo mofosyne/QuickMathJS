@@ -275,15 +275,9 @@ m(y1, y2, x1, x2) = ((y1 - y2) / (x1 - x2))
 c(y1, y2, x1, x2) = y1 - m(y1, y2, x1, x2)*x1
 y_linear(x, y1, y2, x1, x2) = m(y1, y2, x1, x2)*x + c(y1, y2, x1, x2)
 
-# Food Price Per Persion Function
+# Food Price Per Person Function
 foodPricePP(paxCount) = y_linear(paxCount, upper_bound_price, lower_bound_price, upper_pax_count, lower_pax_count)
-
-# Note that unit price is $ per person
-foodPricePP(10 pax): 55.55 AUD exc gst / pax
-
-# Ah here, this fails because round() doesn't support units... solved by using .toNumber() to remove units for now
-foodPricePP_rounded(paxCount) = round(foodPricePP(paxCount).toNumber(), 2) * AUD exc gst / pax
-foodPricePP_rounded(3 pax): 57.38 AUD exc gst / pax
+foodPricePP_rounded(paxCount) = round(foodPricePP(paxCount), 2, AUD exc gst / pax )
 
 # Formatted Output Functions
 style = {notation: 'fixed', precision: 2}

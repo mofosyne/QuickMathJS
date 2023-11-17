@@ -1,13 +1,13 @@
 {
   "name": "quickmathjs",
-  "version": "2.1.20",
+  "version": "2.2.0",
   "description": "A simple web-based plaintext calculator harnessing the power of math.js for intuitive free-form calculations. Now with a command-line interface (CLI) for testing purposes.",
   "main": "calculator.js",
   "bin": {
     "quickmath": "./quickmath.js"
   },
   "scripts": {
-    "start": "node quickmath.js --test",
+    "start": "node quickmath --web",
     "debug": "node --inspect=5858 quickmath.js --test",
     "test": "node quickmath.js --test",
     "version": "node quickmath.js --version",
@@ -34,7 +34,7 @@
     "colors": "^1.4.0",
     "diff": "^5.1.0",
     "express": "^4.18.2",
-    "mathjs": "^11.11.2",
+    "mathjs": "^12.1.0",
     "opn": "^6.0.0"
   },
   "files": [
