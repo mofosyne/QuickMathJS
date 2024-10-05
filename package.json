@@ -1,6 +1,6 @@
 {
   "name": "quickmathjs",
-  "version": "2.2.0",
+  "version": "2.2.3",
   "description": "A simple web-based plaintext calculator harnessing the power of math.js for intuitive free-form calculations. Now with a command-line interface (CLI) for testing purposes.",
   "main": "calculator.js",
   "bin": {
@@ -32,9 +32,9 @@
   "homepage": "https://github.com/mofosyne/QuickMathJS",
   "dependencies": {
     "colors": "^1.4.0",
-    "diff": "^5.1.0",
-    "express": "^4.18.2",
-    "mathjs": "^12.1.0",
+    "diff": "^7.0.0",
+    "express": "^2.5.11",
+    "mathjs": "^13.2.0",
     "opn": "^6.0.0"
   },
   "files": [
