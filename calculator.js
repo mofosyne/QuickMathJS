@@ -96,13 +96,23 @@
             });
 
         },
+        // Count occurrences of \r\n and \n and determine reasonable eol setting
+        pick_typical_eol(source) {
+            var crlfCount = (source.match(/\r\n/g) || []).length;
+            var lfCount = (source.match(/(?<!\r)\n/g) || []).length;
+            return (crlfCount > lfCount) ? "\r\n" : "\n";
+        },  
         // Function to calculate content with math sections
-        calculateWithMathSections(incomingContent) {
+        calculateWithMathSections(incomingContent, eol=null) {
             // Regular expression to match ```calc``` sections with potential attributes
-            const mathSectionRegex = /^```calc(.*?)\n([\s\S]+?)\n^```$/gm;
+            if (!eol) {
+                eol = this.pick_typical_eol(incomingContent);
+            }
+
+            const mathSectionRegex = /^```calc(.*?)\r?\n([\s\S]+?)\r?\n^```$/gm;
             return incomingContent.replace(mathSectionRegex, (match, attributes, mathContent) => {
-                const result = this.calculate(mathContent);
-                return '```calc' + attributes + '\n' + result + '\n```';
+                const result = this.calculate(mathContent, eol);
+                return '```calc' + attributes + eol + result + eol + '```';
             });
         },
         captureUnitExpandedRepresentation(normalisedPairRatio, expandedPairRatio) {
@@ -132,12 +142,19 @@
             return replacedString;
         },
         // Function to calculate content without math sections
-        calculate(incomingContent) {
+        calculate(incomingContent, eol=null) {
             /**
              * Throw error if MathJS is not loaded 
              */
             if (!math) {
                 throw new Error("QuickMathsJS-WebCalc: 'mathjs' is required. Please ensure 'mathjs' is loaded before using this module.");
+            }
+
+            /**
+             * If preferred eol not provided then determine eol via heuristic
+             */
+            if (!eol) {
+                eol = this.pick_typical_eol(incomingContent);
             }
 
             /**
@@ -607,11 +624,11 @@
             }
 
             // Preprocess to remove any existing "Error:"
-            const cleanedLines = incomingContent.split('\n').map(line => {
+            const cleanedLines = incomingContent.split(eol).map(line => {
                 const errorIndex = line.indexOf("Error:");
                 return errorIndex !== -1 ? line.substring(0, errorIndex).trimRight() : line;
             });
-            const lines = cleanedLines.join('\n').split('\n');
+            const lines = cleanedLines.join(eol).split(eol);
             let newContent = "";
 
             this.totalCalculations = 0;
@@ -846,7 +863,7 @@
 
                 // Always append a newline unless it's the last line
                 if (index !== lines.length - 1) {
-                    newContent += '\n';
+                    newContent += eol;
                 }
                 index++;
             }

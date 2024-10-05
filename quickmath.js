@@ -219,13 +219,27 @@ function runDelimTests() {
 
   const mathDelimiterResult = calculateFileContent(mockContent, true);
   if (mathDelimiterResult.trim() === expectedContent.trim()) {
-      console.log(`Math delimiter test: PASS`);
+      console.log(`Math delimiter test (Using LF): ${"PASS"['green']}`);
   } else {
-      console.log(`Math delimiter test: FAIL`);
+      console.log(`Math delimiter test (Using LF): ${"FAIL"['red']}`);
       console.log('Expected:\n', expectedContent);
       console.log('Got:\n', mathDelimiterResult);
       failures++;
   }
+
+  // Windows Style Newline Handling
+  const mockContent_crlf = expectedContent.replace(/\n/g, "\r\n");
+  const expectedContent_crlf = expectedContent.replace(/\n/g, "\r\n");
+  const mathDelimiterResult_crlf = calculateFileContent(mockContent_crlf, true);
+  if (mathDelimiterResult_crlf.trim() === expectedContent_crlf.trim()) {
+      console.log(`Math delimiter test (Using CRLF): ${"PASS"['green']}`);
+  } else {
+      console.log(`Math delimiter test (Using CRLF): ${"FAIL"['red']}`);
+      console.log('Expected:\n', expectedContent_crlf);
+      console.log('Got:\n', mathDelimiterResult_crlf);
+      failures++;
+  }
+
   return failures;
 }
 
@@ -283,8 +297,6 @@ Examples:
   quickmath --test                           Run predefined test cases.
 `);
 }
-
-
 
 function displayVersion() {
   console.log(`QuickMathsJS version: ${version}`);
