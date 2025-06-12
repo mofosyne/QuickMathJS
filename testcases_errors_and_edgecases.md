@@ -210,7 +210,7 @@ x = 1 + y = 3 =
 **Expect:**
 ```
 y = 2
-x = 1 + y = 3
+x = 1 + y = 3 = Error: Invalid left hand side of assignment operator = (char 11)
 ```
 
 ### Test Case: Cascading failure
@@ -259,3 +259,16 @@ det(matrix) = -2
 transpose(matrix) = [[1, 3], [2, 4]]
 matrix + [1, 1; 1, 1] = [[2, 3], [4, 5]]
 ```
+
+### Test Case: Dealing with simultaneous assignment and result operators
+**Given:**
+```
+A = 1.89 / 2.7 =
+```
+
+**Expect:**
+```
+A = 1.89 / 2.7 = 0.7
+```
+
+Note: This test case will stay here until `isOutputResult()` is robust enough to detect that `1.89 / 2.7` is an expression not a result.

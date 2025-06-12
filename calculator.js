@@ -270,7 +270,7 @@
                 try {
                     const normalisedStr = convertNaturalMathToMathJsSyntax(str);
                     const node = math.parse(normalisedStr);
-                    return node.isSymbolNode;
+                    return node.isSymbolNode == true;
                 } catch (e) {
                     return false;
                 }
@@ -374,10 +374,6 @@
                                 return node.args.every(checkNode);
                             }
 
-                            if (node.op === '/' ) {
-                                return node.args.every(checkNode);
-                            }
-
                             // Check for addition or subtraction operators
                             if (node.op === '+' || node.op === '-' || node.op === '*') {
                                 if (node.fn === "unaryMinus"){
@@ -431,7 +427,7 @@
                 const normalisedStr = convertNaturalMathToMathJsSyntax(str);
                 try {
                     const node = math.parse(normalisedStr);
-                    return node.isConditionalNode ||
+                    return (node.isConditionalNode ||
                            node.isAccessorNode ||
                            node.isArrayNode ||
                            node.isAssignmentNode ||
@@ -442,7 +438,7 @@
                            node.isObjectNode ||
                            node.isOperatorNode ||
                            node.isParenthesisNode ||
-                           node.isRangeNode;
+                           node.isRangeNode) == true;
                 } catch (e) {
                     return false;
                 }
@@ -655,27 +651,24 @@
                     } else {
                         // Split each line by '=' to determine its structure
                         const parts = line.split(/(?<!\=)\=(?!\=)/);
-    
-                        // This is the last two part of the line used for huriestics matching of expression type
+
+                        // This is the last two part of the line used for heuristic matching of expression type
                         const lastTwoParts = parts.slice(-2).map(str => str.trim());
                         leftPart = lastTwoParts[0];
                         rightPart = lastTwoParts[1];
-    
-                        // If the second last segment is a result and the last segment is empty (i.e., line ends with '='),
-                        // then remove the trailing '='
-                        if ((parts.length > 2) && isOutputResult(leftPart) && isEmpty(rightPart)) {
-                            //console.log("trimming line")
-                            parts.pop();
-                            const lastTwoParts = parts.slice(-2).map(str => str.trim());
-                            leftPart = lastTwoParts[0];
-                            rightPart = lastTwoParts[1];
-                        }
-                        //console.log(parts)
-    
+
                         // A version of the line but where all part of the expression except for the last part is kept
                         // This will be used if the last part is replaced with the result
                         const allButLast = parts.slice(0, -1).join('=');
-    
+
+                        //console.log("parts:" + parts)
+                        //console.log("leftPart:" + leftPart)
+                        //console.log("rightPart:" + rightPart)
+                        //console.log("allButLast:" + allButLast)
+                        //console.log("MathJS Syntax:", convertNaturalMathToMathJsSyntax(line));
+                        //console.log(`(leftPart)  isOutputResult:${ isOutputResult(leftPart)}, isExpression:${ isExpression(leftPart)}, isVariable: ${ isVariable(leftPart)} :: ${leftPart} `);
+                        //console.log(`(rightPart) isOutputResult:${isOutputResult(rightPart)}, isExpression:${isExpression(rightPart)}, isVariable: ${isVariable(rightPart)} :: ${rightPart}`);
+
                         // Handling lines with minimum of one '='
                         if (parts.length >= 2) {
                             this.totalCalculations++;
@@ -842,7 +835,6 @@
                         }
                     }
                 } catch (e) {  
-
                     // Append original content with extra space
                     newContent += `${line.trimRight()} `;
 
