@@ -244,6 +244,7 @@ function runDelimTests() {
 }
 
 function runTests() {
+    Error.stackTraceLimit = Infinity;
     let failures = runDelimTests();
     failures += failures > 0 ? 0 : runMathBlockTestCase('readme.md');
     failures += failures > 0 ? 0 : runFullTestCase('readme.md');
