@@ -37,7 +37,11 @@
         // Unit Expanded Name Representations (e.g. USD exc tax)
         unitNameExpansion: {},  // Mapping between unit names and it's expanded form if needed
 
+        _initialized: false,
+
         initialise() {
+            if (this._initialized) return;
+            this._initialized = true;
 
             // Load at least all known currency
             // Note: While you can implicity declare your own custom units on assignments,
@@ -295,7 +299,7 @@
              * @param {boolean} customUnitDeclarationMode - Ignore unit check, we will allow for declaring new units
              * @returns {boolean} - True if the string is a valid result, otherwise false.
              */
-            function isOutputResult(str, customUnitDeclarationMode=false) {
+            function isOutputResult(str, allowNewUnits=false) {
                 try {
                     const normalisedStr = convertNaturalMathToMathJsSyntax(str);
                     const node = math.parse(normalisedStr);
@@ -349,7 +353,7 @@
                                 return true;
 
                             // Skip unit check, since we will be declaring new units
-                            if (customUnitDeclarationMode)
+                            if (allowNewUnits)
                                 return true;
 
                             // Check if the symbol node represents a unit
@@ -642,7 +646,6 @@
                 try {
                     const indentationLevel = determineIndentation(line);
                     const trimmedLine = line.trim();
-                    //console.log("indentationLevel: "+indentationLevel+ ` : "${line}"`  )
 
                     // Skip lines that are comments or empty
                     if (trimmedLine === '' || trimmedLine.startsWith('#')) {
@@ -654,25 +657,16 @@
 
                         // This is the last two part of the line used for heuristic matching of expression type
                         const lastTwoParts = parts.slice(-2).map(str => str.trim());
-                        leftPart = lastTwoParts[0];
-                        rightPart = lastTwoParts[1];
+                        let leftPart = lastTwoParts[0];
+                        let rightPart = lastTwoParts[1];
 
                         // A version of the line but where all part of the expression except for the last part is kept
                         // This will be used if the last part is replaced with the result
                         const allButLast = parts.slice(0, -1).join('=');
 
-                        //console.log("parts:" + parts)
-                        //console.log("leftPart:" + leftPart)
-                        //console.log("rightPart:" + rightPart)
-                        //console.log("allButLast:" + allButLast)
-                        //console.log("MathJS Syntax:", convertNaturalMathToMathJsSyntax(line));
-                        //console.log(`(leftPart)  isOutputResult:${ isOutputResult(leftPart)}, isExpression:${ isExpression(leftPart)}, isVariable: ${ isVariable(leftPart)} :: ${leftPart} `);
-                        //console.log(`(rightPart) isOutputResult:${isOutputResult(rightPart)}, isExpression:${isExpression(rightPart)}, isVariable: ${isVariable(rightPart)} :: ${rightPart}`);
-
                         // Handling lines with minimum of one '='
                         if (parts.length >= 2) {
                             this.totalCalculations++;
-                            //console.log("Initial Scope:", scope);
                             if (isValidPairRatioDefinition(leftPart, scope) && (isOutputResult(rightPart) || isEmpty(rightPart))) {
                                 const quotation = math.evaluate(rightPart).toString(); // Convert the quotation string to a float
                                 const parts = leftPart.split('/');
@@ -702,7 +696,6 @@
                                 newContent += `${allButLast}= ${rightPart}`;
                             } else if (isExpression(leftPart) && (isOutputResult(rightPart) || isEmpty(rightPart) || (!isExpression(rightPart) && !isVariable(leftPart)))) {
                                 // Case: Pure Mathematical Expression (e.g., "5 + 3 = 8" or "5 + 3 =" or "5 + 3 = <corrupted output>")
-                                //console.log("Pure Mathematical Expression:", line);
                                 lastEvaluatedAnswer = math_evaluate(allButLast, scope);
                                 this.totalResultsProvided++;
                                 // Error handling for Infinity. Possible Division by zero, as JavaScript will return Infinity
@@ -712,7 +705,6 @@
                                 newContent += `${allButLast}= ${this.replaceWithUnitExpandedRepresentation(lastEvaluatedAnswer)}`;
                             } else if (isOutputResult(leftPart) && (isOutputResult(rightPart) || isEmpty(rightPart))) {
                                 // Case: Direct constants (e.g., "0b1100100 =")
-                                //console.log("Case: Direct constants:", line);
                                 lastEvaluatedAnswer = math_evaluate(allButLast, scope);
                                 this.totalResultsProvided++;
                                 // Error handling for Infinity. Possible Division by zero, as JavaScript will return Infinity
@@ -720,11 +712,10 @@
                                     throw new Error("Infinity. Possible Division by zero");
                                 }
                                 newContent += `${allButLast}= ${this.replaceWithUnitExpandedRepresentation(lastEvaluatedAnswer)}`;
-                            } else if (isVariable(leftPart) && (isExpression(rightPart) || isOutputResult(rightPart, customUnitDeclarationMode = true))) {
+                            } else if (isVariable(leftPart) && (isExpression(rightPart) || isOutputResult(rightPart, true))) {
                                 // Case: Variable Assignment (e.g., "a = 1 + 1" or "a = 4") Or Result (e.g., "    a = 4") 
                                 if (indentationLevel >= 2) {
                                     // If indentation is 4 or more, treat the line as a result line instead of an assignment
-                                    //console.log("Case: Overwrite Result:", line);
                                     this.totalResultsProvided++;
                                     lastEvaluatedAnswer = math_evaluate(allButLast, scope);
                                     // Error handling for Infinity. Possible Division by zero, as JavaScript will return Infinity
@@ -734,8 +725,7 @@
                                     newContent += `${allButLast}= ${this.replaceWithUnitExpandedRepresentation(lastEvaluatedAnswer)}`;
                                 } else {
                                     // Regular assignment
-                                    //console.log("Variable Assignment:", line);
-                                    if (isOutputResult(rightPart, customUnitDeclarationMode = true))
+                                    if (isOutputResult(rightPart, true))
                                     {
                                         // Capture Custom Unit only if it's a simple output result
                                         // Complex expressions with variables will make it harder to tell variable and custom units apart  
@@ -750,7 +740,6 @@
                                 }
                             } else if (isVariable(leftPart) && isVariable(rightPart)) {
                                 // Case: Cascading Variable Assignment (e.g., "b = a")
-                                //console.log("Case: Cascading Variable Assignment:", line);
                                 lastEvaluatedAnswer = math_evaluate(line, scope); 
                                 // Error handling for Infinity. Possible Division by zero, as JavaScript will return Infinity
                                 if (lastEvaluatedAnswer === Infinity) {
@@ -759,9 +748,8 @@
                                 newContent += `${allButLast}= ${rightPart}`;
                             } else if (isVariable(leftPart) && isEmpty(rightPart)) {
                                 // Case: Variable with no assignment/result (e.g., "a =")
-                                //console.log("Case: Variable with no result:", line);
                                 // If indentation is 4 or more, treat the line as a result line instead of an assignment
-                                this.toctalResultsProvided++;
+                                this.totalResultsProvided++;
                                 lastEvaluatedAnswer = math_evaluate(allButLast, scope);
                                 // Error handling for Infinity. Possible Division by zero, as JavaScript will return Infinity
                                 if (lastEvaluatedAnswer === Infinity) {
@@ -769,7 +757,6 @@
                                 }
                                 newContent += `${allButLast}= ${this.replaceWithUnitExpandedRepresentation(lastEvaluatedAnswer)}`;
                             } else if (isEmpty(leftPart) && (isOutputResult(rightPart) || isEmpty(rightPart))) {
-                                //console.log("Case: Implied Results:", line, `(indent: ${indentationLevel})`);
                                 this.totalResultsProvided++;
                                 if (lastUnevaluatedLine != null)
                                 {
@@ -784,7 +771,6 @@
                                 newContent += `${allButLast}= ${this.replaceWithUnitExpandedRepresentation(lastEvaluatedAnswer)}`;
                             } else if (isFunctionCall(leftPart) && (isOutputResult(rightPart) || isVariable(rightPart) || (isExpression(rightPart)))) {
                                 // Case: Function Definition (e.g., "b(a) = a*2")
-                                //console.log("Case: Function Definition:", line);
                                 math_evaluate(line, scope); 
                                 newContent += `${allButLast}= ${rightPart}`;
                             } else {
@@ -798,7 +784,6 @@
                                 console.log(math.parse(rightPart));
                                 throw new Error("This case is not yet handled, let us know at https://github.com/mofosyne/QuickMathsJS-WebCalc/issues");
                             }
-                            //console.log("Updated Scope:", scope);
                         } else if (!isEmpty(line)) {
                             // Solo expression outputs nothing but is calculated anyway if valid expression or result
                             // Unless it's a `<variable> : <result>` in which it is an explicit result output
@@ -847,10 +832,7 @@
                         newContent += `Error: ${e.message}`;
                     }
 
-                    //console.log("ERR:", e.message);
-                    //console.log("ERRLINE:", line);
-                    //console.log("Current Scope:", scope);
-                    //console.log(e.stack.toString());
+
                 }
 
                 // Always append a newline unless it's the last line

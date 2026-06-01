@@ -246,14 +246,14 @@ function runDelimTests() {
 function runTests() {
     Error.stackTraceLimit = Infinity;
     let failures = runDelimTests();
-    failures += failures > 0 ? 0 : runMathBlockTestCase('readme.md');
-    failures += failures > 0 ? 0 : runFullTestCase('readme.md');
-    failures += failures > 0 ? 0 : runMathBlockTestCase('userexamples.md');
-    failures += failures > 0 ? 0 : runFullTestCase('userexamples.md');
-    failures += failures > 0 ? 0 : runFullTestCase('testcases_basics.md');
-    failures += failures > 0 ? 0 : runFullTestCase('testcases_advance.md');
-    failures += failures > 0 ? 0 : runFullTestCase('testcases_constants.md');
-    failures += failures > 0 ? 0 : runFullTestCase('testcases_errors_and_edgecases.md');
+    failures += runMathBlockTestCase('readme.md');
+    failures += runFullTestCase('readme.md');
+    failures += runMathBlockTestCase('userexamples.md');
+    failures += runFullTestCase('userexamples.md');
+    failures += runFullTestCase('testcases_basics.md');
+    failures += runFullTestCase('testcases_advance.md');
+    failures += runFullTestCase('testcases_constants.md');
+    failures += runFullTestCase('testcases_errors_and_edgecases.md');
   
     if (failures > 0) {
         console.error(`Failed ${failures} test(s). Exiting.`);
