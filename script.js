@@ -20,6 +20,16 @@ let redoStack = [];
 
 let previouslyWarnedMissingResult = false;
 
+function maybeShowResultTip() {
+    if (!previouslyWarnedMissingResult &&
+        webcalc.totalSoloExpressions > 0 &&
+        webcalc.totalCalculations === 0 &&
+        webcalc.totalResultsProvided === 0) {
+        alert("Tip: Use '=' after an expression to indicate where you want to see the result!");
+        previouslyWarnedMissingResult = true;
+    }
+}
+
 /******************************************************************************
  * URL Hash Compression and Storage Utilities
 ******************************************************************************
@@ -149,14 +159,15 @@ function handleKeyDown(event) {
         }
 
         previousContent = textarea.value;  // Cache the current state before calculations
-        
-        // Update the textarea content with the processed content
-        textarea.value = webcalc.calculate(previousContent);  // Trim to avoid any trailing newlines
 
-        if (previouslyWarnedMissingResult == false && webcalc.totalSoloExpressions > 0 && webcalc.totalCalculations === 0 && webcalc.totalResultsProvided === 0) {
-            alert("Tip: Use '=' after an expression to indicate where you want to see the result!");
-            previouslyWarnedMissingResult = true;
+        // Update the textarea content with the processed content
+        try {
+            textarea.value = webcalc.calculate(previousContent);
+        } catch (err) {
+            console.error('QuickMathJS calculate() error:', err);
         }
+
+        maybeShowResultTip();
 
         // Move the cursor to the beginning of the next line
         const nextNewLinePos = textarea.value.indexOf('\n', cursorPosition);
@@ -180,6 +191,7 @@ function handleKeyDown(event) {
 
 function pushToUndo(content) {
     undoStack.push(content);
+    if (undoStack.length > 100) undoStack.shift();
     redoStack = [];  // Clear redo stack when new content is added to undo
 }
 
@@ -252,13 +264,13 @@ function clearpad() {
 function triggerRecalc() {
     const textarea = document.getElementById("input");
     previousContent = textarea.value;  // Cache the current state before calculations
-    textarea.value = webcalc.calculate(previousContent);
-
-    if (previouslyWarnedMissingResult == false && webcalc.totalSoloExpressions > 0 && webcalc.totalCalculations === 0 && webcalc.totalResultsProvided === 0) {
-        alert("Tip: Use '=' after an expression to indicate where you want to see the result!");
-        previouslyWarnedMissingResult = true;
+    try {
+        textarea.value = webcalc.calculate(previousContent);
+    } catch (err) {
+        console.error('QuickMathJS calculate() error:', err);
     }
 
+    maybeShowResultTip();
     saveToHash();
 
     // Push the recalculated state

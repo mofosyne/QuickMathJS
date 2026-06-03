@@ -243,17 +243,87 @@ function runDelimTests() {
   return failures;
 }
 
+function runHelperUnitTests() {
+  const {
+    isEmpty, isVariable, isOutputResult, isExpression,
+    isFunctionCall, isValidPairRatioDefinition,
+  } = webcalc._helpers;
+
+  const cases = [
+    // isEmpty
+    ['isEmpty: empty string',            isEmpty(''),              true ],
+    ['isEmpty: whitespace',              isEmpty('   '),           true ],
+    ['isEmpty: placeholder ?',           isEmpty('?'),             true ],
+    ['isEmpty: number',                  isEmpty('2'),             false],
+    ['isEmpty: text',                    isEmpty('hello'),         false],
+
+    // isVariable
+    ['isVariable: single letter',        isVariable('a'),          true ],
+    ['isVariable: multiword phrase',     isVariable('Per Person Delivery'), true],
+    ['isVariable: expression',           isVariable('1 + 1'),      false],
+    ['isVariable: bare number',          isVariable('2'),          false],
+    ['isVariable: number with unit',     isVariable('2 km'),       false],
+
+    // isOutputResult
+    ['isOutputResult: integer',          isOutputResult('2'),           true ],
+    ['isOutputResult: float',            isOutputResult('3.14'),        true ],
+    ['isOutputResult: negative',         isOutputResult('-5'),          true ],
+    ['isOutputResult: value with unit',  isOutputResult('2 km'),        true ],
+    ['isOutputResult: unit^exponent',    isOutputResult('2 km^2'),      true ],
+    ['isOutputResult: placeholder',      isOutputResult('?'),           false],
+    ['isOutputResult: empty string',     isOutputResult(''),            false],
+    ['isOutputResult: variable',         isOutputResult('myVar'),       false],
+    ['isOutputResult: expression',       isOutputResult('1 + 1'),       false],
+    ['isOutputResult: new unit allowed', isOutputResult('5 xyznounit', true),  true ],
+    ['isOutputResult: new unit blocked', isOutputResult('5 xyznounit', false), false],
+
+    // isExpression
+    ['isExpression: addition',           isExpression('1 + 1'),    true ],
+    ['isExpression: function call',      isExpression('sin(x)'),   true ],
+    ['isExpression: assignment',         isExpression('a = 5'),    true ],
+    ['isExpression: bare variable',      isExpression('a'),        false],
+    ['isExpression: bare number',        isExpression('2'),        false],
+
+    // isFunctionCall
+    ['isFunctionCall: builtin',          isFunctionCall('sin(x)'),    true ],
+    ['isFunctionCall: custom',           isFunctionCall('f(x, y)'),   true ],
+    ['isFunctionCall: arithmetic',       isFunctionCall('1 + 1'),     false],
+    ['isFunctionCall: variable',         isFunctionCall('a'),         false],
+
+    // isValidPairRatioDefinition
+    ['isValidPairRatioDef: compact',     isValidPairRatioDefinition('EUR/USD', {}),          true ],
+    ['isValidPairRatioDef: spaced',      isValidPairRatioDefinition('EUR / USD', {}),        true ],
+    ['isValidPairRatioDef: scope clash', isValidPairRatioDefinition('a/b', { a: 5 }),        false],
+    ['isValidPairRatioDef: not a ratio', isValidPairRatioDefinition('1 + 1', {}),            false],
+    ['isValidPairRatioDef: numeric rhs', isValidPairRatioDefinition('EUR/1.2', {}),          false],
+  ];
+
+  let failures = 0;
+  console.log('HELPER UNIT TESTS');
+  cases.forEach(([name, actual, expected], index) => {
+    const pass = actual === expected;
+    const passfail = pass ? "PASS"['green'] : "FAIL"['red'];
+    console.log(`Test ${index + 1} (${name}): ${passfail}`);
+    if (!pass) {
+      console.log(`  expected ${expected}, got ${actual}`);
+      failures++;
+    }
+  });
+  return failures;
+}
+
 function runTests() {
     Error.stackTraceLimit = Infinity;
     let failures = runDelimTests();
-    failures += failures > 0 ? 0 : runMathBlockTestCase('readme.md');
-    failures += failures > 0 ? 0 : runFullTestCase('readme.md');
-    failures += failures > 0 ? 0 : runMathBlockTestCase('userexamples.md');
-    failures += failures > 0 ? 0 : runFullTestCase('userexamples.md');
-    failures += failures > 0 ? 0 : runFullTestCase('testcases_basics.md');
-    failures += failures > 0 ? 0 : runFullTestCase('testcases_advance.md');
-    failures += failures > 0 ? 0 : runFullTestCase('testcases_constants.md');
-    failures += failures > 0 ? 0 : runFullTestCase('testcases_errors_and_edgecases.md');
+    failures += runHelperUnitTests();
+    failures += runMathBlockTestCase('readme.md');
+    failures += runFullTestCase('readme.md');
+    failures += runMathBlockTestCase('userexamples.md');
+    failures += runFullTestCase('userexamples.md');
+    failures += runFullTestCase('testcases_basics.md');
+    failures += runFullTestCase('testcases_advance.md');
+    failures += runFullTestCase('testcases_constants.md');
+    failures += runFullTestCase('testcases_errors_and_edgecases.md');
   
     if (failures > 0) {
         console.error(`Failed ${failures} test(s). Exiting.`);
