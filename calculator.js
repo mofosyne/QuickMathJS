@@ -327,7 +327,7 @@
         const normalisedStr = convertNaturalMathToMathJsSyntax(str);
         try {
             const node = math.parse(normalisedStr);
-            return node.isFunctionNode;
+            return node.isFunctionNode == true;
         } catch (e) {
             return false;
         }
@@ -456,6 +456,21 @@
     // ── Calculator ────────────────────────────────────────────────────────────
 
     const calculator = {
+
+        // Exposed for unit testing. Not part of the public API.
+        _helpers: {
+            convertNaturalMathToMathJsSyntax,
+            isEmpty,
+            isVariable,
+            isOutputResult,
+            isExpression,
+            isFunctionCall,
+            isValidPairRatioDefinition,
+            captureUnitsFromString,
+            determineIndentation,
+            math_evaluate,
+        },
+
 
         // These are used as statistics and for checking if a new user unfamilar
         // with QuickMathJS syntax is using it. As they would usually just type
